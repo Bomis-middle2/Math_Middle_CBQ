@@ -1,1 +1,330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Innovine Lab - Basic Operations</title>
+    <style>
+        :root {
+            --primary: #d35400;
+            --accent: #e67e22;
+            --success: #27ae60;
+            --danger: #c0392b;
+            --bg: #f4f7f6;
+            --card-shadow: 0 8px 30px rgba(0,0,0,0.15);
+        }
 
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        /* Initializing Screen with Local Asset Innovine Logo */
+        #brand-screen {
+            position: fixed;
+            inset: 0;
+            background: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        #brand-screen img { max-width: 250px; margin-bottom: 20px; }
+        .spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border-left-color: var(--primary);
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* Main Game Card */
+        .game-card {
+            width: 90%;
+            max-width: 700px;
+            background: white;
+            padding: 35px;
+            border-radius: 25px;
+            box-shadow: var(--card-shadow);
+            border: 4px solid var(--primary);
+            position: relative;
+        }
+
+        .hidden { display: none !important; }
+
+        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .branding-title { font-size: 1.5rem; font-weight: bold; color: var(--primary); margin: 0; }
+
+        .hud { font-weight: bold; color: #2c3e50; display: flex; gap: 20px; }
+
+        .progress-container { height: 12px; background: #eee; border-radius: 10px; margin: 15px 0; overflow: hidden; }
+        #progress-bar { height: 100%; background: var(--primary); width: 0%; transition: width 0.4s; }
+
+        .question-text { font-size: 1.2rem; color: #2c3e50; line-height: 1.6; margin-bottom: 20px; font-weight: 500; }
+
+        /* Table Design for Data-Based Challenge */
+        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; background: #fdfefe; }
+        th, td { border: 1px solid #d5dbdb; padding: 12px; text-align: left; font-size: 1rem; }
+        th { background: var(--primary); color: white; }
+
+        .options-grid { display: grid; gap: 12px; }
+        .option-btn {
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            background: #fff;
+            cursor: pointer;
+            font-size: 1rem;
+            text-align: left;
+            transition: all 0.2s;
+            color: #34495e;
+        }
+        .option-btn:hover:not(:disabled) { border-color: var(--primary); background: #fffcf9; }
+        .correct { background: var(--success) !important; color: white; border-color: #1e8449 !important; font-weight: bold; }
+        .wrong { background: var(--danger) !important; color: white; border-color: #922b21 !important; animation: shake 0.4s; }
+
+        @keyframes shake { 0%, 100% {transform: translateX(0);} 25% {transform: translateX(-5px);} 75% {transform: translateX(5px);} }
+
+        .feedback-box { margin-top: 20px; padding: 15px; border-radius: 12px; background: #fdf2e9; border-left: 5px solid var(--primary); color: #2c3e50; line-height: 1.5; }
+
+        .btn-next {
+            margin-top: 20px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 50px;
+            font-weight: bold;
+            cursor: pointer;
+            float: right;
+            box-shadow: 0 4px 0 #a04000;
+            transition: background 0.2s;
+        }
+        .btn-next:hover { background: var(--accent); }
+        .btn-next:active { transform: translateY(2px); box-shadow: 0 2px 0 #a04000; }
+    </style>
+</head>
+<body>
+
+<div id="brand-screen">
+    <img src="assets/logo.png" alt="Innovine Logo">
+    <div class="spinner"></div>
+    <h2 style="color: #2c3e50; font-family: sans-serif; margin: 15px 0 0 0;">Innovine Mathematics Lab</h2>
+</div>
+
+<div class="game-card hidden" id="game-card">
+    <div class="header">
+        <div class="branding-title">Innovine Lab</div>
+        <div class="hud">
+            <span>Challenge: <span id="q-num">1</span>/10</span>
+            <span>Stars: ⭐ <span id="score">0</span></span>
+        </div>
+    </div>
+
+    <div class="progress-container"><div id="progress-bar"></div></div>
+
+    <div id="quiz-content">
+        <div id="data-table-container"></div>
+        <div class="question-text" id="q-text"></div>
+        <div class="options-grid" id="options-box"></div>
+        <div id="feedback-area" class="feedback-box hidden"></div>
+        <div style="height: 60px;">
+            <button id="next-btn" class="btn-next hidden" onclick="handleNext()">Next Challenge ➡️</button>
+        </div>
+    </div>
+
+    <div id="result-screen" class="hidden" style="text-align: center;">
+        <h1 style="color: var(--primary);">Lab Assessment Complete!</h1>
+        <h2 id="final-score" style="font-size: 3rem; margin: 10px 0; color: #2c3e50;">0/10</h2>
+        <p id="result-msg" style="font-size: 1.2rem; color: #7f8c8d; margin-bottom: 25px;"></p>
+        <button class="btn-next" style="float: none;" onclick="location.reload()">Restart Lab</button>
+    </div>
+</div>
+
+<script>
+    const audio = {
+        correct: new Audio('assets/correct.mp3'),
+        wrong: new Audio('assets/wrong.mp3'),
+        claps: new Audio('assets/freesound_community-claps-44774.mp3')
+    };
+
+    const questions = [
+        {
+            q: "A school library bought 12,450 Hindi books and 15,200 English books. What is the total number of books in the library?",
+            options: ["A) 27,650", "B) 2,750", "C) 27,450", "D) 37,650"],
+            ans: 0,
+            explain: "To find the grand total, add both amounts together: 12,450 + 15,200 = 27,650."
+        },
+        {
+            q: "A factory produced 85,000 bulbs. If 2,400 bulbs were found to be broken, how many working bulbs are left?",
+            options: ["A) 87,400", "B) 82,600", "C) 83,600", "D) 82,000"],
+            ans: 1,
+            explain: "Subtract the broken bulbs from the total production count: 85,000 - 2,400 = 82,600."
+        },
+        {
+            q: "If one school bus can carry 52 students, how many students can 15 such buses carry in total?",
+            options: ["A) 780", "B) 520", "C) 670", "D) 800"],
+            ans: 0,
+            explain: "Multiply the capacity of a single bus by the total number of vehicles: 52 × 15 = 780."
+        },
+        {
+            q: "A farmer has 1,200 apples. He wants to pack them equally into 12 identical layout boxes. How many apples will be inside each box?",
+            options: ["A) 12", "B) 100", "C) 120", "D) 1,00,0"],
+            ans: 1,
+            explain: "Divide the total collection of apples by the number of boxes: 1,200 ÷ 12 = 100."
+        },
+        {
+            q: "Simran had ₹5,000. She spent ₹1,200 on a dress and ₹800 on shoes. How much money does she have left over?",
+            options: ["A) ₹3,000", "B) ₹2,000", "C) ₹4,200", "D) ₹3,800"],
+            ans: 0,
+            explain: "Total expenditures = ₹1,200 + ₹800 = ₹2,000. Leftover cash balance = ₹5,000 - ₹2,000 = ₹3,000."
+        },
+        {
+            q: "A school has 25 classrooms. Each room needs 40 chairs. If they already have 900 chairs available, how many more chairs must they buy?",
+            options: ["A) 1,000", "B) 100", "C) 1,900", "D) 400"],
+            ans: 1,
+            explain: "Total mandatory chairs needed = 25 × 40 = 1,000. Additional balance required = 1,000 - 900 = 100."
+        },
+        {
+            q: "If you multiply any large number by 0, the computed final answer will always be:",
+            options: ["A) The number itself", "B) 1", "C) 0", "D) 10"],
+            ans: 2,
+            explain: "According to the Zero Property of Multiplication, any real number multiplied by zero equals zero."
+        },
+        {
+            q: "A student solved 450 ÷ 10 and got the answer 4,500. What operation did they perform by mistake?",
+            options: ["A) Subtraction", "B) Addition", "C) Multiplication", "D) Estimation"],
+            ans: 2,
+            explain: "Multiplying by 10 appends a zero trailing place value (450 × 10 = 4,500), whereas dividing by 10 cuts a zero away (450 ÷ 10 = 45)."
+        },
+        {
+            q: "Look at the market sales ledger for the last two days. What is the difference in revenue between these two days?",
+            table: [["Day", "Sales Revenue"], ["Wednesday", "₹5,100"], ["Tuesday", "₹3,200"]],
+            options: ["A) ₹1,900", "B) ₹2,100", "C) ₹8,300", "D) ₹1,200"],
+            ans: 0,
+            explain: "To find the difference, calculate the absolute margin: ₹5,100 - ₹3,200 = ₹1,900."
+        },
+        {
+            q: "A regional relief camp received 48,000 kg of rice. If they distribute 4,000 kg every single day, for how many days will the rice stock last?",
+            options: ["A) 10 days", "B) 12 days", "C) 48 days", "D) 8 days"],
+            ans: 1,
+            explain: "Divide the total reserve weight by the rate of daily consumption: 48,000 ÷ 4,000 = 12."
+        }
+    ];
+
+    let currentIdx = 0, score = 0, attempts = 0;
+
+    // Splash display timeout
+    setTimeout(() => {
+        document.getElementById('brand-screen').style.display = 'none';
+        document.getElementById('game-card').classList.remove('hidden');
+        loadQuestion();
+    }, 2500);
+
+    function loadQuestion() {
+        const data = questions[currentIdx];
+        attempts = 0;
+        document.getElementById('q-num').innerText = currentIdx + 1;
+        document.getElementById('q-text').innerText = data.q;
+        document.getElementById('feedback-area').classList.add('hidden');
+        document.getElementById('next-btn').classList.add('hidden');
+        document.getElementById('progress-bar').style.width = ((currentIdx / questions.length) * 100) + '%';
+
+        // Render table dynamically if data-based item contains it
+        const tableCont = document.getElementById('data-table-container');
+        tableCont.innerHTML = '';
+        if (data.table) {
+            const table = document.createElement('table');
+            data.table.forEach((row, i) => {
+                const tr = document.createElement('tr');
+                row.forEach(cell => {
+                    const el = i === 0 ? document.createElement('th') : document.createElement('td');
+                    el.innerText = cell;
+                    tr.appendChild(el);
+                });
+                table.appendChild(tr);
+            });
+            tableCont.appendChild(table);
+        }
+
+        // Render options buttons
+        const box = document.getElementById('options-box');
+        box.innerHTML = '';
+        data.options.forEach((opt, i) => {
+            const btn = document.createElement('button');
+            btn.className = 'option-btn';
+            btn.innerText = opt;
+            btn.onclick = () => checkAnswer(i, btn);
+            box.appendChild(btn);
+        });
+    }
+
+    function checkAnswer(idx, btn) {
+        const data = questions[currentIdx];
+        const feedback = document.getElementById('feedback-area');
+        const allBtns = document.querySelectorAll('.option-btn');
+
+        allBtns.forEach(b => b.disabled = true);
+
+        if (idx === data.ans) {
+            btn.classList.add('correct');
+            audio.correct.play();
+            if (attempts === 0) score++;
+            document.getElementById('score').innerText = score;
+            feedback.innerHTML = `<b>🌟 Correct!</b><br>${data.explain}`;
+            feedback.classList.remove('hidden');
+            document.getElementById('next-btn').classList.remove('hidden');
+            if(currentIdx === questions.length - 1) audio.claps.play();
+        } else {
+            btn.classList.add('wrong');
+            audio.wrong.play();
+            attempts++;
+            if (attempts < 2) {
+                setTimeout(() => {
+                    allBtns.forEach(b => { if(!b.classList.contains('wrong')) b.disabled = false; });
+                    feedback.innerHTML = `<b>Not quite right!</b> Re-check the mathematical operations. You have 1 attempt remaining.`;
+                    feedback.classList.remove('hidden');
+                }, 400);
+            } else {
+                allBtns[data.ans].classList.add('correct');
+                feedback.innerHTML = `<b>Out of attempts!</b> The correct choice was: <i>${data.options[data.ans]}</i>.<br>${data.explain}`;
+                feedback.classList.remove('hidden');
+                document.getElementById('next-btn').classList.remove('hidden');
+            }
+        }
+    }
+
+    function handleNext() {
+        currentIdx++;
+        if (currentIdx < questions.length) {
+            loadQuestion();
+        } else {
+            showResults();
+        }
+    }
+
+    function showResults() {
+        document.getElementById('quiz-content').classList.add('hidden');
+        document.getElementById('result-screen').classList.remove('hidden');
+        document.getElementById('progress-bar').style.width = '100%';
+        document.getElementById('final-score').innerText = `${score}/${questions.length}`;
+        audio.claps.play();
+        
+        let msg = "Keep practicing arithmetic modeling tools to level up your laboratory speed!";
+        if (score === questions.length) msg = "Remarkable! You've achieved complete mathematical operational mastery! 🏆📊";
+        else if (score >= 8) msg = "Splendid work! You solved these mathematical calculations with great precision.";
+        
+        document.getElementById('result-msg').innerText = msg;
+    }
+</script>
+
+</body>
+</html>
