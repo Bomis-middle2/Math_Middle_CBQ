@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Factors and Multiples</title>
+    <title>Innovine Lab - Factors and Multiples</title>
     <style>
         :root {
             --primary: #8e44ad;
@@ -180,7 +180,7 @@
         <div class="creative-pop">🌟🏆🌟</div>
         <h1 style="color: var(--primary); margin: 10px 0;">Congratulations on Completion!</h1>
         <p id="result-msg" style="font-size: 1.2rem; color: #34495e; line-height: 1.6; margin-bottom: 30px;"></p>
-        <button class="btn-next" style="float: none;" onclick="location.reload()">Restart</button>
+        <button class="btn-next" style="float: none;" onclick="location.reload()">Restart Lab</button>
     </div>
 </div>
 
@@ -191,7 +191,6 @@
         claps: new Audio('assets/freesound_community-claps-44774.mp3')
     };
 
-    // Clean hints without LaTeX symbols or formatting bugs
     const questions = [
         {
             q: "A gardener wants to plant 24 saplings in equal rows. Which of these is NOT a possible arrangement for the garden layout?",
@@ -262,6 +261,7 @@
 
     let currentIdx = 0, score = 0, attempts = 0;
 
+    // Linear-time array shuffler that rearranges questions prior to quiz launch
     function randomizeQuestions() {
         for (let i = questions.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
@@ -271,7 +271,7 @@
 
     // 1) Logo screen stays visible for exactly 5000 milliseconds (5 seconds)
     setTimeout(() => {
-        randomizeQuestions();
+        randomizeQuestions(); // Scrambles data structure on initialization
         document.getElementById('brand-screen').style.display = 'none';
         document.getElementById('game-card').classList.remove('hidden');
     }, 5000);
