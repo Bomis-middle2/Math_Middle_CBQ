@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chapter 2: Basic Operations Game</title>
+    <title>Basic Operations Challenge</title>
     <style>
         :root {
             --primary: #2980b9;
@@ -31,11 +31,11 @@
             padding: 15px;
         }
 
-        /* 1) Centered Logo Screen Layout with Crisp White Background */
+        /* 1) Pure White Startup Logo Screen Layout (Displays for 5 seconds) */
         #brand-screen {
             position: fixed;
             inset: 0;
-            background: #ffffff; /* Swapped to pure white */
+            background: #ffffff;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -61,7 +61,7 @@
         .loader-bar-bg {
             width: 200px;
             height: 6px;
-            background: #e2e8f0; /* Darker track for visibility on white background */
+            background: #e2e8f0;
             border-radius: 3px;
             overflow: hidden;
         }
@@ -72,7 +72,7 @@
             box-shadow: 0 0 10px rgba(41, 128, 185, 0.5);
         }
 
-        /* 3) Adaptive Cross-Device Container Box */
+        /* Adaptive Cross-Device Container Box */
         .game-card {
             width: 100%;
             max-width: 650px;
@@ -209,14 +209,12 @@
 </head>
 <body>
 
-<!-- White Startup Logo Background Container Layer -->
+<!-- White Startup Logo Layer (Only Logo Image, No Brand Text Displayed) -->
 <div id="brand-screen">
     <div class="logo-wrapper">
-        <img src="assets/logo.png" alt="Innovine Logo" onerror="this.style.opacity='0.5';">
+        <img src="assets/logo.png" alt="Logo" onerror="this.style.opacity='0.5';">
     </div>
-    <!-- Adjusted font styling for sleek presentation on a clean white background -->
-    <h2 style="color: #0f172a; font-size: 1.8rem; margin-bottom: 20px; letter-spacing: 1px; font-weight: 700;">INNOVINE MATH</h2>
-    <div class="loader-bar-bg">
+    <div class="loader-bar-bg" style="margin-top: 10px;">
         <div id="loader-fill" class="loader-bar-fill"></div>
     </div>
 </div>
@@ -225,20 +223,20 @@
 
     <!-- Instructions Interface -->
     <div id="instruction-screen">
-        <h2 style="color: var(--primary); margin-bottom: 15px;">Chapter 2: Basic Operations</h2>
+        <h2 style="color: var(--primary); margin-bottom: 15px;">Basic Operations Challenge</h2>
         <p style="font-size: 1.1rem; color: #cbd5e1; line-height: 1.6; margin-bottom: 25px;">
-            • Test your addition, subtraction, multiplication, and division skills!<br>
-            • You have <b>2 attempts</b> to find the correct answer for each challenge.<br>
-            • Let's jump into the calculations!
+            • Test your advanced addition, subtraction, multiplication, and division skills!<br>
+            • You have <b>2 attempts</b> to solve each multi-step mathematical puzzle.<br>
+            • Read carefully and apply proper order of operations. Good luck!
         </p>
-        <button class="btn-next" style="float: none;" onclick="startQuizGame()">Start Chapter</button>
+        <button class="btn-next" style="float: none;" onclick="startQuizGame()">Start Game</button>
     </div>
     
     <!-- Gameplay Loop Deck -->
     <div id="game-play-area" class="hidden">
         <div class="header">
             <div class="hud">
-                <span>Operation: <span id="q-num">1</span>/10</span>
+                <span>Problem: <span id="q-num">1</span>/10</span>
                 <span>Stars: ⭐ <span id="score">0</span></span>
             </div>
         </div>
@@ -250,7 +248,7 @@
             <div class="options-grid" id="options-box"></div>
             <div id="feedback-area" class="feedback-box hidden"></div>
             <div style="height: 60px;">
-                <button id="next-btn" class="btn-next hidden" onclick="handleNext()">Next Operation ➡️</button>
+                <button id="next-btn" class="btn-next hidden" onclick="handleNext()">Next Challenge ➡️</button>
             </div>
         </div>
     </div>
@@ -258,7 +256,7 @@
     <!-- Final Result Windows -->
     <div id="result-screen" class="hidden" style="text-align: center; padding: 20px 0;">
         <div class="creative-pop">🎉🧮⚡</div>
-        <h1 style="color: var(--primary); margin: 10px 0;">Chapter Complete!</h1>
+        <h1 style="color: var(--primary); margin: 10px 0;">Challenge Complete!</h1>
         <p id="result-msg" style="font-size: 1.2rem; color: #cbd5e1; line-height: 1.6; margin-bottom: 30px;"></p>
         <button class="btn-next" style="float: none;" onclick="location.reload()">Restart Quiz</button>
     </div>
@@ -271,67 +269,67 @@
         claps: new Audio('assets/freesound_community-claps-44774.mp3')
     };
 
-    // Strict Basic Operations Questions Only (No factors/multiples)
+    // Upgraded Higher-Level Basic Operations Questions
     const questions = [
         {
-            q: "Find the sum: 4,500 + 3,250",
-            options: ["A) 7,550", "B) 7,750", "C) 8,750", "D) 7,250"],
-            ans: 1,
-            explain: "Aligning the digits by place value: 4,500 plus 3,250 equals 7,750."
+            q: "A large warehouse ordered 14,250 boxes of electronics. They shipped out 5,875 boxes in the morning and 4,390 boxes in the afternoon. How many boxes remain in the warehouse?",
+            options: ["A) 3,985 boxes", "B) 4,015 boxes", "C) 4,125 boxes", "D) 4,985 boxes"],
+            ans: 0,
+            explain: "Total shipped = 5,875 + 4,390 = 10,265. Remaining boxes = 14,250 - 10,265 = 3,985 boxes."
         },
         {
-            q: "Find the difference: 8,600 - 2,400",
-            options: ["A) 6,000", "B) 5,200", "C) 6,200", "D) 6,400"],
+            q: "A school budget of $24,500 was increased by $3,750 for learning materials. If the total amount is now split equally among 5 departments, how much does each department receive?",
+            options: ["A) $4,900", "B) $5,550", "C) $5,650", "D) $5,825"],
             ans: 2,
-            explain: "Subtracting 2,400 from 8,600 gives exactly 6,200."
+            explain: "Total budget = $24,500 + $3,750 = $28,250. Shared among 5 departments: $28,250 ÷ 5 = $5,650."
         },
         {
-            q: "What is the product of 15 × 4?",
-            options: ["A) 45", "B) 50", "C) 55", "D) 60"],
+            q: "An orchard packs apples into crates. Each crate contains 24 boxes, and each box holds 15 apples. If they fill 12 crates, what is the total number of apples packed?",
+            options: ["A) 360 apples", "B) 2,880 apples", "C) 3,456 apples", "D) 4,320 apples"],
             ans: 3,
-            explain: "Multiplying 15 by 4 gives 60 (15 + 15 + 15 + 15 = 60)."
+            explain: "Apples per crate = 24 × 15 = 360 apples. Total for 12 crates = 360 × 12 = 4,320 apples."
         },
         {
-            q: "Divide: 120 ÷ 6",
-            options: ["A) 12", "B) 20", "C) 30", "D) 200"],
-            ans: 1,
-            explain: "Since 12 divided by 6 is 2, 120 divided by 6 equals 20."
-        },
-        {
-            q: "A box contains 25 boxes of crayons. Each box has 10 crayons. How many crayons are there in total?",
-            options: ["A) 35", "B) 150", "C) 250", "D) 2,500"],
-            ans: 2,
-            explain: "To find the total, use multiplication: 25 × 10 = 250 crayons."
-        },
-        {
-            q: "If you subtract 0 from any number, the answer is:",
-            options: ["A) 0", "B) 1", "C) The number itself", "D) Double the number"],
-            ans: 2,
-            explain: "The Identity Property of Subtraction states that subtracting 0 from a number leaves it unchanged."
-        },
-        {
-            q: "What is the result when you multiply any number by 0?",
-            options: ["A) 0", "B) 1", "C) The same number", "D) 10"],
+            q: "A charity wants to distribute 1,845 books equally to 15 different community centers. How many books will each center receive, and how many extra books will be left over?",
+            options: ["A) 123 books each, 0 left over", "B) 121 books each, 4 left over", "C) 122 books each, 1 left over", "D) 123 books each, 3 left over"],
             ans: 0,
-            explain: "The Zero Property of Multiplication means any number multiplied by 0 always equals 0."
+            explain: "Dividing 1,845 by 15 gives exactly 123 with a remainder of 0."
         },
         {
-            q: "An orchard has 48 apples to share equally among 4 children. How many apples does each child get?",
-            options: ["A) 10", "B) 11", "C) 12", "D) 14"],
-            ans: 2,
-            explain: "Use division to share equally: 48 ÷ 4 = 12 apples per child."
-        },
-        {
-            q: "Solve: 350 + 150 - 100",
-            options: ["A) 400", "B) 500", "C) 300", "D) 450"],
-            ans: 0,
-            explain: "First add 350 + 150 = 500. Then subtract 100 from 500 to get 400."
-        },
-        {
-            q: "What number must be added to 700 to make it 1,000?",
-            options: ["A) 200", "B) 300", "C) 400", "D) 1,300"],
+            q: "Solve the following expression matching proper mathematical operational hierarchy: 120 + (45 × 4) - (150 ÷ 5)",
+            options: ["A) 150", "B) 270", "C) 330", "D) 630"],
             ans: 1,
-            explain: "You can find the missing part by subtracting: 1,000 - 700 = 300."
+            explain: "Perform inner operations first: (45 × 4) = 180 and (150 ÷ 5) = 30. Then complete the chain: 120 + 180 - 30 = 270."
+        },
+        {
+            q: "A factory manufactures 345 toy cars every hour. The factory runs for two 8-hour shifts every day. How many toy cars are produced in 5 days?",
+            options: ["A) 13,800 toy cars", "B) 27,600 toy cars", "C) 3,450 toy cars", "D) 17,250 toy cars"],
+            ans: 1,
+            explain: "Hours per day = 2 × 8 = 16 hours. Total hours in 5 days = 16 × 5 = 80 hours. Total cars = 345 × 80 = 27,600."
+        },
+        {
+            q: "The difference between two numbers is 3,450. If the smaller number is 8,765, what is the value of the larger number?",
+            options: ["A) 5,315", "B) 11,115", "C) 12,215", "D) 12,315"],
+            ans: 2,
+            explain: "To find the larger number, add the difference to the smaller number: 8,765 + 3,450 = 12,215."
+        },
+        {
+            q: "An auditorium has 32 rows of seats with 25 seats in each row. If a concert sells out all but 45 seats, how many tickets were sold?",
+            options: ["A) 755 tickets", "B) 800 tickets", "C) 845 tickets", "D) 745 tickets"],
+            ans: 0,
+            explain: "Total seats capacity = 32 × 25 = 800 seats. Sold tickets = 800 - 45 = 755 tickets."
+        },
+        {
+            q: "A farmer harvests 2,560 kg of potatoes. He keeps 160 kg for his family and packs the rest into 40 kg sacks to sell. How many sacks can he sell?",
+            options: ["A) 60 sacks", "B) 64 sacks", "C) 68 sacks", "D) 72 sacks"],
+            ans: 0,
+            explain: "Weight of potatoes to sell = 2,560 - 160 = 2,400 kg. Number of 40 kg sacks = 2,400 ÷ 40 = 60 sacks."
+        },
+        {
+            q: "A computer costs $1,250 and a tablet costs $450. A company purchase manager orders 6 computers and 8 tablets. What is the total transaction cost?",
+            options: ["A) $10,500", "B) $11,100", "C) $11,300", "D) $12,100"],
+            ans: 1,
+            explain: "Cost of computers = 6 × $1,250 = $7,500. Cost of tablets = 8 × $450 = $3,600. Combined cost = $7,500 + $3,600 = $11,100."
         }
     ];
 
@@ -344,7 +342,7 @@
         }
     }
 
-    // Loader progress bar setup tracking exactly 5000ms
+    // Precise Logo progress timer tracking exactly 5000ms (5 seconds)
     window.addEventListener('DOMContentLoaded', () => {
         const fill = document.getElementById('loader-fill');
         let pct = 0;
@@ -358,7 +356,7 @@
                 document.getElementById('brand-screen').style.display = 'none';
                 document.getElementById('game-card').classList.remove('hidden');
             }
-        }, 50);
+        }, 50); // 100 iterations * 50ms = 5000ms
     });
 
     function startQuizGame() {
@@ -411,7 +409,7 @@
             if (attempts < 2) {
                 setTimeout(() => {
                     allBtns.forEach(b => { if(!b.classList.contains('wrong')) b.disabled = false; });
-                    feedback.innerHTML = `<b>Not quite right!</b> Check your arithmetic. 1 attempt left.`;
+                    feedback.innerHTML = `<b>Not quite right!</b> Check your calculations. 1 attempt left.`;
                     feedback.classList.remove('hidden');
                 }, 400);
             } else {
@@ -438,8 +436,8 @@
         document.getElementById('progress-bar').style.width = '100%';
         try { audio.claps.play(); } catch(e){}
         
-        let msg = `Great effort! You completed the operations chapter and earned ${score} out of 10 stars!`;
-        if (score === questions.length) msg = "Sensational! Perfect arithmetic performance. You have mastered addition, subtraction, multiplication, and division!";
+        let msg = `Great effort! You completed the challenge and earned ${score} out of 10 stars!`;
+        if (score === questions.length) msg = "Sensational! Perfect operational logic. You have completely mastered complex problem solving!";
         
         document.getElementById('result-msg').innerText = msg;
     }
