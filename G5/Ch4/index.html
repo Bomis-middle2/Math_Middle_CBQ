@@ -23,7 +23,6 @@
 </head>
 <body class="min-h-screen flex flex-col justify-between selection:bg-indigo-100">
 
-  <!-- ================= SCREEN 1: SPLASH SCREEN (WHITE BACKGROUND & CENTERED) ================= -->
   <div id="splash-screen" class="fixed inset-0 bg-white flex flex-col items-center justify-center z-50 screen-fade">
     <div class="text-center p-4">
       <img src="assets/logo.png" alt="Innovine Logo" class="h-28 w-auto object-contain mx-auto mb-6" onerror="this.style.display='none'; document.getElementById('splash-text-logo').style.display='block';">
@@ -37,7 +36,6 @@
     </div>
   </div>
 
-  <!-- ================= SCREEN 2: INSTRUCTION SCREEN ================= -->
   <div id="instruction-screen" class="fixed inset-0 bg-slate-50 flex items-center justify-center z-40 p-4 screen-fade hidden">
     <div class="bg-white p-8 md:p-10 rounded-2xl custom-shadow max-w-md w-full border border-gray-100 text-center">
       <h2 class="text-2xl font-black text-slate-800 mb-4">Challenge Rules</h2>
@@ -52,7 +50,6 @@
     </div>
   </div>
 
-  <!-- ================= SCREEN 3: MAIN GAME SCREEN ================= -->
   <header id="game-header" class="bg-white border-b border-gray-200 px-4 py-3 sticky top-0 z-30 hidden">
     <div class="max-w-2xl mx-auto flex items-center justify-between">
       <button id="mute-btn" class="p-2 rounded-xl border border-gray-200 hover:bg-gray-50 transition cursor-pointer" aria-label="Toggle Mute">
@@ -92,7 +89,6 @@
     </div>
   </main>
 
-  <!-- ================= SCREEN 4: CREATIVE CONGRATULATIONS PAGE ================= -->
   <div id="results-screen" class="flex-grow p-4 md:p-6 max-w-2xl w-full mx-auto flex flex-col justify-center hidden">
     <div class="bg-white rounded-3xl p-8 md:p-12 custom-shadow border border-gray-100 text-center relative overflow-hidden">
       
@@ -124,9 +120,8 @@
     Assessment Platform — Powered by Innovine Engine
   </footer>
 
-  <!-- ================= APPLICATION SCRIPT LOGIC ================= -->
   <script>
-    // System database containing cleaned strings without academic or sequence tags
+    // Clean database removing all tags, prefixes, headers, and metadata labels
     const quizDatabase = [
       { id: 1, context: null, question: "Three friends share a chocolate equally. Later, one more friend joins and the chocolate is shared again equally.<br>Which statement is correct?", options: ["Each child now gets a bigger share", "Each child now gets a smaller share", "Share remains same", "Chocolate becomes double"], correctIndex: 1 },
       { id: 2, context: null, question: "A recipe needs 3/4 cup sugar. Riya added 2/4 cup first.<br>What should she do to complete the recipe?", options: ["Add 1/4 cup more", "Add 2/4 cup more", "Remove sugar", "Recipe is already complete"], correctIndex: 0 },
@@ -282,7 +277,6 @@
       setTimeout(nextQuestion, 2500);
     }
 
-    // Interactive helper utility
     function lockOptions() {
       const buttons = document.getElementById('options-container').querySelectorAll('button');
       buttons.forEach(b => b.disabled = true);
