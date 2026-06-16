@@ -14,6 +14,10 @@
             --card-shadow: 0 8px 30px rgba(0,0,0,0.15);
         }
 
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: var(--bg);
@@ -22,33 +26,28 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
+            padding: 15px;
         }
 
-        /* Initializing Screen with Local Asset Innovine Logo */
+        /* 1) Innovine logo screen at start for 5 seconds.. nothing else */
         #brand-screen {
             position: fixed;
             inset: 0;
             background: white;
             display: flex;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
             z-index: 1000;
         }
-        #brand-screen img { max-width: 250px; margin-bottom: 20px; }
-        .spinner {
-            border: 4px solid rgba(0, 0, 0, 0.1);
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            border-left-color: var(--primary);
-            animation: spin 1s linear infinite;
+        #brand-screen img { 
+            width: 80%;
+            max-width: 250px; 
+            height: auto;
         }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* Main Game Card */
+        /* 3) Playable on all screen type laptop, desktop, mobile, tablet */
         .game-card {
-            width: 90%;
+            width: 100%;
             max-width: 700px;
             background: white;
             padding: 35px;
@@ -56,12 +55,28 @@
             box-shadow: var(--card-shadow);
             border: 4px solid var(--primary);
             position: relative;
+            margin: auto;
+        }
+
+        @media (max-width: 600px) {
+            .game-card {
+                padding: 20px 15px;
+                border-radius: 15px;
+            }
+            .header {
+                flex-direction: column;
+                gap: 10px;
+                align-items: flex-start;
+            }
+            .option-btn {
+                padding: 12px !important;
+            }
         }
 
         .hidden { display: none !important; }
 
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .branding-title { font-size: 1.5rem; font-weight: bold; color: var(--primary); margin: 0; }
+        /* Adjusted header layout to properly position tracking tools when title is omitted */
+        .header { display: flex; justify-content: flex-end; align-items: center; margin-bottom: 20px; }
 
         .hud { font-weight: bold; color: #2c3e50; display: flex; gap: 20px; }
 
@@ -70,7 +85,6 @@
 
         .question-text { font-size: 1.2rem; color: #2c3e50; line-height: 1.6; margin-bottom: 20px; font-weight: 500; }
 
-        /* Table Design for Data-Based Challenge if needed */
         table { width: 100%; border-collapse: collapse; margin-bottom: 20px; background: #fdfefe; }
         th, td { border: 1px solid #d5dbdb; padding: 12px; text-align: left; font-size: 1rem; }
         th { background: var(--primary); color: white; }
@@ -86,6 +100,7 @@
             text-align: left;
             transition: all 0.2s;
             color: #34495e;
+            width: 100%;
         }
         .option-btn:hover:not(:disabled) { border-color: var(--primary); background: #fbf5fc; }
         .correct { background: var(--success) !important; color: white; border-color: #1e8449 !important; font-weight: bold; }
@@ -110,41 +125,61 @@
         }
         .btn-next:hover { background: var(--accent); }
         .btn-next:active { transform: translateY(2px); box-shadow: 0 2px 0 #6c3483; }
+
+        .creative-pop {
+            font-size: 4.5rem;
+            animation: popScale 1.5s infinite alternate ease-in-out;
+            margin-bottom: 15px;
+        }
+        @keyframes popScale {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.12); }
+        }
     </style>
 </head>
 <body>
 
 <div id="brand-screen">
     <img src="assets/logo.png" alt="Innovine Logo">
-    <div class="spinner"></div>
-    <h2 style="color: #2c3e50; font-family: sans-serif; margin: 15px 0 0 0;">Innovine Mathematics Lab</h2>
 </div>
 
 <div class="game-card hidden" id="game-card">
-    <div class="header">
-        <div class="branding-title">Innovine Lab</div>
-        <div class="hud">
-            <span>Challenge: <span id="q-num">1</span>/10</span>
-            <span>Stars: ⭐ <span id="score">0</span></span>
+
+    <div id="instruction-screen">
+        <h2 style="color: var(--primary); margin-top: 0;">Instructions</h2>
+        <p style="font-size: 1.1rem; color: #2c3e50; line-height: 1.6; margin-bottom: 25px;">
+            • Read each question carefully.<br>
+            • You will get 2 chances to select the correct answer.<br>
+            • If both answers are wrong, the right answer will be displayed.
+        </p>
+        <button class="btn-next" style="float: none;" onclick="startQuizGame()">Start Game</button>
+    </div>
+    
+    <div id="game-play-area" class="hidden">
+        <div class="header">
+            <div class="hud">
+                <span>Challenge: <span id="q-num">1</span>/10</span>
+                <span>Stars: ⭐ <span id="score">0</span></span>
+            </div>
+        </div>
+
+        <div class="progress-container"><div id="progress-bar"></div></div>
+
+        <div id="quiz-content">
+            <div id="data-table-container"></div>
+            <div class="question-text" id="q-text"></div>
+            <div class="options-grid" id="options-box"></div>
+            <div id="feedback-area" class="feedback-box hidden"></div>
+            <div style="height: 60px;">
+                <button id="next-btn" class="btn-next hidden" onclick="handleNext()">Next Challenge ➡️</button>
+            </div>
         </div>
     </div>
 
-    <div class="progress-container"><div id="progress-bar"></div></div>
-
-    <div id="quiz-content">
-        <div id="data-table-container"></div>
-        <div class="question-text" id="q-text"></div>
-        <div class="options-grid" id="options-box"></div>
-        <div id="feedback-area" class="feedback-box hidden"></div>
-        <div style="height: 60px;">
-            <button id="next-btn" class="btn-next hidden" onclick="handleNext()">Next Challenge ➡️</button>
-        </div>
-    </div>
-
-    <div id="result-screen" class="hidden" style="text-align: center;">
-        <h1 style="color: var(--primary);">Lab Assessment Complete!</h1>
-        <h2 id="final-score" style="font-size: 3rem; margin: 10px 0; color: #2c3e50;">0/10</h2>
-        <p id="result-msg" style="font-size: 1.2rem; color: #7f8c8d; margin-bottom: 25px;"></p>
+    <div id="result-screen" class="hidden" style="text-align: center; padding: 20px 0;">
+        <div class="creative-pop">🌟🏆🌟</div>
+        <h1 style="color: var(--primary); margin: 10px 0;">Congratulations on Completion!</h1>
+        <p id="result-msg" style="font-size: 1.2rem; color: #34495e; line-height: 1.6; margin-bottom: 30px;"></p>
         <button class="btn-next" style="float: none;" onclick="location.reload()">Restart Lab</button>
     </div>
 </div>
@@ -156,6 +191,7 @@
         claps: new Audio('assets/freesound_community-claps-44774.mp3')
     };
 
+    // Unchanged exact original questions and choices
     const questions = [
         {
             q: "A gardener wants to plant 24 saplings in equal rows. Which of these is NOT a possible arrangement for the garden layout?",
@@ -226,27 +262,53 @@
 
     let currentIdx = 0, score = 0, attempts = 0;
 
-    // Splash display timeout
+    // Built-in Dynamic Array Randomizer
+    function randomizeQuestions() {
+        for (let i = questions.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [questions[i], questions[j]] = [questions[j], questions[i]];
+        }
+    }
+
+    // 1) Logo screen stays visible for exactly 5000 milliseconds (5 seconds)
     setTimeout(() => {
+        randomizeQuestions();
         document.getElementById('brand-screen').style.display = 'none';
         document.getElementById('game-card').classList.remove('hidden');
+    }, 5000);
+
+    // Moves player from instruction panel to play area
+    function startQuizGame() {
+        document.getElementById('instruction-screen').classList.add('hidden');
+        document.getElementById('game-play-area').classList.remove('hidden');
         loadQuestion();
-    }, 2500);
+    }
 
     function loadQuestion() {
         const data = questions[currentIdx];
-        attempts = 0;
+        attempts = 0; 
         document.getElementById('q-num').innerText = currentIdx + 1;
         document.getElementById('q-text').innerText = data.q;
         document.getElementById('feedback-area').classList.add('hidden');
         document.getElementById('next-btn').classList.add('hidden');
         document.getElementById('progress-bar').style.width = ((currentIdx / questions.length) * 100) + '%';
 
-        // Clear dynamic elements container if any question uses tables
         const tableCont = document.getElementById('data-table-container');
         tableCont.innerHTML = '';
+        if (data.table) {
+            const table = document.createElement('table');
+            data.table.forEach((row, i) => {
+                const tr = document.createElement('tr');
+                row.forEach(cell => {
+                    const el = i === 0 ? document.createElement('th') : document.createElement('td');
+                    el.innerText = cell;
+                    tr.appendChild(el);
+                });
+                table.appendChild(tr);
+            });
+            tableCont.appendChild(table);
+        }
 
-        // Render options buttons
         const box = document.getElementById('options-box');
         box.innerHTML = '';
         data.options.forEach((opt, i) => {
@@ -258,6 +320,7 @@
         });
     }
 
+    // 5) Each question gives 2 chances to select correct answer and then shows right answer
     function checkAnswer(idx, btn) {
         const data = questions[currentIdx];
         const feedback = document.getElementById('feedback-area');
@@ -267,24 +330,27 @@
 
         if (idx === data.ans) {
             btn.classList.add('correct');
-            audio.correct.play();
+            try { audio.correct.play(); } catch(e){}
             if (attempts === 0) score++;
             document.getElementById('score').innerText = score;
             feedback.innerHTML = `<b>🌟 Correct!</b><br>${data.explain}`;
             feedback.classList.remove('hidden');
             document.getElementById('next-btn').classList.remove('hidden');
-            if(currentIdx === questions.length - 1) audio.claps.play();
+            if(currentIdx === questions.length - 1) { try { audio.claps.play(); } catch(e){} }
         } else {
             btn.classList.add('wrong');
-            audio.wrong.play();
+            try { audio.wrong.play(); } catch(e){}
             attempts++;
+
             if (attempts < 2) {
+                // Re-enable remaining buttons for the 2nd chance loop
                 setTimeout(() => {
                     allBtns.forEach(b => { if(!b.classList.contains('wrong')) b.disabled = false; });
                     feedback.innerHTML = `<b>Not quite right!</b> Check the factors and multiples properties. You have 1 attempt remaining.`;
                     feedback.classList.remove('hidden');
                 }, 400);
             } else {
+                // Out of chances, auto-highlight correct choice layout directly
                 allBtns[data.ans].classList.add('correct');
                 feedback.innerHTML = `<b>Out of attempts!</b> The correct choice was: <i>${data.options[data.ans]}</i>.<br>${data.explain}`;
                 feedback.classList.remove('hidden');
@@ -303,15 +369,13 @@
     }
 
     function showResults() {
-        document.getElementById('quiz-content').classList.add('hidden');
+        document.getElementById('game-play-area').classList.add('hidden');
         document.getElementById('result-screen').classList.remove('hidden');
         document.getElementById('progress-bar').style.width = '100%';
-        document.getElementById('final-score').innerText = `${score}/${questions.length}`;
-        audio.claps.play();
+        try { audio.claps.play(); } catch(e){}
         
-        let msg = "Keep investigating number theories to build up your engineering analysis speeds!";
-        if (score === questions.length) msg = "Sensational! You have achieved complete mastery over factors, LCM, and prime factorization fields! 🏆🔢";
-        else if (score >= 8) msg = "Terrific work! You understand number properties and relationships exceptionally well.";
+        let msg = "Fantastic effort! You have successfully resolved all our factors and multiples challenges and completed the module!";
+        if (score === questions.length) msg = "Sensational work! You managed to solve every single number theory puzzle with absolute precision. Incredible job!";
         
         document.getElementById('result-msg').innerText = msg;
     }
