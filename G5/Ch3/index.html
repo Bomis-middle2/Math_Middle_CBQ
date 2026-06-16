@@ -3,25 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Factors and Multiples</title>
+    <title>Factors and Multiples Game</title>
     <style>
         :root {
             --primary: #8e44ad;
             --accent: #9b59b6;
             --success: #27ae60;
             --danger: #c0392b;
-            --bg: #f4f7f6;
-            --card-shadow: 0 8px 30px rgba(0,0,0,0.15);
+            --bg: #0f172a;
+            --card-shadow: 0 8px 30px rgba(0,0,0,0.3);
         }
 
         * {
             box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: var(--bg);
-            margin: 0;
+            color: #f8fafc;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -29,99 +31,159 @@
             padding: 15px;
         }
 
-        /* 1) Innovine logo screen at start for 5 seconds.. nothing else */
+        /* 1) Fixed Centered Logo Screen */
         #brand-screen {
             position: fixed;
             inset: 0;
-            background: white;
+            background: #0f172a;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             z-index: 1000;
+            text-align: center;
         }
         #brand-screen img { 
             width: 80%;
-            max-width: 250px; 
+            max-width: 220px; 
             height: auto;
+            margin-bottom: 20px;
+        }
+        .loader-bar-bg {
+            width: 200px;
+            height: 6px;
+            background: #1e293b;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        .loader-bar-fill {
+            width: 0%;
+            height: 100%;
+            background: var(--primary);
+            box-shadow: 0 0 10px var(--primary);
         }
 
-        /* 3) Playable on all screen type laptop, desktop, mobile, tablet */
+        /* 3) Adaptive Cross-Device Container Box */
         .game-card {
             width: 100%;
-            max-width: 700px;
-            background: white;
+            max-width: 650px;
+            background: #1e293b;
             padding: 35px;
-            border-radius: 25px;
+            border-radius: 24px;
             box-shadow: var(--card-shadow);
-            border: 4px solid var(--primary);
+            border: 3px solid var(--primary);
             position: relative;
-            margin: auto;
         }
 
         @media (max-width: 600px) {
             .game-card {
-                padding: 20px 15px;
-                border-radius: 15px;
-            }
-            .header {
-                flex-direction: column;
-                gap: 10px;
-                align-items: flex-start;
+                padding: 24px 16px;
+                border-radius: 16px;
             }
             .option-btn {
-                padding: 12px !important;
+                padding: 14px !important;
+                font-size: 1rem !important;
+            }
+            #q-text {
+                font-size: 1.15rem !important;
             }
         }
 
         .hidden { display: none !important; }
 
-        /* Adjusted header layout to properly position tracking tools when title is omitted */
-        .header { display: flex; justify-content: flex-end; align-items: center; margin-bottom: 20px; }
+        .header { 
+            display: flex; 
+            justify-content: flex-end; 
+            align-items: center; 
+            margin-bottom: 15px; 
+        }
+        .hud { 
+            font-weight: bold; 
+            color: #38bdf8; 
+            display: flex; 
+            gap: 20px; 
+            font-size: 1.1rem;
+        }
 
-        .hud { font-weight: bold; color: #2c3e50; display: flex; gap: 20px; }
+        .progress-container { 
+            height: 10px; 
+            background: #334155; 
+            border-radius: 10px; 
+            margin-bottom: 25px; 
+            overflow: hidden; 
+        }
+        #progress-bar { 
+            height: 100%; 
+            background: var(--primary); 
+            width: 0%; 
+            transition: width 0.4s ease; 
+        }
 
-        .progress-container { height: 12px; background: #eee; border-radius: 10px; margin: 15px 0; overflow: hidden; }
-        #progress-bar { height: 100%; background: var(--primary); width: 0%; transition: width 0.4s; }
+        .question-text { 
+            font-size: 1.3rem; 
+            color: #f1f5f9; 
+            line-height: 1.5; 
+            margin-bottom: 25px; 
+            font-weight: 600; 
+        }
 
-        .question-text { font-size: 1.2rem; color: #2c3e50; line-height: 1.6; margin-bottom: 20px; font-weight: 500; }
-
-        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; background: #fdfefe; }
-        th, td { border: 1px solid #d5dbdb; padding: 12px; text-align: left; font-size: 1rem; }
-        th { background: var(--primary); color: white; }
-
-        .options-grid { display: grid; gap: 12px; }
+        .options-grid { 
+            display: grid; 
+            grid-template-columns: 1fr;
+            gap: 14px; 
+        }
         .option-btn {
-            padding: 15px;
-            border: 2px solid #e0e0e0;
-            border-radius: 12px;
-            background: #fff;
+            padding: 16px;
+            border: 2px solid #334155;
+            border-radius: 14px;
+            background: #334155;
             cursor: pointer;
-            font-size: 1rem;
+            font-size: 1.1rem;
+            font-weight: 500;
             text-align: left;
-            transition: all 0.2s;
-            color: #34495e;
+            transition: background 0.2s, border-color 0.2s;
+            color: #f1f5f9;
             width: 100%;
         }
-        .option-btn:hover:not(:disabled) { border-color: var(--primary); background: #fbf5fc; }
+        .option-btn:hover:not(:disabled) { 
+            border-color: var(--primary); 
+            background: #475569; 
+        }
+        
+        /* 5) Feedback & Chance Indicators */
         .correct { background: var(--success) !important; color: white; border-color: #1e8449 !important; font-weight: bold; }
         .wrong { background: var(--danger) !important; color: white; border-color: #922b21 !important; animation: shake 0.4s; }
 
-        @keyframes shake { 0%, 100% {transform: translateX(0);} 25% {transform: translateX(-5px);} 75% {transform: translateX(5px);} }
+        @keyframes shake { 
+            0%, 100% { transform: translateX(0); } 
+            25% { transform: translateX(-6px); } 
+            75% { transform: translateX(6px); } 
+        }
 
-        .feedback-box { margin-top: 20px; padding: 15px; border-radius: 12px; background: #f5eef8; border-left: 5px solid var(--primary); color: #2c3e50; line-height: 1.5; }
+        .feedback-box { 
+            margin-top: 20px; 
+            padding: 16px; 
+            border-radius: 14px; 
+            background: #0f172a; 
+            border-left: 5px solid var(--primary); 
+            color: #cbd5e1; 
+            line-height: 1.5; 
+            font-size: 1.05rem;
+        }
 
         .btn-next {
             margin-top: 20px;
             background: var(--primary);
             color: white;
             border: none;
-            padding: 12px 30px;
+            padding: 12px 32px;
             border-radius: 50px;
             font-weight: bold;
+            font-size: 1.05rem;
             cursor: pointer;
             float: right;
             box-shadow: 0 4px 0 #6c3483;
-            transition: background 0.2s;
+            transition: background 0.2s, transform 0.1s;
         }
         .btn-next:hover { background: var(--accent); }
         .btn-next:active { transform: translateY(2px); box-shadow: 0 2px 0 #6c3483; }
@@ -133,24 +195,28 @@
         }
         @keyframes popScale {
             0% { transform: scale(1); }
-            100% { transform: scale(1.12); }
+            100% { transform: scale(1.1); }
         }
     </style>
 </head>
 <body>
 
 <div id="brand-screen">
-    <img src="assets/logo.png" alt="Innovine Logo">
+    <img src="assets/logo.png" alt="Innovine Logo" onerror="this.style.display='none';">
+    <h2 style="color: #f8fafc; font-size: 1.8rem; margin-bottom: 15px; letter-spacing: 1px;">INNOVINE MATH</h2>
+    <div class="loader-bar-bg">
+        <div id="loader-fill" class="loader-bar-fill"></div>
+    </div>
 </div>
 
 <div class="game-card hidden" id="game-card">
 
     <div id="instruction-screen">
-        <h2 style="color: var(--primary); margin-top: 0;">Instructions</h2>
-        <p style="font-size: 1.1rem; color: #2c3e50; line-height: 1.6; margin-bottom: 25px;">
-            • Read each question carefully.<br>
-            • You will get 2 chances to select the correct answer.<br>
-            • If both answers are wrong, the right answer will be displayed.
+        <h2 style="color: var(--primary); margin-bottom: 15px;">How to Play</h2>
+        <p style="font-size: 1.1rem; color: #cbd5e1; line-height: 1.6; margin-bottom: 25px;">
+            • Read each factors and multiples question carefully.<br>
+            • You have <b>2 attempts</b> to select the right path on each question.<br>
+            • Missing both options activates automated corrections.
         </p>
         <button class="btn-next" style="float: none;" onclick="startQuizGame()">Start Game</button>
     </div>
@@ -158,7 +224,7 @@
     <div id="game-play-area" class="hidden">
         <div class="header">
             <div class="hud">
-                <span>Challenge: <span id="q-num">1</span>/10</span>
+                <span>Sprint: <span id="q-num">1</span>/10</span>
                 <span>Stars: ⭐ <span id="score">0</span></span>
             </div>
         </div>
@@ -166,7 +232,6 @@
         <div class="progress-container"><div id="progress-bar"></div></div>
 
         <div id="quiz-content">
-            <div id="data-table-container"></div>
             <div class="question-text" id="q-text"></div>
             <div class="options-grid" id="options-box"></div>
             <div id="feedback-area" class="feedback-box hidden"></div>
@@ -177,10 +242,10 @@
     </div>
 
     <div id="result-screen" class="hidden" style="text-align: center; padding: 20px 0;">
-        <div class="creative-pop">🌟🏆🌟</div>
-        <h1 style="color: var(--primary); margin: 10px 0;">Congratulations on Completion!</h1>
-        <p id="result-msg" style="font-size: 1.2rem; color: #34495e; line-height: 1.6; margin-bottom: 30px;"></p>
-        <button class="btn-next" style="float: none;" onclick="location.reload()">Restart</button>
+        <div class="creative-pop">🏆✨🏁</div>
+        <h1 style="color: var(--primary); margin: 10px 0;">Race Finished!</h1>
+        <p id="result-msg" style="font-size: 1.2rem; color: #cbd5e1; line-height: 1.6; margin-bottom: 30px;"></p>
+        <button class="btn-next" style="float: none;" onclick="location.reload()">Play Again</button>
     </div>
 </div>
 
@@ -191,77 +256,72 @@
         claps: new Audio('assets/freesound_community-claps-44774.mp3')
     };
 
+    // Simplified Grade 5 direct properties setup 
     const questions = [
         {
-            q: "A gardener wants to plant 24 saplings in equal rows. Which of these is NOT a possible arrangement for the garden layout?",
-            options: ["A) 4 rows of 6", "B) 3 rows of 8", "C) 5 rows of 5", "D) 2 rows of 12"],
+            q: "Which of the following numbers is a factor of 15?",
+            options: ["A) 2", "B) 4", "C) 5", "D) 6"],
             ans: 2,
-            explain: "5 is not a factor of 24. A configuration of 5 rows of 5 would require 25 saplings (5 * 5 = 25), leaving the arrangement incomplete."
+            explain: "5 is a factor of 15 because 15 can be divided completely by 5 without leaving any remainder (3 * 5 = 15)."
         },
         {
-            q: "A teacher wants to distribute 135 pencils equally among 5 students. Without using long division, how can she be sure it is perfectly possible?",
-            options: [
-                "A) The last digit is 5.",
-                "B) The sum of the digits is 9.",
-                "C) The number is even.",
-                "D) The number ends in 0."
-            ],
-            ans: 0,
-            explain: "According to the mathematical rules of divisibility, any whole number that ends with either 0 or 5 is exactly divisible by 5."
-        },
-        {
-            q: "Which of the following numbers of chocolates cannot be shared equally among a group larger than one because it is a Prime Number?",
-            options: ["A) 15", "B) 17", "C) 21", "D) 25"],
+            q: "Which number is a multiple of 6?",
+            options: ["A) 16", "B) 18", "C) 22", "D) 26"],
             ans: 1,
-            explain: "17 is a prime number. It possesses exactly two distinct factors: 1 and itself (17), meaning it cannot be broken down into equal sub-groups."
+            explain: "18 is a multiple of 6 because counting by sixes gives: 6, 12, 18."
         },
         {
-            q: "Two decorative ribbons are 12 cm and 18 cm long. What is the longest equal piece length they can both be perfectly cut into?",
-            options: ["A) 2 cm", "B) 3 cm", "C) 6 cm", "D) 9 cm"],
+            q: "Which of these numbers is a Prime Number?",
+            options: ["A) 9", "B) 12", "C) 13", "D) 15"],
             ans: 2,
-            explain: "To find the longest equal section, calculate the Highest Common Factor (HCF) of 12 and 18, which is 6 cm."
+            explain: "13 is a prime number because it only has two factors: 1 and itself."
         },
         {
-            q: "Two automated alarm bells toll at intervals of 4 and 6 minutes respectively. If they toll together right now, after how many minutes will they toll together again?",
-            options: ["A) 10 minutes", "B) 2 minutes", "C) 12 minutes", "D) 24 minutes"],
-            ans: 2,
-            explain: "The time interval before they synchronize again is equal to the Least Common Multiple (LCM) of 4 and 6, which computes to 12 minutes."
-        },
-        {
-            q: "Which of these numbers does NOT logically belong in the group because it is missing from the multiples of 8?",
-            options: ["A) 16", "B) 24", "C) 34", "D) 40"],
-            ans: 2,
-            explain: "16 (8 * 2), 24 (8 * 3), and 40 (8 * 5) are all multiples of 8. 34 is not divisible by 8."
-        },
-        {
-            q: "In a structural factor tree of the number 12, if one sub-branch splits into a value of 3, what must the companion branch at that exact level be?",
-            options: ["A) 9", "B) 4", "C) 2", "D) 6"],
+            q: "What is the Greatest Common Factor (GCF) of 8 and 12?",
+            options: ["A) 2", "B) 4", "C) 6", "D) 8"],
             ans: 1,
-            explain: "Branches at the same node of a factor tree represent factors whose product equals the parent value. Since 3 * 4 = 12, the missing branch value must be 4."
+            explain: "The factors of 8 are 1, 2, 4, 8 and the factors of 12 are 1, 2, 3, 4, 6, 12. The largest factor they share is 4."
         },
         {
-            q: "Two classmates discover that their class roll numbers are 'Co-prime.' This mathematical definition ensures that their only shared common factor is:",
-            options: ["A) 0", "B) 2", "C) 1", "D) Their mathematical product"],
+            q: "What is the Least Common Multiple (LCM) of 3 and 4?",
+            options: ["A) 7", "B) 12", "C) 24", "D) 6"],
+            ans: 1,
+            explain: "Multiples of 3 include 3, 6, 9, 12 and multiples of 4 include 4, 8, 12. The first common multiple they meet at is 12."
+        },
+        {
+            q: "Which of these numbers is NOT a factor of 20?",
+            options: ["A) 2", "B) 4", "C) 5", "D) 6"],
+            ans: 3,
+            explain: "6 is not a factor of 20 because 20 cannot be split evenly into groups of 6."
+        },
+        {
+            q: "What is the next multiple of 7 after 21?",
+            options: ["A) 24", "B) 28", "C) 35", "D) 14"],
+            ans: 1,
+            explain: "Counting up by multiples of 7: 7, 14, 21, 28. The next number is 28."
+        },
+        {
+            q: "Which statement about the number 1 is true?",
+            options: ["A) It is prime", "B) It is composite", "C) It is neither prime nor composite", "D) It is a multiple of every number"],
             ans: 2,
-            explain: "Co-prime numbers are pairs of integers that do not share any common numerical factors with each other except for the number 1."
+            explain: "The number 1 is unique because it is mathematically defined as neither a prime nor a composite number."
         },
         {
-            q: "In a standard overlapping Venn diagram tracking the factors of 10 (1, 2, 5, 10) and 15 (1, 3, 5, 15), which common factor should be placed directly inside the center intersection?",
-            options: ["A) 2", "B) 3", "C) 5", "D) 10"],
-            ans: 2,
-            explain: "The intersection zone in a Venn diagram holds shared values. 5 is a common factor found in both sets."
+            q: "If a number ends in 0, it must be divisible by:",
+            options: ["A) 3", "B) 4", "C) 9", "D) 10"],
+            ans: 3,
+            explain: "Any whole number that ends with a 0 in the ones place can always be divided evenly by 10."
         },
         {
-            q: "The HCF of two numbers is 4 and their LCM is 24. If one of these numbers is known to be 8, what value must the other number hold?",
-            options: ["A) 12", "B) 6", "C) 16", "D) 20"],
-            ans: 0,
-            explain: "Use the relationship property formula: HCF * LCM = Product of the two numbers. Here, 4 * 24 = 96. Dividing by the known number gives the missing one: 96 ÷ 8 = 12."
+            q: "Which number is a composite number?",
+            options: ["A) 2", "B) 5", "C) 7", "D) 9"],
+            ans: 3,
+            explain: "9 is a composite number because it has more than two factors: 1, 3, and 9."
         }
     ];
 
     let currentIdx = 0, score = 0, attempts = 0;
 
-    // Linear-time array shuffler that rearranges questions prior to quiz launch
     function randomizeQuestions() {
         for (let i = questions.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
@@ -269,12 +329,22 @@
         }
     }
 
-    // 1) Logo screen stays visible for exactly 5000 milliseconds (5 seconds)
-    setTimeout(() => {
-        randomizeQuestions(); // Scrambles data structure on initialization
-        document.getElementById('brand-screen').style.display = 'none';
-        document.getElementById('game-card').classList.remove('hidden');
-    }, 5000);
+    // Fixed Safe Logo timer animation loop (5000ms flat execution)
+    window.addEventListener('DOMContentLoaded', () => {
+        const fill = document.getElementById('loader-fill');
+        let pct = 0;
+        
+        const loaderTimer = setInterval(() => {
+            pct += 1;
+            fill.style.width = pct + '%';
+            if (pct >= 100) {
+                clearInterval(loaderTimer);
+                randomizeQuestions();
+                document.getElementById('brand-screen').style.display = 'none';
+                document.getElementById('game-card').classList.remove('hidden');
+            }
+        }, 50);
+    });
 
     function startQuizGame() {
         document.getElementById('instruction-screen').classList.add('hidden');
@@ -290,9 +360,6 @@
         document.getElementById('feedback-area').classList.add('hidden');
         document.getElementById('next-btn').classList.add('hidden');
         document.getElementById('progress-bar').style.width = ((currentIdx / questions.length) * 100) + '%';
-
-        const tableCont = document.getElementById('data-table-container');
-        tableCont.innerHTML = '';
 
         const box = document.getElementById('options-box');
         box.innerHTML = '';
@@ -329,12 +396,12 @@
             if (attempts < 2) {
                 setTimeout(() => {
                     allBtns.forEach(b => { if(!b.classList.contains('wrong')) b.disabled = false; });
-                    feedback.innerHTML = `<b>Not quite right!</b> Check the factors and multiples properties. You have 1 attempt remaining.`;
+                    feedback.innerHTML = `<b>Not quite right!</b> Check your math rules. 1 attempt left.`;
                     feedback.classList.remove('hidden');
                 }, 400);
             } else {
                 allBtns[data.ans].classList.add('correct');
-                feedback.innerHTML = `<b>Out of attempts!</b> The correct choice was: <i>${data.options[data.ans]}</i>.<br>${data.explain}`;
+                feedback.innerHTML = `<b>Out of attempts!</b> The correct choice was: <b>${data.options[data.ans]}</b>.<br>${data.explain}`;
                 feedback.classList.remove('hidden');
                 document.getElementById('next-btn').classList.remove('hidden');
             }
@@ -356,8 +423,8 @@
         document.getElementById('progress-bar').style.width = '100%';
         try { audio.claps.play(); } catch(e){}
         
-        let msg = "Fantastic effort! You have successfully resolved all our factors and multiples challenges and completed the module!";
-        if (score === questions.length) msg = "Sensational work! You managed to solve every single number theory puzzle with absolute precision. Incredible job!";
+        let msg = `Great race! You completed all challenges and scored ${score} out of 10 stars!`;
+        if (score === questions.length) msg = "Sensational! A perfect 10/10 stars. You completely mastered factors and multiples loops!";
         
         document.getElementById('result-msg').innerText = msg;
     }
