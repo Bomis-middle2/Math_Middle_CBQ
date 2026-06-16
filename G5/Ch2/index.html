@@ -14,6 +14,10 @@
             --card-shadow: 0 8px 30px rgba(0,0,0,0.15);
         }
 
+        * {
+            box-sizing: border-box;
+        }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: var(--bg);
@@ -22,33 +26,28 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
+            padding: 15px;
         }
 
-        /* Initializing Screen with Local Asset Innovine Logo */
+        /* 1) Innovine logo screen at start for 5 seconds.. nothing else */
         #brand-screen {
             position: fixed;
             inset: 0;
             background: white;
             display: flex;
-            flex-direction: column;
             justify-content: center;
             align-items: center;
             z-index: 1000;
         }
-        #brand-screen img { max-width: 250px; margin-bottom: 20px; }
-        .spinner {
-            border: 4px solid rgba(0, 0, 0, 0.1);
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            border-left-color: var(--primary);
-            animation: spin 1s linear infinite;
+        #brand-screen img { 
+            width: 80%;
+            max-width: 250px; 
+            height: auto;
         }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* Main Game Card */
+        /* 3) Playable on all screen type laptop, desktop, mobile, tablet */
         .game-card {
-            width: 90%;
+            width: 100%;
             max-width: 700px;
             background: white;
             padding: 35px;
@@ -56,6 +55,22 @@
             box-shadow: var(--card-shadow);
             border: 4px solid var(--primary);
             position: relative;
+            margin: auto;
+        }
+
+        @media (max-width: 600px) {
+            .game-card {
+                padding: 20px 15px;
+                border-radius: 15px;
+            }
+            .header {
+                flex-direction: column;
+                gap: 10px;
+                align-items: flex-start;
+            }
+            .option-btn {
+                padding: 12px !important;
+            }
         }
 
         .hidden { display: none !important; }
@@ -70,7 +85,6 @@
 
         .question-text { font-size: 1.2rem; color: #2c3e50; line-height: 1.6; margin-bottom: 20px; font-weight: 500; }
 
-        /* Table Design for Data-Based Challenge */
         table { width: 100%; border-collapse: collapse; margin-bottom: 20px; background: #fdfefe; }
         th, td { border: 1px solid #d5dbdb; padding: 12px; text-align: left; font-size: 1rem; }
         th { background: var(--primary); color: white; }
@@ -86,6 +100,7 @@
             text-align: left;
             transition: all 0.2s;
             color: #34495e;
+            width: 100%;
         }
         .option-btn:hover:not(:disabled) { border-color: var(--primary); background: #fffcf9; }
         .correct { background: var(--success) !important; color: white; border-color: #1e8449 !important; font-weight: bold; }
@@ -110,41 +125,62 @@
         }
         .btn-next:hover { background: var(--accent); }
         .btn-next:active { transform: translateY(2px); box-shadow: 0 2px 0 #a04000; }
+
+        .creative-pop {
+            font-size: 4.5rem;
+            animation: popScale 1.5s infinite alternate ease-in-out;
+            margin-bottom: 15px;
+        }
+        @keyframes popScale {
+            0% { transform: scale(1); }
+            100% { transform: scale(1.12); }
+        }
     </style>
 </head>
 <body>
 
 <div id="brand-screen">
     <img src="assets/logo.png" alt="Innovine Logo">
-    <div class="spinner"></div>
-    <h2 style="color: #2c3e50; font-family: sans-serif; margin: 15px 0 0 0;">Innovine Mathematics Lab</h2>
 </div>
 
 <div class="game-card hidden" id="game-card">
-    <div class="header">
-        <div class="branding-title">Innovine Lab</div>
-        <div class="hud">
-            <span>Challenge: <span id="q-num">1</span>/10</span>
-            <span>Stars: ⭐ <span id="score">0</span></span>
+
+    <div id="instruction-screen">
+        <h2 style="color: var(--primary); margin-top: 0;">Instructions</h2>
+        <p style="font-size: 1.1rem; color: #2c3e50; line-height: 1.6; margin-bottom: 25px;">
+            • Read each case study scenario carefully.<br>
+            • You will get 2 chances to select the correct answer.<br>
+            • If both answers are wrong, the right answer will be displayed.
+        </p>
+        <button class="btn-next" style="float: none;" onclick="startQuizGame()">Start Game</button>
+    </div>
+    
+    <div id="game-play-area" class="hidden">
+        <div class="header">
+            <div class="branding-title">Innovine Lab</div>
+            <div class="hud">
+                <span>Challenge: <span id="q-num">1</span>/10</span>
+                <span>Stars: ⭐ <span id="score">0</span></span>
+            </div>
+        </div>
+
+        <div class="progress-container"><div id="progress-bar"></div></div>
+
+        <div id="quiz-content">
+            <div id="data-table-container"></div>
+            <div class="question-text" id="q-text"></div>
+            <div class="options-grid" id="options-box"></div>
+            <div id="feedback-area" class="feedback-box hidden"></div>
+            <div style="height: 60px;">
+                <button id="next-btn" class="btn-next hidden" onclick="handleNext()">Next Challenge ➡️</button>
+            </div>
         </div>
     </div>
 
-    <div class="progress-container"><div id="progress-bar"></div></div>
-
-    <div id="quiz-content">
-        <div id="data-table-container"></div>
-        <div class="question-text" id="q-text"></div>
-        <div class="options-grid" id="options-box"></div>
-        <div id="feedback-area" class="feedback-box hidden"></div>
-        <div style="height: 60px;">
-            <button id="next-btn" class="btn-next hidden" onclick="handleNext()">Next Challenge ➡️</button>
-        </div>
-    </div>
-
-    <div id="result-screen" class="hidden" style="text-align: center;">
-        <h1 style="color: var(--primary);">Lab Assessment Complete!</h1>
-        <h2 id="final-score" style="font-size: 3rem; margin: 10px 0; color: #2c3e50;">0/10</h2>
-        <p id="result-msg" style="font-size: 1.2rem; color: #7f8c8d; margin-bottom: 25px;"></p>
+    <div id="result-screen" class="hidden" style="text-align: center; padding: 20px 0;">
+        <div class="creative-pop">🌟🏆🌟</div>
+        <h1 style="color: var(--primary); margin: 10px 0;">Congratulations on Completion!</h1>
+        <p id="result-msg" style="font-size: 1.2rem; color: #34495e; line-height: 1.6; margin-bottom: 30px;"></p>
         <button class="btn-next" style="float: none;" onclick="location.reload()">Restart Lab</button>
     </div>
 </div>
@@ -156,89 +192,104 @@
         claps: new Audio('assets/freesound_community-claps-44774.mp3')
     };
 
+    // 6) Rewritten to make authentic CBQ style questions (Case contexts integrated directly into questions)
     const questions = [
         {
-            q: "A school library bought 12,450 Hindi books and 15,200 English books. What is the total number of books in the library?",
+            q: "Case Scenario: A city council launches an eco-plantation drive across two separate forest reserves. According to the field logs, the north reserve was populated with 12,450 Hindi non-flowering shrubs and the south reserve received 15,200 English decorative trees. Based on this environmental project data, what is the combined total number of plant assets introduced to the community spaces?",
             options: ["A) 27,650", "B) 2,750", "C) 27,450", "D) 37,650"],
             ans: 0,
-            explain: "To find the grand total, add both amounts together: 12,450 + 15,200 = 27,650."
+            explain: "To solve this case evaluation, add both plant segments together: 12,450 + 15,200 = 27,650 total assets."
         },
         {
-            q: "A factory produced 85,000 bulbs. If 2,400 bulbs were found to be broken, how many working bulbs are left?",
+            q: "Case Scenario: An automated processing factory manufactured a macro batch containing 85,000 diagnostic bulb units during its morning run. A secondary quality audit check revealed that exactly 2,400 bulbs sustained damage during fast-sorting transit. Reviewing these factory logistics logs, how many fully operational bulbs are left intact?",
             options: ["A) 87,400", "B) 82,600", "C) 83,600", "D) 82,000"],
             ans: 1,
-            explain: "Subtract the broken bulbs from the total production count: 85,000 - 2,400 = 82,600."
+            explain: "Extract the data patterns and subtract broken inventory allocations from the total production index: 85,000 - 2,400 = 82,600."
         },
         {
-            q: "If one school bus can carry 52 students, how many students can 15 such buses carry in total?",
+            q: "Case Scenario: An international conference coordinator maps layout metrics for student groups. Standard transit parameters show that one specific school bus model can securely carry up to 52 students per route. If the dispatcher assigns 15 of these identical buses to run simultaneously, how many students can be moved?",
             options: ["A) 780", "B) 520", "C) 670", "D) 800"],
             ans: 0,
-            explain: "Multiply the capacity of a single bus by the total number of vehicles: 52 × 15 = 780."
+            explain: "Analyze unit capacities and scale upward via multiplication across the vehicle deployment fleet: 52 × 15 = 780."
         },
         {
-            q: "A farmer has 1,200 apples. He wants to pack them equally into 12 identical layout boxes. How many apples will be inside each box?",
+            q: "Case Scenario: A local agriculture harvest farmer records a seasonal yield of 1,200 organic apples. He aims to distribute this entire payload equally across 12 identical cardboard layout storage boxes for market delivery. Deduce the exact box capacity requirements: how many apples must be inside each container?",
             options: ["A) 12", "B) 100", "C) 120", "D) 1,00,0"],
             ans: 1,
-            explain: "Divide the total collection of apples by the number of boxes: 1,200 ÷ 12 = 100."
+            explain: "Divide the complete inventory metrics systematically by the structural unit layout count: 1,200 ÷ 12 = 100."
         },
         {
-            q: "Simran had ₹5,000. She spent ₹1,200 on a dress and ₹800 on shoes. How much money does she have left over?",
+            q: "Case Scenario: Simran monitors her banking wallet ledger which displays a beginning liquidity value of ₹5,000. She then coordinates multiple retail transactions, spending ₹1,200 on an evening dress followed by a ₹800 charge for sports shoes. Evaluating Simran's current expense trends, how much liquid currency remains in her balance?",
             options: ["A) ₹3,000", "B) ₹2,000", "C) ₹4,200", "D) ₹3,800"],
             ans: 0,
-            explain: "Total expenditures = ₹1,200 + ₹800 = ₹2,000. Leftover cash balance = ₹5,000 - ₹2,000 = ₹3,000."
+            explain: "Aggregate expenditure balance equals ₹1,200 + ₹800 = ₹2,000. Leftover wallet volume is found via subtraction: ₹5,000 - ₹2,000 = ₹3,000."
         },
         {
-            q: "A school has 25 classrooms. Each room needs 40 chairs. If they already have 900 chairs available, how many more chairs must they buy?",
-            options: ["A) 1,000", "B) 100", "C) 1,900", "D) 400"],
+            q: "Case Scenario: A new school wing features 25 structural classrooms, and architecture designs show that each individual room requires a fixed count of 40 chairs. The logistics manager checks the storage rooms and finds that 900 operational chairs are already available. Calculate the supply discrepancy: how many more chairs must the team buy?",
+            options: ["A) 1,00,0", "B) 100", "C) 1,900", "D) 400"],
             ans: 1,
-            explain: "Total mandatory chairs needed = 25 × 40 = 1,000. Additional balance required = 1,000 - 900 = 100."
+            explain: "Total required target allocation = 25 × 40 = 1,000. Net procurement requirements minus stock baseline: 1,000 - 900 = 100."
         },
         {
-            q: "If you multiply any large number by 0, the computed final answer will always be:",
+            q: "Case Scenario: A software developer writes a data compression algorithm that takes a dynamic, extremely large incoming number stream and runs it through a multiplication loop where the constant modifier variable is locked at absolute 0. No matter how large the initial numbers scale, the algorithm's output will always be:",
             options: ["A) The number itself", "B) 1", "C) 0", "D) 10"],
             ans: 2,
-            explain: "According to the Zero Property of Multiplication, any real number multiplied by zero equals zero."
+            explain: "According to core multiplicative laws, mapping any numeric scale value factor against zero yields an evaluation value of zero."
         },
         {
-            q: "A student solved 450 ÷ 10 and got the answer 4,500. What operation did they perform by mistake?",
+            q: "Case Scenario: A student operating a digital desktop lab simulator attempted to scale down a dataset by solving 450 ÷ 10, but the final display mistakenly rendered a value of 4,500. Based on how system interfaces transform numbers, what calculation operation did they perform by accident?",
             options: ["A) Subtraction", "B) Addition", "C) Multiplication", "D) Estimation"],
             ans: 2,
-            explain: "Multiplying by 10 appends a zero trailing place value (450 × 10 = 4,500), whereas dividing by 10 cuts a zero away (450 ÷ 10 = 45)."
+            explain: "Multiplying changes place parameters upward by adding zero placeholders (450 × 10 = 4,500), while division strips place values down (450 ÷ 10 = 45)."
         },
         {
-            q: "Look at the market sales ledger for the last two days. What is the difference in revenue between these two days?",
+            q: "Case Scenario: A corporate supply officer reviews a financial database logging operational metrics for a distribution branch. She views an interactive market sales ledger covering the last two business days to evaluate growth trends.",
             table: [["Day", "Sales Revenue"], ["Wednesday", "₹5,100"], ["Tuesday", "₹3,200"]],
             options: ["A) ₹1,900", "B) ₹2,100", "C) ₹8,300", "D) ₹1,200"],
             ans: 0,
-            explain: "To find the difference, calculate the absolute margin: ₹5,100 - ₹3,200 = ₹1,900."
+            explain: "Isolate the data rows inside the provided table layout and extract the variance via subtraction: ₹5,100 - ₹3,200 = ₹1,900."
         },
         {
-            q: "A regional relief camp received 48,000 kg of rice. If they distribute 4,000 kg every single day, for how many days will the rice stock last?",
+            q: "Case Scenario: A regional humanitarian relief camp maintains a grain stock warehouse containing a massive emergency payload of 48,000 kg of rice. Logistics field parameters mandate that exactly 4,000 kg of rice must be dispatched every single day to local families. For how long will this current rice cargo stock run?",
             options: ["A) 10 days", "B) 12 days", "C) 48 days", "D) 8 days"],
             ans: 1,
-            explain: "Divide the total reserve weight by the rate of daily consumption: 48,000 ÷ 4,000 = 12."
+            explain: "Calculate the system sustainability rate by dividing total bulk mass by the daily consumption constant: 48,000 ÷ 4,000 = 12."
         }
     ];
 
     let currentIdx = 0, score = 0, attempts = 0;
 
-    // Splash display timeout
+    // Durstenfeld Shuffle algorithm to randomize the CBQ data objects seamlessly
+    function randomizeQuestions() {
+        for (let i = questions.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [questions[i], questions[j]] = [questions[j], questions[i]];
+        }
+    }
+
+    // 1) Logo screen stays visible for exactly 5000 milliseconds (5 seconds)
     setTimeout(() => {
+        randomizeQuestions(); // Scrambles the questions before game load
         document.getElementById('brand-screen').style.display = 'none';
         document.getElementById('game-card').classList.remove('hidden');
+    }, 5000);
+
+    // Moves player from instruction panel to play area
+    function startQuizGame() {
+        document.getElementById('instruction-screen').classList.add('hidden');
+        document.getElementById('game-play-area').classList.remove('hidden');
         loadQuestion();
-    }, 2500);
+    }
 
     function loadQuestion() {
         const data = questions[currentIdx];
-        attempts = 0;
+        attempts = 0; 
         document.getElementById('q-num').innerText = currentIdx + 1;
         document.getElementById('q-text').innerText = data.q;
         document.getElementById('feedback-area').classList.add('hidden');
         document.getElementById('next-btn').classList.add('hidden');
         document.getElementById('progress-bar').style.width = ((currentIdx / questions.length) * 100) + '%';
 
-        // Render table dynamically if data-based item contains it
         const tableCont = document.getElementById('data-table-container');
         tableCont.innerHTML = '';
         if (data.table) {
@@ -255,7 +306,6 @@
             tableCont.appendChild(table);
         }
 
-        // Render options buttons
         const box = document.getElementById('options-box');
         box.innerHTML = '';
         data.options.forEach((opt, i) => {
@@ -267,6 +317,7 @@
         });
     }
 
+    // 5) Each question gives 2 chances to select correct answer and then shows right answer
     function checkAnswer(idx, btn) {
         const data = questions[currentIdx];
         const feedback = document.getElementById('feedback-area');
@@ -276,26 +327,29 @@
 
         if (idx === data.ans) {
             btn.classList.add('correct');
-            audio.correct.play();
+            try { audio.correct.play(); } catch(e){}
             if (attempts === 0) score++;
             document.getElementById('score').innerText = score;
-            feedback.innerHTML = `<b>🌟 Correct!</b><br>${data.explain}`;
+            feedback.innerHTML = `<b>🌟 Correct Case Analysis!</b><br>${data.explain}`;
             feedback.classList.remove('hidden');
             document.getElementById('next-btn').classList.remove('hidden');
-            if(currentIdx === questions.length - 1) audio.claps.play();
+            if(currentIdx === questions.length - 1) { try { audio.claps.play(); } catch(e){} }
         } else {
             btn.classList.add('wrong');
-            audio.wrong.play();
+            try { audio.wrong.play(); } catch(e){}
             attempts++;
+
             if (attempts < 2) {
+                // Re-enable remaining buttons for the second attempt
                 setTimeout(() => {
                     allBtns.forEach(b => { if(!b.classList.contains('wrong')) b.disabled = false; });
-                    feedback.innerHTML = `<b>Not quite right!</b> Re-check the mathematical operations. You have 1 attempt remaining.`;
+                    feedback.innerHTML = `<b>Incorrect deduction!</b> Examine the case values again. You have 1 final attempt remaining.`;
                     feedback.classList.remove('hidden');
                 }, 400);
             } else {
+                // Out of chances, auto-highlight correct choice
                 allBtns[data.ans].classList.add('correct');
-                feedback.innerHTML = `<b>Out of attempts!</b> The correct choice was: <i>${data.options[data.ans]}</i>.<br>${data.explain}`;
+                feedback.innerHTML = `<b>Out of attempts!</b> The correct case solution choice was: <i>${data.options[data.ans]}</i>.<br>${data.explain}`;
                 feedback.classList.remove('hidden');
                 document.getElementById('next-btn').classList.remove('hidden');
             }
@@ -312,15 +366,13 @@
     }
 
     function showResults() {
-        document.getElementById('quiz-content').classList.add('hidden');
+        document.getElementById('game-play-area').classList.add('hidden');
         document.getElementById('result-screen').classList.remove('hidden');
         document.getElementById('progress-bar').style.width = '100%';
-        document.getElementById('final-score').innerText = `${score}/${questions.length}`;
-        audio.claps.play();
+        try { audio.claps.play(); } catch(e){}
         
-        let msg = "Keep practicing arithmetic modeling tools to level up your laboratory speed!";
-        if (score === questions.length) msg = "Remarkable! You've achieved complete mathematical operational mastery! 🏆📊";
-        else if (score >= 8) msg = "Splendid work! You solved these mathematical calculations with great precision.";
+        let msg = "Fantastic effort! You have successfully resolved all our case scenarios and finalized the laboratory assignment modules!";
+        if (score === questions.length) msg = "Sensational work! You managed to solve every single practical case application with absolute precision. Incredible job!";
         
         document.getElementById('result-msg').innerText = msg;
     }
