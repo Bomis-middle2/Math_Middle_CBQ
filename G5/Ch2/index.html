@@ -224,7 +224,7 @@
         <h2 style="color: var(--primary); margin-bottom: 15px;">Learning Outcomes</h2>
         <p style="font-size: 1.1rem; color: #cbd5e1; line-height: 1.6; margin-bottom: 25px;">
             • Solve high-level, multi-step real-world problems using combined operations.<br>
-            • Apply the correct operational hierarchy to compute complex math expressions.<br>
+            • Apply fundamental operations to compute complex, word-based math expressions.<br>
             • Maximize computational precision across large-scale calculations.<br><br>
             You have <b>2 attempts</b> per question to lock in your final choice.
         </p>
@@ -267,6 +267,7 @@
     };
 
     // Upgraded Higher-Level Basic Operations Questions with Rupees (₹)
+    // Question 5 replaced from abstract hierarchy expression to an explicit, situational arithmetic scenario
     const questions = [
         {
             q: "A large warehouse ordered 14,250 boxes of electronics. They shipped out 5,875 boxes in the morning and 4,390 boxes in the afternoon. How many boxes remain in the warehouse?",
@@ -293,10 +294,10 @@
             explain: "Dividing 1,845 by 15 gives exactly 123 with a remainder of 0."
         },
         {
-            q: "Solve the following expression matching proper mathematical operational hierarchy: 120 + (45 × 4) - (150 ÷ 5)",
-            options: ["A) 150", "B) 270", "C) 330", "D) 630"],
+            q: "An electronics store purchases a shipment of 80 soundbars for ₹1,200 each. If they sell 45 of them for ₹1,800 each and the remaining units at a discount for ₹1,400 each, what is the store's total revenue?",
+            options: ["A) ₹110,000", "B) ₹130,000", "C) ₹145,000", "D) ₹153,000"],
             ans: 1,
-            explain: "Perform inner operations first: (45 × 4) = 180 and (150 ÷ 5) = 30. Then complete the chain: 120 + 180 - 30 = 270."
+            explain: "Revenue from first batch: 45 × ₹1,800 = ₹81,000. Remaining soundbars: 80 - 45 = 35 units. Revenue from discounted batch: 35 × ₹1,400 = ₹49,000. Total revenue = ₹81,000 + ₹49,000 = ₹130,000."
         },
         {
             q: "A factory manufactures 345 toy cars every hour. The factory runs for two 8-hour shifts every day. How many toy cars are produced in 5 days?",
