@@ -16,7 +16,6 @@
     .custom-shadow {
       box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
     }
-    /* Smooth screen transitions */
     .screen-fade {
       transition: opacity 0.5s ease-in-out, visibility 0.5s;
     }
@@ -24,18 +23,23 @@
 </head>
 <body class="min-h-screen flex flex-col justify-between selection:bg-indigo-100">
 
-  <div id="splash-screen" class="fixed inset-0 bg-slate-900 flex flex-col items-center justify-center z-50 screen-fade">
-    <div class="text-center animate-bounce duration-1000">
-      <img src="assets/logo.png" alt="Innovine Logo" class="h-24 w-auto object-contain mx-auto mb-4" onerror="this.style.display='none'; document.getElementById('splash-text-logo').style.display='block';">
-      <h1 id="splash-text-logo" class="hidden text-white font-black text-4xl tracking-widest">INNOVINE</h1>
-      <div class="mt-6 flex justify-center items-center space-x-1.5">
-        <div class="w-3 h-3 bg-indigo-500 rounded-full animate-pulse"></div>
-        <div class="w-3 h-3 bg-indigo-400 rounded-full animate-pulse delay-75"></div>
-        <div class="w-3 h-3 bg-indigo-300 rounded-full animate-pulse delay-150"></div>
+  <!-- ================= SCREEN 1: SPLASH SCREEN (WHITE BACKGROUND & CENTERED) ================= -->
+  <div id="splash-screen" class="fixed inset-0 bg-white flex flex-col items-center justify-center z-50 screen-fade">
+    <div class="text-center p-4">
+      <!-- Centered Innovine Logo from assets folder -->
+      <img src="assets/logo.png" alt="Innovine Logo" class="h-28 w-auto object-contain mx-auto mb-6" onerror="this.style.display='none'; document.getElementById('splash-text-logo').style.display='block';">
+      <h1 id="splash-text-logo" class="hidden text-slate-900 font-black text-4xl tracking-widest">INNOVINE</h1>
+      
+      <!-- Minimalist loading indicator -->
+      <div class="flex justify-center items-center space-x-2">
+        <div class="w-2.5 h-2.5 bg-slate-300 rounded-full animate-bounce"></div>
+        <div class="w-2.5 h-2.5 bg-slate-400 rounded-full animate-bounce [animation-delay:0.2s]"></div>
+        <div class="w-2.5 h-2.5 bg-slate-500 rounded-full animate-bounce [animation-delay:0.4s]"></div>
       </div>
     </div>
   </div>
 
+  <!-- ================= SCREEN 2: INSTRUCTION SCREEN ================= -->
   <div id="instruction-screen" class="fixed inset-0 bg-slate-50 flex items-center justify-center z-40 p-4 screen-fade hidden">
     <div class="bg-white p-8 md:p-10 rounded-2xl custom-shadow max-w-md w-full border border-gray-100 text-center">
       <h2 class="text-2xl font-black text-slate-800 mb-4">Challenge Rules</h2>
@@ -50,6 +54,7 @@
     </div>
   </div>
 
+  <!-- ================= SCREEN 3: MAIN GAME SCREEN ================= -->
   <header id="game-header" class="bg-white border-b border-gray-200 px-4 py-3 sticky top-0 z-30 hidden">
     <div class="max-w-2xl mx-auto flex items-center justify-between">
       <button id="mute-btn" class="p-2 rounded-xl border border-gray-200 hover:bg-gray-50 transition cursor-pointer" aria-label="Toggle Mute">
@@ -89,6 +94,7 @@
     </div>
   </main>
 
+  <!-- ================= SCREEN 4: CREATIVE CONGRATULATIONS PAGE ================= -->
   <div id="results-screen" class="flex-grow p-4 md:p-6 max-w-2xl w-full mx-auto flex flex-col justify-center hidden">
     <div class="bg-white rounded-3xl p-8 md:p-12 custom-shadow border border-gray-100 text-center relative overflow-hidden">
       
@@ -120,6 +126,7 @@
     Assessment Platform — Powered by Innovine Engine
   </footer>
 
+  <!-- ================= APPLICATION SCRIPT LOGIC ================= -->
   <script>
     const quizDatabase = [
       { id: 1, context: null, question: "CBQ 1 — Sharing Situation\nThree friends share a chocolate equally. Later, one more friend joins and the chocolate is shared again equally.\nWhich statement is correct?", options: ["Each child now gets a bigger share", "Each child now gets a smaller share", "Share remains same", "Chocolate becomes double"], correctIndex: 1 },
@@ -150,28 +157,25 @@
       }
     }
 
-    // Interactive Screen Elements Control
     const splashScreen = document.getElementById('splash-screen');
     const instructionScreen = document.getElementById('instruction-screen');
     const gameHeader = document.getElementById('game-header');
     const gameBody = document.getElementById('game-body');
     const resultsScreen = document.getElementById('results-screen');
     
-    // Game Session States
     let currentIndex = 0;
     let finalScore = 0;
     let timerValue = 60;
     let countdownInterval = null;
     let attemptCounter = 0;
 
-    // Trigger Screen 1 Sequence (Splash -> Instruction after 5s)
+    // Fade splash screen out after exactly 5 seconds
     setTimeout(() => {
       splashScreen.style.opacity = '0';
       splashScreen.style.visibility = 'hidden';
       instructionScreen.classList.remove('hidden');
     }, 5000);
 
-    // Trigger Screen 2 Sequence (Instruction -> Game)
     document.getElementById('start-challenge-btn').addEventListener('click', () => {
       instructionScreen.classList.add('hidden');
       gameHeader.classList.remove('hidden');
@@ -179,7 +183,6 @@
       renderQuestion();
     });
 
-    // Mute Controller Setup
     document.getElementById('mute-btn').addEventListener('click', () => {
       isMuted = !isMuted;
       document.getElementById('sound-on-icon').classList.toggle('hidden', isMuted);
@@ -305,7 +308,6 @@
         msg.textContent = "Good job";
         msg.className = "text-base font-bold max-w-xs mx-auto p-3.5 rounded-xl border mb-8 bg-emerald-50 text-emerald-800 border-emerald-100";
         playSound('cheers');
-        // Extra confetti for grand ending celebration
         let end = Date.now() + (2 * 1000);
         (function frame() {
           confetti({ particleCount: 3, angle: 60, spread: 55, origin: { x: 0 } });
