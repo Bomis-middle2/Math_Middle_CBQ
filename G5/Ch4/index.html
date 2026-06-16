@@ -26,11 +26,9 @@
   <!-- ================= SCREEN 1: SPLASH SCREEN (WHITE BACKGROUND & CENTERED) ================= -->
   <div id="splash-screen" class="fixed inset-0 bg-white flex flex-col items-center justify-center z-50 screen-fade">
     <div class="text-center p-4">
-      <!-- Centered Innovine Logo from assets folder -->
       <img src="assets/logo.png" alt="Innovine Logo" class="h-28 w-auto object-contain mx-auto mb-6" onerror="this.style.display='none'; document.getElementById('splash-text-logo').style.display='block';">
       <h1 id="splash-text-logo" class="hidden text-slate-900 font-black text-4xl tracking-widest">INNOVINE</h1>
       
-      <!-- Minimalist loading indicator -->
       <div class="flex justify-center items-center space-x-2">
         <div class="w-2.5 h-2.5 bg-slate-300 rounded-full animate-bounce"></div>
         <div class="w-2.5 h-2.5 bg-slate-400 rounded-full animate-bounce [animation-delay:0.2s]"></div>
@@ -128,19 +126,20 @@
 
   <!-- ================= APPLICATION SCRIPT LOGIC ================= -->
   <script>
+    // System database containing cleaned strings without academic or sequence tags
     const quizDatabase = [
-      { id: 1, context: null, question: "CBQ 1 — Sharing Situation\nThree friends share a chocolate equally. Later, one more friend joins and the chocolate is shared again equally.\nWhich statement is correct?", options: ["Each child now gets a bigger share", "Each child now gets a smaller share", "Share remains same", "Chocolate becomes double"], correctIndex: 1 },
-      { id: 2, context: null, question: "CBQ 2 — Comparison in Real Context\nA recipe needs 3/4 cup sugar. Riya added 2/4 cup first.\nWhat should she do to complete the recipe?", options: ["Add 1/4 cup more", "Add 2/4 cup more", "Remove sugar", "Recipe is already complete"], correctIndex: 0 },
-      { id: 3, context: null, question: "CBQ 3 — Reasoning About Equivalent Fractions\nArjun says 2/6 and 1/3 are different because numbers look different.\nWhich explanation proves him wrong?", options: ["Both represent equal parts of same whole", "Bigger denominator always means bigger fraction", "Fractions cannot be compared", "Numerator decides everything"], correctIndex: 0 },
-      { id: 4, context: null, question: "CBQ 4 — Fraction of a Quantity\nA class has 24 students. 1/3 of them bring lunch from home.\nHow many students bring lunch?", options: ["6", "8", "12", "18"], correctIndex: 1 },
-      { id: 5, context: null, question: "CBQ 5 — Error Detection CBQ\nMeera solved: 1/2 + 1/2 = 2/4.\nWhat is correct reasoning?", options: ["She added correctly", "She should simplify the answer", "Denominators cannot be added", "Fractions cannot be equal"], correctIndex: 2 },
-      { id: 6, context: null, question: "CBQ 6 — Decision Making\nA water tank is 3/5 full in morning and 1/5 more water is added.\nWhich statement is true?", options: ["Tank becomes 4/5 full", "Tank becomes 3/10 full", "Tank becomes full", "Tank becomes 5/10 full"], correctIndex: 0 },
-      { id: 7, context: null, question: "CBQ 7 — Concept Transfer\nTwo pizzas of same size:\nPizza A → eaten 4/8\nPizza B → eaten 1/2\nWhich is correct?", options: ["More pizza A eaten", "More pizza B eaten", "Both amounts equal", "Cannot compare"], correctIndex: 2 },
-      { id: 8, context: null, question: "CBQ 8 — Fraction Reasoning\nA student says: “The bigger the denominator, the bigger the fraction.”\nWhich example shows the statement is wrong?", options: ["1/2 and 1/8", "3/5 and 4/5", "2/3 and 3/3", "5/6 and 6/6"], correctIndex: 0 },
-      { id: 9, context: null, question: "CBQ 9 — Real-Life Interpretation\nRiya finished 5/6 of her homework.\nWhich situation best describes this?", options: ["Homework just started", "Most homework completed", "Half work done", "Very little work done"], correctIndex: 1 },
-      { id: 10, context: null, question: "CBQ 10 — Higher Order Final Challenge\nA ribbon is cut:\n• First cut → 1/4 used\n• Second cut → 2/4 used\nWhat fraction of ribbon is used altogether?", options: ["3/4", "1/2", "2/8", "4/4"], correctIndex: 0 },
-      { id: 11, context: "During the school food festival, students prepared different dishes and shared food equally. The class teacher observed how fractions help in fair sharing, comparison, and planning. CASE STUDY 1: Pizza Sharing (Four students shared one pizza equally.)", question: "Q1. What fraction of pizza did each student get?", options: ["1/2", "1/3", "1/4", "4/1"], correctIndex: 2 },
-      { id: 12, context: "CASE STUDY 2: Juice Distribution (A jug contains 1 litre juice. Riya drinks 1/4 litre and Aman drinks 2/4 litre.)", question: "Q5. How much juice is consumed altogether?", options: ["3/4 litre", "1/2 litre", "2/8 litre", "4/4 litre"], correctIndex: 0 }
+      { id: 1, context: null, question: "Three friends share a chocolate equally. Later, one more friend joins and the chocolate is shared again equally.<br>Which statement is correct?", options: ["Each child now gets a bigger share", "Each child now gets a smaller share", "Share remains same", "Chocolate becomes double"], correctIndex: 1 },
+      { id: 2, context: null, question: "A recipe needs 3/4 cup sugar. Riya added 2/4 cup first.<br>What should she do to complete the recipe?", options: ["Add 1/4 cup more", "Add 2/4 cup more", "Remove sugar", "Recipe is already complete"], correctIndex: 0 },
+      { id: 3, context: null, question: "Arjun says 2/6 and 1/3 are different because numbers look different.<br>Which explanation proves him wrong?", options: ["Both represent equal parts of same whole", "Bigger denominator always means bigger fraction", "Fractions cannot be compared", "Numerator decides everything"], correctIndex: 0 },
+      { id: 4, context: null, question: "A class has 24 students. 1/3 of them bring lunch from home.<br>How many students bring lunch?", options: ["6", "8", "12", "18"], correctIndex: 1 },
+      { id: 5, context: null, question: "Meera solved: 1/2 + 1/2 = 2/4.<br>What is correct reasoning?", options: ["She added correctly", "She should simplify the answer", "Denominators cannot be added", "Fractions cannot be equal"], correctIndex: 2 },
+      { id: 6, context: null, question: "A water tank is 3/5 full in morning and 1/5 more water is added.<br>Which statement is true?", options: ["Tank becomes 4/5 full", "Tank becomes 3/10 full", "Tank becomes full", "Tank becomes 5/10 full"], correctIndex: 0 },
+      { id: 7, context: null, question: "Two pizzas of same size:<br>• Pizza A → eaten 4/8<br>• Pizza B → eaten 1/2<br>Which is correct?", options: ["More pizza A eaten", "More pizza B eaten", "Both amounts equal", "Cannot compare"], correctIndex: 2 },
+      { id: 8, context: null, question: "A student says: “The bigger the denominator, the bigger the fraction.”<br>Which example shows the statement is wrong?", options: ["1/2 and 1/8", "3/5 and 4/5", "2/3 and 3/3", "5/6 and 6/6"], correctIndex: 0 },
+      { id: 9, context: null, question: "Riya finished 5/6 of her homework.<br>Which situation best describes this?", options: ["Homework just started", "Most homework completed", "Half work done", "Very little work done"], correctIndex: 1 },
+      { id: 10, context: null, question: "A ribbon is cut:<br>• First cut → 1/4 used<br>• Second cut → 2/4 used<br>What fraction of ribbon is used altogether?", options: ["3/4", "1/2", "2/8", "4/4"], correctIndex: 0 },
+      { id: 11, context: "During the school food festival, students prepared different dishes and shared food equally. The class teacher observed how fractions help in fair sharing, comparison, and planning. Pizza Sharing: Four students shared one pizza equally.", question: "What fraction of pizza did each student get?", options: ["1/2", "1/3", "1/4", "4/1"], correctIndex: 2 },
+      { id: 12, context: "Juice Distribution: A jug contains 1 litre juice. Riya drinks 1/4 litre and Aman drinks 2/4 litre.", question: "How much juice is consumed altogether?", options: ["3/4 litre", "1/2 litre", "2/8 litre", "4/4 litre"], correctIndex: 0 }
     ];
 
     let isMuted = false;
@@ -169,7 +168,6 @@
     let countdownInterval = null;
     let attemptCounter = 0;
 
-    // Fade splash screen out after exactly 5 seconds
     setTimeout(() => {
       splashScreen.style.opacity = '0';
       splashScreen.style.visibility = 'hidden';
@@ -226,7 +224,7 @@
         contextPanel.classList.add('hidden');
       }
 
-      document.getElementById('question-text').innerHTML = item.question.replace(/\n/g, '<br>');
+      document.getElementById('question-text').innerHTML = item.question;
       const container = document.getElementById('options-container');
       container.innerHTML = '';
 
@@ -284,6 +282,7 @@
       setTimeout(nextQuestion, 2500);
     }
 
+    // Interactive helper utility
     function lockOptions() {
       const buttons = document.getElementById('options-container').querySelectorAll('button');
       buttons.forEach(b => b.disabled = true);
