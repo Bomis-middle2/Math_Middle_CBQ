@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> Basic Operations Game</title>
+    <title>Chapter 2: Basic Operations Game</title>
     <style>
         :root {
             --primary: #2980b9;
@@ -31,11 +31,11 @@
             padding: 15px;
         }
 
-        /* 1) Centered Logo Screen Layout */
+        /* 1) Centered Logo Screen Layout with Crisp White Background */
         #brand-screen {
             position: fixed;
             inset: 0;
-            background: #0f172a;
+            background: #ffffff; /* Swapped to pure white */
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -61,7 +61,7 @@
         .loader-bar-bg {
             width: 200px;
             height: 6px;
-            background: #1e293b;
+            background: #e2e8f0; /* Darker track for visibility on white background */
             border-radius: 3px;
             overflow: hidden;
         }
@@ -69,7 +69,7 @@
             width: 0%;
             height: 100%;
             background: var(--primary);
-            box-shadow: 0 0 10px var(--primary);
+            box-shadow: 0 0 10px rgba(41, 128, 185, 0.5);
         }
 
         /* 3) Adaptive Cross-Device Container Box */
@@ -209,11 +209,13 @@
 </head>
 <body>
 
+<!-- White Startup Logo Background Container Layer -->
 <div id="brand-screen">
     <div class="logo-wrapper">
         <img src="assets/logo.png" alt="Innovine Logo" onerror="this.style.opacity='0.5';">
     </div>
-    <h2 style="color: #f8fafc; font-size: 1.8rem; margin-bottom: 20px; letter-spacing: 1px; font-weight: 700;">INNOVINE MATH</h2>
+    <!-- Adjusted font styling for sleek presentation on a clean white background -->
+    <h2 style="color: #0f172a; font-size: 1.8rem; margin-bottom: 20px; letter-spacing: 1px; font-weight: 700;">INNOVINE MATH</h2>
     <div class="loader-bar-bg">
         <div id="loader-fill" class="loader-bar-fill"></div>
     </div>
@@ -221,6 +223,7 @@
 
 <div class="game-card hidden" id="game-card">
 
+    <!-- Instructions Interface -->
     <div id="instruction-screen">
         <h2 style="color: var(--primary); margin-bottom: 15px;">Chapter 2: Basic Operations</h2>
         <p style="font-size: 1.1rem; color: #cbd5e1; line-height: 1.6; margin-bottom: 25px;">
@@ -231,6 +234,7 @@
         <button class="btn-next" style="float: none;" onclick="startQuizGame()">Start Chapter</button>
     </div>
     
+    <!-- Gameplay Loop Deck -->
     <div id="game-play-area" class="hidden">
         <div class="header">
             <div class="hud">
@@ -251,6 +255,7 @@
         </div>
     </div>
 
+    <!-- Final Result Windows -->
     <div id="result-screen" class="hidden" style="text-align: center; padding: 20px 0;">
         <div class="creative-pop">🎉🧮⚡</div>
         <h1 style="color: var(--primary); margin: 10px 0;">Chapter Complete!</h1>
@@ -305,7 +310,7 @@
             explain: "The Identity Property of Subtraction states that subtracting 0 from a number leaves it unchanged."
         },
         {
-            *q*: "What is the result when you multiply any number by 0?",
+            q: "What is the result when you multiply any number by 0?",
             options: ["A) 0", "B) 1", "C) The same number", "D) 10"],
             ans: 0,
             explain: "The Zero Property of Multiplication means any number multiplied by 0 always equals 0."
