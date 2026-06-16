@@ -3,19 +3,82 @@
 <head>
 <meta charset="UTF-8">
 <title>Large Numbers CBQ</title>
+
 <style>
-body{font-family:Arial;background:#f4f7f6;margin:0;display:flex;justify-content:center;align-items:center;min-height:100vh}
-.game-card{width:90%;max-width:700px;background:#fff;padding:30px;border-radius:20px;box-shadow:0 8px 30px rgba(0,0,0,0.15)}
-button{padding:12px;border-radius:10px;border:0;background:#2980b9;color:#fff;cursor:pointer;margin:6px 0;width:100%}
+body{
+  font-family:Arial;
+  background:#f4f7f6;
+  margin:0;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  min-height:100vh;
+}
+
+/* SPLASH SCREEN */
+#logoScreen{
+  position:fixed;
+  inset:0;
+  background:#fff;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  z-index:9999;
+}
+
+#logoScreen img{
+  width:200px;
+  margin-bottom:20px;
+  animation:pop 1s ease;
+}
+
+@keyframes pop{
+  from{transform:scale(0.7);opacity:0}
+  to{transform:scale(1);opacity:1}
+}
+
+/* GAME */
+.game-card{
+  width:90%;
+  max-width:700px;
+  background:#fff;
+  padding:30px;
+  border-radius:20px;
+  box-shadow:0 8px 30px rgba(0,0,0,0.15);
+}
+
+button{
+  padding:12px;
+  width:100%;
+  margin:6px 0;
+  border:0;
+  border-radius:10px;
+  background:#2980b9;
+  color:#fff;
+  cursor:pointer;
+}
+
 button:hover{background:#3498db}
-.correct{background:#27ae60!important;color:#fff}
-.wrong{background:#c0392b!important;color:#fff}
+
+.correct{background:#27ae60!important}
+.wrong{background:#c0392b!important}
+
 .hidden{display:none}
 </style>
 </head>
+
 <body>
 
-<div class="game-card">
+<!-- 🔥 SPLASH LOGO (RESTORED) -->
+<div id="logoScreen">
+  <img src="assets/innovine-logo.png" alt="Innovine Logo">
+  <p>Loading Learning Experience...</p>
+</div>
+
+<!-- GAME -->
+<div class="game-card hidden" id="game">
+
 <h2>Large Numbers Quiz</h2>
 
 <div id="question"></div>
@@ -23,59 +86,67 @@ button:hover{background:#3498db}
 <p id="explain"></p>
 
 <button onclick="nextQ()">Next</button>
+
 </div>
 
 <script>
 
-const questions = [
+/* SPLASH TIMER */
+setTimeout(()=>{
+  document.getElementById("logoScreen").style.display="none";
+  document.getElementById("game").classList.remove("hidden");
+  load();
+},5000);
+
+const questions=[
 
 {
-q:"A news report states that the population of a small town is 8,75,420. If 1 more person moves in, what is the new population?",
+q:"A news report states that the population is 8,75,420. If 1 person is added, what is the new population?",
 options:["8,75,421","8,75,430","8,76,420","9,75,420"],
 ans:0,
-explain:"Adding 1 increases ones place: 8,75,420 → 8,75,421"
+explain:"Successor means +1 in ones place."
 },
 
 {
-q:"Look at the cost of cars. Which is cheapest?",
+q:"Which car is cheapest?",
 options:["Car A","Car B","Car C","Car D"],
 ans:3,
-explain:"₹8,00,500 is the smallest value"
+explain:"₹8,00,500 is smallest value."
 },
 
-// 🔥 Q3 UPDATED CBQ
+// 🔥 Q3 CBQ FIXED
 {
-q:"A teacher asks students to form different numbers using digits of a given number. In 5,28,394, Ayaan swaps the digit in the Ten-Thousands place with the digit in the Hundreds place. What will be the new number formed?",
+q:"In 5,28,394, Ayaan swaps the digit in Ten-Thousands place with Hundreds place digit. What is the new number?",
 options:["5,38,294","5,28,394","5,82,394","2,58,394"],
 ans:0,
-explain:"2 (Ten-Thousands) is swapped with 3 (Hundreds), giving 5,38,294"
+explain:"Place value swap: 2 and 3 exchange positions."
 },
 
 {
 q:"Write 1,200,000 in international format",
 options:["12,00,000","1,200,000","120,00,00","1,2,00,000"],
 ans:1,
-explain:"International system groups in thousands (1,200,000)"
+explain:"International system uses groups of 3 digits."
 },
 
 {
 q:"Round 4,872 to nearest thousand",
 options:["4,000","4,800","4,900","5,000"],
 ans:3,
-explain:"872 ≥ 500 so round up to 5,000"
+explain:"872 ≥ 500 so round up."
 },
 
-// 🔥 Q8 UPDATED CBQ
+// 🔥 Q8 CBQ FIXED
 {
-q:"While writing a cheque in the bank, Rahul wrote '7,40,000' for 'Seven lakh four thousand'. What mistake did he make?",
+q:"Rahul wrote '7,40,000' instead of '7,04,000'. What mistake did he make?",
 options:[
-"He wrote seventy thousand instead of four thousand",
-"He wrote forty thousand instead of four thousand",
-"He wrote seven million instead of seven lakh",
-"He forgot to add the zero at the end"
+"Wrote 70 thousand instead of 4 thousand",
+"Wrote 40 thousand instead of 4 thousand",
+"Wrote million instead of lakh",
+"Forgot zero at end"
 ],
 ans:1,
-explain:"Correct number is 7,04,000 but Rahul wrote 7,40,000 (4 shifted to ten-thousands place)"
+explain:"He misplaced digit 4 into ten-thousands place."
 },
 
 {
@@ -93,12 +164,12 @@ function load(){
 let q=questions[i];
 document.getElementById("question").innerHTML=q.q;
 
-let opt="";
+let html="";
 q.options.forEach((o,index)=>{
-opt+=`<button onclick="check(${index},this)">${o}</button>`;
+html+=`<button onclick="check(${index},this)">${o}</button>`;
 });
 
-document.getElementById("options").innerHTML=opt;
+document.getElementById("options").innerHTML=html;
 document.getElementById("explain").innerHTML="";
 }
 
@@ -110,7 +181,7 @@ btn.classList.add("correct");
 document.getElementById("explain").innerHTML="✔ "+q.explain;
 }else{
 btn.classList.add("wrong");
-document.getElementById("explain").innerHTML="❌ Try again conceptually";
+document.getElementById("explain").innerHTML="❌ Try again";
 }
 }
 
@@ -123,8 +194,6 @@ document.getElementById("question").innerHTML="Completed!";
 document.getElementById("options").innerHTML="";
 }
 }
-
-load();
 
 </script>
 
