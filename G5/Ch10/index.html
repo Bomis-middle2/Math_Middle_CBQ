@@ -25,96 +25,97 @@
 
   <div id="splash-screen" class="fixed inset-0 bg-white flex flex-col items-center justify-center z-50 screen-fade">
     <div class="text-center p-4">
-      <img src="assets/logo.png" alt="Innovine Logo" class="h-28 w-auto object-contain mx-auto mb-6" onerror="this.style.display='none'; document.getElementById('splash-text-logo').style.display='block';">
-      <h1 id="splash-text-logo" class="hidden text-slate-900 font-black text-4xl tracking-widest">INNOVINE</h1>
+      <img src="assets/logo.png" alt="Innovine Logo" class="h-24 w-auto object-contain mx-auto mb-6" onerror="this.style.display='none'; document.getElementById('splash-text-logo').style.display='block';">
+      <h1 id="splash-text-logo" class="hidden text-slate-900 font-black text-3xl tracking-widest">INNOVINE</h1>
       
       <div class="flex justify-center items-center space-x-2">
-        <div class="w-2.5 h-2.5 bg-slate-300 rounded-full animate-bounce"></div>
-        <div class="w-2.5 h-2.5 bg-slate-400 rounded-full animate-bounce [animation-delay:0.2s]"></div>
-        <div class="w-2.5 h-2.5 bg-slate-500 rounded-full animate-bounce [animation-delay:0.4s]"></div>
+        <div class="w-2 h-2 bg-slate-300 rounded-full animate-bounce"></div>
+        <div class="w-2 h-2 bg-slate-400 rounded-full animate-bounce [animation-delay:0.2s]"></div>
+        <div class="w-2 h-2 bg-slate-500 rounded-full animate-bounce [animation-delay:0.4s]"></div>
       </div>
     </div>
   </div>
 
   <div id="instruction-screen" class="fixed inset-0 bg-slate-50 flex items-center justify-center z-40 p-4 screen-fade hidden">
-    <div class="bg-white p-8 md:p-10 rounded-2xl custom-shadow max-w-xl w-full border border-gray-100 text-center">
-      <h2 class="text-3xl font-black text-slate-800 mb-6">Challenge Rules</h2>
-      <ul class="text-left text-slate-600 space-y-4 mb-8 text-lg font-medium">
-        <li class="flex items-start"><span class="text-indigo-600 mr-3 text-xl">✔</span> Total of 10 multi-choice questions.</li>
-        <li class="flex items-start"><span class="text-indigo-600 mr-3 text-xl">✔</span> You have exactly 60 seconds per question.</li>
-        <li class="flex items-start"><span class="text-indigo-600 mr-3 text-xl">✔</span> Max 2 attempts per question to find the right answer.</li>
+    <div class="bg-white p-6 md:p-8 rounded-xl custom-shadow max-w-md w-full border border-gray-100 text-center">
+      <h2 class="text-2xl font-black text-slate-800 mb-4">Challenge Rules</h2>
+      <ul class="text-left text-slate-600 space-y-3 mb-6 text-base font-medium">
+        <li class="flex items-start"><span class="text-indigo-600 mr-2.5 text-lg">✔</span> Total of 10 multi-choice questions.</li>
+        <li class="flex items-start"><span class="text-indigo-600 mr-2.5 text-lg">✔</span> You have exactly 60 seconds per question.</li>
+        <li class="flex items-start"><span class="text-indigo-600 mr-2.5 text-lg">✔</span> Max 2 attempts per question to find the right answer.</li>
       </ul>
-      <button id="start-challenge-btn" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 px-6 rounded-xl shadow-md transform active:scale-98 transition text-xl cursor-pointer">
+      <button id="start-challenge-btn" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-3.5 px-5 rounded-xl shadow-md transform active:scale-98 transition text-base cursor-pointer">
         Start Challenge
       </button>
     </div>
   </div>
 
-  <header id="game-header" class="bg-white border-b border-gray-200 px-4 py-4 sticky top-0 z-30 hidden">
+  <header id="game-header" class="bg-white border-b border-gray-200 px-4 py-3 sticky top-0 z-30 hidden">
     <div class="max-w-2xl mx-auto flex items-center justify-between">
-      <button id="mute-btn" class="p-2.5 rounded-xl border border-gray-200 hover:bg-gray-50 transition cursor-pointer" aria-label="Toggle Mute">
-        <svg id="sound-on-icon" class="w-7 h-7 text-slate-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/></svg>
-        <svg id="sound-off-icon" class="w-7 h-7 text-slate-400 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/></svg>
+      <button id="mute-btn" class="p-2 rounded-xl border border-gray-200 hover:bg-gray-50 transition cursor-pointer" aria-label="Toggle Mute">
+        <svg id="sound-on-icon" class="w-6 h-6 text-slate-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/></svg>
+        <svg id="sound-off-icon" class="w-6 h-6 text-slate-400 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/></svg>
       </button>
       
-      <div class="bg-slate-100 px-5 py-2 rounded-xl text-base font-bold text-slate-700 border border-slate-200">
+      <div class="bg-slate-100 px-4 py-1.5 rounded-xl text-sm font-bold text-slate-700 border border-slate-200">
         Score: <span id="score-display" class="text-indigo-600">0</span>
       </div>
     </div>
   </header>
 
-  <main id="game-body" class="flex-grow p-4 md:p-6 max-w-2xl w-full mx-auto flex flex-col justify-center hidden">
-    <div class="flex justify-between items-center mb-5 text-base font-bold text-slate-500">
+  <main id="game-body" class="flex-grow p-4 md:p-6 max-w-xl w-full mx-auto flex flex-col justify-center hidden">
+    <div class="flex justify-between items-center mb-4 text-sm font-bold text-slate-500">
       <div>Progress: <span id="current-q-num" class="text-slate-900">1</span>/10</div>
-      <div class="flex items-center space-x-1 text-orange-600 bg-orange-50 px-4 py-1.5 rounded-full border border-orange-100">
-        <span id="timer-display" class="text-lg">60s</span>
+      <div class="flex items-center space-x-1 text-orange-600 bg-orange-50 px-3 py-1 rounded-full border border-orange-100">
+        <span id="timer-display" class="text-base">60s</span>
       </div>
     </div>
 
-    <div class="bg-white rounded-2xl p-6 md:p-8 custom-shadow border border-gray-100">
-      <div id="context-panel" class="mb-6 bg-indigo-50/60 border-l-4 border-indigo-500 p-5 rounded-r-xl hidden text-base text-slate-700 leading-relaxed font-medium">
+    <div class="bg-white rounded-xl p-5 md:p-6 custom-shadow border border-gray-100">
+      <div id="context-panel" class="mb-4 bg-indigo-50/60 border-l-4 border-indigo-500 p-4 rounded-r-xl hidden text-sm text-slate-700 leading-relaxed font-medium">
         <p id="context-text"></p>
       </div>
 
-      <h2 id="question-text" class="text-xl md:text-2xl font-black text-slate-900 mb-6 leading-snug"></h2>
+      <h2 id="question-text" class="text-lg md:text-xl font-black text-slate-900 mb-5 leading-snug"></h2>
 
-      <div id="retry-prompt" class="mb-5 bg-amber-50 text-amber-800 text-base font-bold p-4 rounded-xl border border-amber-200 hidden">
+      <div id="retry-prompt" class="mb-4 bg-amber-50 text-amber-800 text-sm font-bold p-3.5 rounded-xl border border-amber-200 hidden">
         ⚠️ First attempt incorrect. You have 1 final chance remaining!
       </div>
-      <div id="reveal-prompt" class="mb-5 bg-rose-50 text-rose-800 text-base font-bold p-4 rounded-xl border border-rose-200 hidden">
+      <div id="reveal-prompt" class="mb-4 bg-rose-50 text-rose-800 text-sm font-bold p-3.5 rounded-xl border border-rose-200 hidden">
         ❌ Out of choices! Correct answer is highlighted in green below.
       </div>
 
-      <div id="options-container" class="space-y-4"></div>
+      <div id="options-container" class="space-y-3"></div>
     </div>
   </main>
 
-  <div id="results-screen" class="flex-grow p-4 md:p-6 max-w-2xl w-full mx-auto flex flex-col justify-center hidden">
-    <div class="bg-white rounded-3xl p-8 md:p-12 custom-shadow border border-gray-100 text-center relative overflow-hidden">
+  <div id="results-screen" class="flex-grow p-4 md:p-6 max-w-xl w-full mx-auto flex flex-col justify-center hidden">
+    <div class="bg-white rounded-2xl p-6 md:p-10 custom-shadow border border-gray-100 text-center relative overflow-hidden">
       
       <div class="absolute -top-10 -left-10 w-32 h-32 bg-indigo-100 rounded-full blur-2xl opacity-50"></div>
       <div class="absolute -bottom-10 -right-10 w-32 h-32 bg-purple-100 rounded-full blur-2xl opacity-50"></div>
 
-      <div class="w-24 h-24 bg-gradient-to-tr from-indigo-500 to-purple-500 text-white rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg shadow-indigo-200">
-        <svg class="w-12 h-12 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
+      <div class="w-20 h-20 bg-gradient-to-tr from-indigo-500 to-purple-500 text-white rounded-full flex items-center justify-center mx-auto mb-5 shadow-lg shadow-indigo-200">
+        <svg class="w-10 h-10 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
       </div>
 
-      <h2 class="text-3xl md:text-4xl font-black tracking-tight text-slate-900 mb-2">Spectacular Finish!</h2>
-      <p class="text-slate-500 font-medium text-xl mb-8 max-w-md mx-auto">Congratulations on completing the entire challenge successfully.</p>
+      <h2 class="text-2xl md:text-3xl font-black tracking-tight text-slate-900 mb-2">Spectacular Finish!</h2>
+      <p class="text-slate-500 font-medium text-base mb-6 max-w-sm mx-auto">Congratulations on completing the entire challenge successfully.</p>
       
-      <div class="bg-slate-50 rounded-2xl p-6 border border-slate-100 max-w-xs mx-auto mb-8">
-        <span class="block text-sm font-bold text-slate-400 uppercase tracking-widest mb-1">Performance Matrix</span>
-        <span id="final-score-text" class="text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600">0 / 10</span>
-        <span id="final-percentage" class="block text-base text-slate-500 font-bold mt-2">0% Score</span>
+      <div class="rounded-xl p-5 border border-slate-100 max-w-xs mx-auto mb-6 bg-slate-50">
+        <span class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Performance Matrix</span>
+        <span id="final-score-text" class="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600">0 / 10</span>
+        <span id="final-percentage" class="block text-sm text-slate-500 font-bold mt-1">0% Score</span>
       </div>
 
-      <div id="result-message" class="text-lg font-bold max-w-xs mx-auto p-4 rounded-xl border mb-8"></div>
+      <div id="result-message" class="text-base font-bold max-w-xs mx-auto p-3.5 rounded-xl border mb-6"></div>
 
-      <button onclick="window.location.reload();" class="w-full sm:w-auto bg-slate-900 hover:bg-slate-800 text-white font-bold px-8 py-4 rounded-xl shadow-md transform active:scale-95 transition cursor-pointer text-lg">
+      <button onclick="window.location.reload();" class="w-full sm:w-auto bg-slate-900 hover:bg-slate-800 text-white font-bold px-6 py-3.5 rounded-xl shadow-md transform active:scale-95 transition cursor-pointer text-base">
         Try Challenge Again
       </button>
     </div>
   </div>
+
   <script>
     const quizDatabase = [
       { id: 1, context: "Students prepared models using cardboard shapes for a maths exhibition.", question: "A student makes a window model having four sides with opposite sides equal and all angles right angles. Which shape is used?", options: ["Rectangle", "Square", "Triangle", "Circle"], correctIndex: 0 },
@@ -217,8 +218,8 @@
 
       item.options.forEach((opt, idx) => {
         const btn = document.createElement('button');
-        btn.className = "w-full text-left font-bold text-slate-800 bg-slate-50 border-2 border-slate-200 px-6 py-4.5 rounded-xl text-lg transition-all duration-150 cursor-pointer active:scale-[0.99] focus:outline-none block shadow-sm hover:bg-slate-100/70";
-        btn.innerHTML = `<span class="inline-block bg-white text-slate-500 border border-slate-200 w-8 h-8 rounded-md text-center text-sm leading-8 font-extrabold mr-3">${String.fromCharCode(65 + idx)}</span> ${opt}`;
+        btn.className = "w-full text-left font-bold text-slate-800 bg-slate-50 border-2 border-slate-200 px-5 py-3.5 rounded-xl text-base transition-all duration-150 cursor-pointer active:scale-[0.99] focus:outline-none block shadow-sm hover:bg-slate-100/70";
+        btn.innerHTML = `<span class="inline-block bg-white text-slate-500 border border-slate-200 w-7 h-7 rounded-md text-center text-xs leading-7 font-extrabold mr-2.5">${String.fromCharCode(65 + idx)}</span> ${opt}`;
         btn.addEventListener('click', () => handleSelection(idx, btn));
         container.appendChild(btn);
       });
@@ -230,7 +231,7 @@
 
       if (selectedIdx === item.correctIndex) {
         clearInterval(countdownInterval);
-        btnElement.className = "w-full text-left font-bold bg-emerald-50 border-2 border-emerald-500 text-emerald-900 px-6 py-4.5 rounded-xl text-lg block shadow-sm";
+        btnElement.className = "w-full text-left font-bold bg-emerald-50 border-2 border-emerald-500 text-emerald-900 px-5 py-3.5 rounded-xl text-base block shadow-sm";
         finalScore++;
         document.getElementById('score-display').textContent = finalScore;
         playSound('correct');
@@ -239,13 +240,13 @@
         setTimeout(nextQuestion, 1500);
       } else {
         if (attemptCounter === 1) {
-          btnElement.className = "w-full text-left font-bold bg-rose-50 border-2 border-rose-200 text-rose-400 px-6 py-4.5 rounded-xl text-lg opacity-60 block cursor-not-allowed shadow-sm";
+          btnElement.className = "w-full text-left font-bold bg-rose-50 border-2 border-rose-200 text-rose-400 px-5 py-3.5 rounded-xl text-base opacity-60 block cursor-not-allowed shadow-sm";
           btnElement.disabled = true;
           document.getElementById('retry-prompt').classList.remove('hidden');
           playSound('wrong');
         } else {
           clearInterval(countdownInterval);
-          btnElement.className = "w-full text-left font-bold bg-rose-50 border-2 border-rose-500 text-rose-900 px-6 py-4.5 rounded-xl text-lg block shadow-sm";
+          btnElement.className = "w-full text-left font-bold bg-rose-50 border-2 border-rose-500 text-rose-900 px-5 py-3.5 rounded-xl text-base block shadow-sm";
           document.getElementById('retry-prompt').classList.add('hidden');
           document.getElementById('reveal-prompt').classList.remove('hidden');
           playSound('wrong');
@@ -259,7 +260,7 @@
     function highlightCorrectAnswer() {
       const item = quizDatabase[currentIndex];
       const buttons = document.getElementById('options-container').querySelectorAll('button');
-      buttons[item.correctIndex].className = "w-full text-left font-bold bg-emerald-50 border-2 border-emerald-500 text-emerald-900 px-6 py-4.5 rounded-xl text-lg block shadow-sm ring-4 ring-emerald-100 animate-pulse";
+      buttons[item.correctIndex].className = "w-full text-left font-bold bg-emerald-50 border-2 border-emerald-500 text-emerald-900 px-5 py-3.5 rounded-xl text-base block shadow-sm ring-4 ring-emerald-100 animate-pulse";
     }
 
     function autoRevealAndNext() {
@@ -291,7 +292,7 @@
       const msg = document.getElementById('result-message');
       if (percent >= 75) {
         msg.textContent = "Good job";
-        msg.className = "text-lg font-bold max-w-xs mx-auto p-4 rounded-xl border mb-8 bg-emerald-50 text-emerald-800 border-emerald-100";
+        msg.className = "text-base font-bold max-w-xs mx-auto p-3.5 rounded-xl border mb-6 bg-emerald-50 text-emerald-800 border-emerald-100";
         playSound('cheers');
         let end = Date.now() + (2 * 1000);
         (function frame() {
@@ -301,10 +302,10 @@
         }());
       } else if (percent >= 40) {
         msg.textContent = "Review this chapter and try again";
-        msg.className = "text-lg font-bold max-w-xs mx-auto p-4 rounded-xl border mb-8 bg-amber-50 text-amber-800 border-amber-100";
+        msg.className = "text-base font-bold max-w-xs mx-auto p-3.5 rounded-xl border mb-6 bg-amber-50 text-amber-800 border-amber-100";
       } else {
         msg.textContent = "Let’s practise more";
-        msg.className = "text-lg font-bold max-w-xs mx-auto p-4 rounded-xl border mb-8 bg-rose-50 text-rose-800 border-rose-100";
+        msg.className = "text-base font-bold max-w-xs mx-auto p-3.5 rounded-xl border mb-6 bg-rose-50 text-rose-800 border-rose-100";
       }
     }
   </script>
