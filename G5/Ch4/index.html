@@ -3,210 +3,139 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Math Fraction Quiz - CBQ</title>
-  <!-- Tailwind CSS for clean, high-contrast, uncluttered components -->
+  <title>Assessment Challenge</title>
   <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
-  <!-- Canvas Confetti Library for correct answer celebrations -->
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   <style>
-    /* Custom simple styling to complement Tailwind */
     body {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       background-color: #f8fafc;
       color: #0f172a;
       -webkit-tap-highlight-color: transparent;
     }
     .custom-shadow {
-      box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
+    }
+    /* Smooth screen transitions */
+    .screen-fade {
+      transition: opacity 0.5s ease-in-out, visibility 0.5s;
     }
   </style>
 </head>
 <body class="min-h-screen flex flex-col justify-between selection:bg-indigo-100">
 
-  <!-- Header Section with Minimal Colors & Audio Controls -->
-  <header class="bg-white border-b border-gray-200 px-4 py-3 sticky top-0 z-50">
-    <div class="max-w-2xl mx-auto flex items-center justify-between">
-      <div class="flex items-center space-x-3">
-        <!-- Logo configured from image_09b0e7.png path -->
-        <img src="assets/logo.png" alt="Innovine Logo" class="h-10 w-auto object-contain fallback-logo" onerror="this.style.display='none'; document.getElementById('text-logo').style.display='block';">
-        <span id="text-logo" class="hidden font-bold text-xl tracking-tight text-gray-800">INNOVINE</span>
+  <div id="splash-screen" class="fixed inset-0 bg-slate-900 flex flex-col items-center justify-center z-50 screen-fade">
+    <div class="text-center animate-bounce duration-1000">
+      <img src="assets/logo.png" alt="Innovine Logo" class="h-24 w-auto object-contain mx-auto mb-4" onerror="this.style.display='none'; document.getElementById('splash-text-logo').style.display='block';">
+      <h1 id="splash-text-logo" class="hidden text-white font-black text-4xl tracking-widest">INNOVINE</h1>
+      <div class="mt-6 flex justify-center items-center space-x-1.5">
+        <div class="w-3 h-3 bg-indigo-500 rounded-full animate-pulse"></div>
+        <div class="w-3 h-3 bg-indigo-400 rounded-full animate-pulse delay-75"></div>
+        <div class="w-3 h-3 bg-indigo-300 rounded-full animate-pulse delay-150"></div>
       </div>
+    </div>
+  </div>
+
+  <div id="instruction-screen" class="fixed inset-0 bg-slate-50 flex items-center justify-center z-40 p-4 screen-fade hidden">
+    <div class="bg-white p-8 md:p-10 rounded-2xl custom-shadow max-w-md w-full border border-gray-100 text-center">
+      <h2 class="text-2xl font-black text-slate-800 mb-4">Challenge Rules</h2>
+      <ul class="text-left text-slate-600 space-y-3.5 mb-8 font-medium">
+        <li class="flex items-start"><span class="text-indigo-600 mr-2">✔</span> Total of 12 multi-choice questions.</li>
+        <li class="flex items-start"><span class="text-indigo-600 mr-2">✔</span> You have exactly 60 seconds per question.</li>
+        <li class="flex items-start"><span class="text-indigo-600 mr-2">✔</span> Max 2 attempts per question to find the right answer.</li>
+      </ul>
+      <button id="start-challenge-btn" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 px-6 rounded-xl shadow-md transform active:scale-98 transition text-lg cursor-pointer">
+        Start Challenge
+      </button>
+    </div>
+  </div>
+
+  <header id="game-header" class="bg-white border-b border-gray-200 px-4 py-3 sticky top-0 z-30 hidden">
+    <div class="max-w-2xl mx-auto flex items-center justify-between">
+      <button id="mute-btn" class="p-2 rounded-xl border border-gray-200 hover:bg-gray-50 transition cursor-pointer" aria-label="Toggle Mute">
+        <svg id="sound-on-icon" class="w-6 h-6 text-slate-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/></svg>
+        <svg id="sound-off-icon" class="w-6 h-6 text-slate-400 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/></svg>
+      </button>
       
-      <!-- Controls Panel -->
-      <div class="flex items-center space-x-4">
-        <!-- Audio Toggle Button -->
-        <button id="mute-btn" class="p-2 rounded-full border border-gray-300 hover:bg-gray-100 transition focus:outline-none focus:ring-2 focus:ring-indigo-500" aria-label="Toggle Sound">
-          <svg id="sound-on-icon" class="w-6 h-6 text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/></svg>
-          <svg id="sound-off-icon" class="w-6 h-6 text-gray-400 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15zM17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2"/></svg>
-        </button>
-        <!-- Real-time Score Tracker Tracker -->
-        <div class="bg-gray-100 px-3 py-1.5 rounded-lg text-sm font-semibold text-gray-700 border border-gray-200">
-          Score: <span id="score-display" class="text-indigo-600 font-bold">0</span>
-        </div>
+      <div class="bg-slate-100 px-4 py-1.5 rounded-xl text-sm font-bold text-slate-700 border border-slate-200">
+        Score: <span id="score-display" class="text-indigo-600">0</span>
       </div>
     </div>
   </header>
 
-  <!-- Main Dynamic Quiz Container -->
-  <main class="flex-grow p-4 md:p-6 max-w-2xl w-full mx-auto flex flex-col justify-center">
-    
-    <!-- Info bar: Question tracker & Countdown Timer -->
-    <div id="quiz-info-bar" class="flex justify-between items-center mb-4 text-sm font-medium text-gray-500">
-      <div>Question <span id="current-q-num" class="text-gray-900 font-bold">1</span> of <span id="total-q-num">12</span></div>
-      <div class="flex items-center space-x-1.5 text-orange-600 font-bold bg-orange-50 px-3 py-1 rounded-full border border-orange-200">
-        <svg class="w-4 h-4 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+  <main id="game-body" class="flex-grow p-4 md:p-6 max-w-2xl w-full mx-auto flex flex-col justify-center hidden">
+    <div class="flex justify-between items-center mb-4 text-sm font-bold text-slate-500">
+      <div>Progress: <span id="current-q-num" class="text-slate-900">1</span>/12</div>
+      <div class="flex items-center space-x-1 text-orange-600 bg-orange-50 px-3 py-1 rounded-full border border-orange-100">
         <span id="timer-display">60s</span>
       </div>
     </div>
 
-    <!-- Active Stage Card Container (No long scrolling, clean layout) -->
-    <div class="bg-white rounded-2xl p-5 md:p-8 custom-shadow border border-gray-100 transition-all duration-300">
-      
-      <!-- Context/Case Scenario panel (displays only when relevant) -->
-      <div id="context-panel" class="mb-5 bg-indigo-50 border-l-4 border-indigo-500 p-4 rounded-r-xl hidden">
-        <span class="block text-xs uppercase tracking-wider text-indigo-600 font-bold mb-1">Scenario Reference</span>
-        <p id="context-text" class="text-sm text-gray-700 font-medium leading-relaxed"></p>
+    <div class="bg-white rounded-2xl p-5 md:p-8 custom-shadow border border-gray-100">
+      <div id="context-panel" class="mb-5 bg-indigo-50/60 border-l-4 border-indigo-500 p-4 rounded-r-xl hidden text-sm text-slate-700 leading-relaxed font-medium">
+        <p id="context-text"></p>
       </div>
 
-      <!-- Live Question Text -->
-      <h2 id="question-text" class="text-lg md:text-xl font-bold text-gray-900 mb-6 leading-snug">
-        Loading question...
-      </h2>
+      <h2 id="question-text" class="text-lg md:text-xl font-bold text-slate-900 mb-6 leading-snug"></h2>
 
-      <!-- Retry Indication Prompt (Invisible unless user gets an option wrong on attempt 1) -->
-      <div id="retry-prompt" class="mb-4 bg-amber-50 text-amber-800 text-sm font-semibold p-3 rounded-xl border border-amber-200 hidden flex items-center space-x-2">
-        <svg class="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
-        <span>Incorrect! 1 retry left for this question. Try again.</span>
+      <div id="retry-prompt" class="mb-4 bg-amber-50 text-amber-800 text-sm font-semibold p-3 rounded-xl border border-amber-200 hidden">
+        ⚠️ First attempt incorrect. You have 1 final chance remaining!
+      </div>
+      <div id="reveal-prompt" class="mb-4 bg-rose-50 text-rose-800 text-sm font-semibold p-3 rounded-xl border border-rose-200 hidden">
+        ❌ Out of choices! Correct answer is highlighted in green below.
       </div>
 
-      <!-- Answer Options List Container (Large Touch Targets for Mobile) -->
-      <div id="options-container" class="space-y-3.5">
-        <!-- Buttons injected programmatically -->
-      </div>
-
+      <div id="options-container" class="space-y-3"></div>
     </div>
-
-    <!-- Results Block (Hidden by default until final score calculated) -->
-    <div id="results-panel" class="bg-white rounded-2xl p-6 md:p-8 custom-shadow border border-gray-100 text-center hidden">
-      <div class="w-20 h-20 bg-indigo-50 text-indigo-600 rounded-full flex items-center justify-center mx-auto mb-4 border border-indigo-100">
-        <svg class="w-10 h-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-      </div>
-      <h2 class="text-2xl font-black text-gray-900 mb-1">Quiz Completed!</h2>
-      <p class="text-gray-500 font-medium mb-6">Your Performance Report</p>
-      
-      <div class="bg-gray-50 rounded-xl p-4 border border-gray-200 inline-block px-8 py-4 mb-6">
-        <span class="block text-xs uppercase font-bold text-gray-400 tracking-wider mb-1">Final Score</span>
-        <span id="final-score-text" class="text-4xl font-extrabold text-indigo-600">0/12</span>
-        <span id="final-percentage" class="block text-sm text-gray-500 font-semibold mt-1">(0%)</span>
-      </div>
-
-      <div id="result-message" class="text-lg font-bold text-gray-800 p-4 rounded-xl border max-w-sm mx-auto mb-6">
-        Message goes here
-      </div>
-
-      <button onclick="window.location.reload();" class="bg-indigo-600 text-white font-bold text-base px-6 py-3 rounded-xl shadow-sm hover:bg-indigo-700 active:scale-95 transition-all w-full sm:w-auto">
-        Restart Assessment
-      </button>
-    </div>
-
   </main>
 
-  <!-- Clean Minimal Footer -->
-  <footer class="bg-white border-t border-gray-200 py-3 text-center text-xs text-gray-400 font-medium">
-    &copy; 2026 Math Middle Assessment — Fair Sharing & Fractions. All rights reserved.
+  <div id="results-screen" class="flex-grow p-4 md:p-6 max-w-2xl w-full mx-auto flex flex-col justify-center hidden">
+    <div class="bg-white rounded-3xl p-8 md:p-12 custom-shadow border border-gray-100 text-center relative overflow-hidden">
+      
+      <div class="absolute -top-10 -left-10 w-32 h-32 bg-indigo-100 rounded-full blur-2xl opacity-50"></div>
+      <div class="absolute -bottom-10 -right-10 w-32 h-32 bg-purple-100 rounded-full blur-2xl opacity-50"></div>
+
+      <div class="w-24 h-24 bg-gradient-to-tr from-indigo-500 to-purple-500 text-white rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg shadow-indigo-200">
+        <svg class="w-12 h-12 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
+      </div>
+
+      <h2 class="text-3xl md:text-4xl font-black tracking-tight text-slate-900 mb-2">Spectacular Finish!</h2>
+      <p class="text-slate-500 font-medium text-lg mb-8 max-w-xs mx-auto">Congratulations on completing the entire challenge successfully.</p>
+      
+      <div class="bg-slate-50 rounded-2xl p-6 border border-slate-100 max-w-xs mx-auto mb-8">
+        <span class="block text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Performance Matrix</span>
+        <span id="final-score-text" class="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600">0 / 12</span>
+        <span id="final-percentage" class="block text-sm text-slate-500 font-bold mt-1.5">0% Score</span>
+      </div>
+
+      <div id="result-message" class="text-base font-bold max-w-xs mx-auto p-3.5 rounded-xl border mb-8"></div>
+
+      <button onclick="window.location.reload();" class="w-full sm:w-auto bg-slate-900 hover:bg-slate-800 text-white font-bold px-8 py-4 rounded-xl shadow-md transform active:scale-95 transition cursor-pointer text-base">
+        Try Challenge Again
+      </button>
+    </div>
+  </div>
+
+  <footer class="py-4 text-center text-xs text-slate-400 font-medium tracking-wide">
+    Assessment Platform — Powered by Innovine Engine
   </footer>
 
-  <!-- Native JavaScript App Logic -->
   <script>
-    // 1. Data Structure Definitions (CBQ Questions 1-10 + 2 Questions from Case Studies to hit the required Total of 12)
     const quizDatabase = [
-      {
-        id: 1,
-        context: null,
-        question: "CBQ 1 — Sharing Situation\nThree friends share a chocolate equally. Later, one more friend joins and the chocolate is shared again equally.\nWhich statement is correct?",
-        options: ["Each child now gets a bigger share", "Each child now gets a smaller share", "Share remains same", "Chocolate becomes double"],
-        correctIndex: 1
-      },
-      {
-        id: 2,
-        context: null,
-        question: "CBQ 2 — Comparison in Real Context\nA recipe needs 3/4 cup sugar. Riya added 2/4 cup first.\nWhat should she do to complete the recipe?",
-        options: ["Add 1/4 cup more", "Add 2/4 cup more", "Remove sugar", "Recipe is already complete"],
-        correctIndex: 0
-      },
-      {
-        id: 3,
-        context: null,
-        question: "CBQ 3 — Reasoning About Equivalent Fractions\nArjun says 2/6 and 1/3 are different because numbers look different.\nWhich explanation proves him wrong?",
-        options: ["Both represent equal parts of same whole", "Bigger denominator always means bigger fraction", "Fractions cannot be compared", "Numerator decides everything"],
-        correctIndex: 0
-      },
-      {
-        id: 4,
-        context: null,
-        question: "CBQ 4 — Fraction of a Quantity\nA class has 24 students. 1/3 of them bring lunch from home.\nHow many students bring lunch?",
-        options: ["6", "8", "12", "18"],
-        correctIndex: 1
-      },
-      {
-        id: 5,
-        context: null,
-        question: "CBQ 5 — Error Detection CBQ\nMeera solved: 1/2 + 1/2 = 2/4.\nWhat is correct reasoning?",
-        options: ["She added correctly", "She should simplify the answer", "Denominators cannot be added", "Fractions cannot be equal"],
-        correctIndex: 2
-      },
-      {
-        id: 6,
-        context: null,
-        question: "CBQ 6 — Decision Making\nA water tank is 3/5 full in morning and 1/5 more water is added.\nWhich statement is true?",
-        options: ["Tank becomes 4/5 full", "Tank becomes 3/10 full", "Tank becomes full", "Tank becomes 5/10 full"],
-        correctIndex: 0
-      },
-      {
-        id: 7,
-        context: null,
-        question: "CBQ 7 — Concept Transfer\nTwo pizzas of same size:\nPizza A → eaten 4/8\nPizza B → eaten 1/2\nWhich is correct?",
-        options: ["More pizza A eaten", "More pizza B eaten", "Both amounts equal", "Cannot compare"],
-        correctIndex: 2
-      },
-      {
-        id: 8,
-        context: null,
-        question: "CBQ 8 — Fraction Reasoning\nA student says: “The bigger the denominator, the bigger the fraction.”\nWhich example shows the statement is wrong?",
-        options: ["1/2 and 1/8", "3/5 and 4/5", "2/3 and 3/3", "5/6 and 6/6"],
-        correctIndex: 0
-      },
-      {
-        id: 9,
-        context: null,
-        question: "CBQ 9 — Real-Life Interpretation\nRiya finished 5/6 of her homework.\nWhich situation best describes this?",
-        options: ["Homework just started", "Most homework completed", "Half work done", "Very little work done"],
-        correctIndex: 1
-      },
-      {
-        id: 10,
-        context: null,
-        question: "CBQ 10 — Higher Order Final Challenge\nA ribbon is cut:\n• First cut → 1/4 used\n• Second cut → 2/4 used\nWhat fraction of ribbon is used altogether?",
-        options: ["3/4", "1/2", "2/8", "4/4"],
-        correctIndex: 0
-      },
-      {
-        id: 11,
-        context: "During the school food festival, students prepared different dishes and shared food equally. The class teacher observed how fractions help in fair sharing, comparison, and planning. CASE STUDY 1: Pizza Sharing (Four students shared one pizza equally.)",
-        question: "Q1. What fraction of pizza did each student get?",
-        options: ["1/2", "1/3", "1/4", "4/1"],
-        correctIndex: 2
-      },
-      {
-        id: 12,
-        context: "CASE STUDY 2: Juice Distribution (A jug contains 1 litre juice. Riya drinks 1/4 litre and Aman drinks 2/4 litre.)",
-        question: "Q5. How much juice is consumed altogether?",
-        options: ["3/4 litre", "1/2 litre", "2/8 litre", "4/4 litre"],
-        correctIndex: 0
-      }
+      { id: 1, context: null, question: "CBQ 1 — Sharing Situation\nThree friends share a chocolate equally. Later, one more friend joins and the chocolate is shared again equally.\nWhich statement is correct?", options: ["Each child now gets a bigger share", "Each child now gets a smaller share", "Share remains same", "Chocolate becomes double"], correctIndex: 1 },
+      { id: 2, context: null, question: "CBQ 2 — Comparison in Real Context\nA recipe needs 3/4 cup sugar. Riya added 2/4 cup first.\nWhat should she do to complete the recipe?", options: ["Add 1/4 cup more", "Add 2/4 cup more", "Remove sugar", "Recipe is already complete"], correctIndex: 0 },
+      { id: 3, context: null, question: "CBQ 3 — Reasoning About Equivalent Fractions\nArjun says 2/6 and 1/3 are different because numbers look different.\nWhich explanation proves him wrong?", options: ["Both represent equal parts of same whole", "Bigger denominator always means bigger fraction", "Fractions cannot be compared", "Numerator decides everything"], correctIndex: 0 },
+      { id: 4, context: null, question: "CBQ 4 — Fraction of a Quantity\nA class has 24 students. 1/3 of them bring lunch from home.\nHow many students bring lunch?", options: ["6", "8", "12", "18"], correctIndex: 1 },
+      { id: 5, context: null, question: "CBQ 5 — Error Detection CBQ\nMeera solved: 1/2 + 1/2 = 2/4.\nWhat is correct reasoning?", options: ["She added correctly", "She should simplify the answer", "Denominators cannot be added", "Fractions cannot be equal"], correctIndex: 2 },
+      { id: 6, context: null, question: "CBQ 6 — Decision Making\nA water tank is 3/5 full in morning and 1/5 more water is added.\nWhich statement is true?", options: ["Tank becomes 4/5 full", "Tank becomes 3/10 full", "Tank becomes full", "Tank becomes 5/10 full"], correctIndex: 0 },
+      { id: 7, context: null, question: "CBQ 7 — Concept Transfer\nTwo pizzas of same size:\nPizza A → eaten 4/8\nPizza B → eaten 1/2\nWhich is correct?", options: ["More pizza A eaten", "More pizza B eaten", "Both amounts equal", "Cannot compare"], correctIndex: 2 },
+      { id: 8, context: null, question: "CBQ 8 — Fraction Reasoning\nA student says: “The bigger the denominator, the bigger the fraction.”\nWhich example shows the statement is wrong?", options: ["1/2 and 1/8", "3/5 and 4/5", "2/3 and 3/3", "5/6 and 6/6"], correctIndex: 0 },
+      { id: 9, context: null, question: "CBQ 9 — Real-Life Interpretation\nRiya finished 5/6 of her homework.\nWhich situation best describes this?", options: ["Homework just started", "Most homework completed", "Half work done", "Very little work done"], correctIndex: 1 },
+      { id: 10, context: null, question: "CBQ 10 — Higher Order Final Challenge\nA ribbon is cut:\n• First cut → 1/4 used\n• Second cut → 2/4 used\nWhat fraction of ribbon is used altogether?", options: ["3/4", "1/2", "2/8", "4/4"], correctIndex: 0 },
+      { id: 11, context: "During the school food festival, students prepared different dishes and shared food equally. The class teacher observed how fractions help in fair sharing, comparison, and planning. CASE STUDY 1: Pizza Sharing (Four students shared one pizza equally.)", question: "Q1. What fraction of pizza did each student get?", options: ["1/2", "1/3", "1/4", "4/1"], correctIndex: 2 },
+      { id: 12, context: "CASE STUDY 2: Juice Distribution (A jug contains 1 litre juice. Riya drinks 1/4 litre and Aman drinks 2/4 litre.)", question: "Q5. How much juice is consumed altogether?", options: ["3/4 litre", "1/2 litre", "2/8 litre", "4/4 litre"], correctIndex: 0 }
     ];
 
-    // 2. Audio Mapping from assets directory
     let isMuted = false;
     const sounds = {
       correct: new Audio('assets/correct.mp3'),
@@ -217,209 +146,180 @@
     function playSound(type) {
       if (!isMuted && sounds[type]) {
         sounds[type].currentTime = 0;
-        sounds[type].play().catch(e => console.log("Audio play blocked until interaction"));
+        sounds[type].play().catch(() => {});
       }
     }
 
-    // Audio controls management
-    const muteBtn = document.getElementById('mute-btn');
-    const soundOnIcon = document.getElementById('sound-on-icon');
-    const soundOffIcon = document.getElementById('sound-off-icon');
-
-    muteBtn.addEventListener('click', () => {
-      isMuted = !isMuted;
-      if(isMuted) {
-        soundOnIcon.classList.add('hidden');
-        soundOffIcon.classList.remove('hidden');
-      } else {
-        soundOnIcon.classList.remove('hidden');
-        soundOffIcon.classList.add('hidden');
-      }
-    });
-
-    // 3. Quiz State Engine Configuration
+    // Interactive Screen Elements Control
+    const splashScreen = document.getElementById('splash-screen');
+    const instructionScreen = document.getElementById('instruction-screen');
+    const gameHeader = document.getElementById('game-header');
+    const gameBody = document.getElementById('game-body');
+    const resultsScreen = document.getElementById('results-screen');
+    
+    // Game Session States
     let currentIndex = 0;
     let finalScore = 0;
-    let timerValue = 60; // 60 Seconds per instructions
+    let timerValue = 60;
     let countdownInterval = null;
-    let attemptCounter = 0; // Tracks attempt state per question (Allowed 1 retry -> Max 2 total attempts)
+    let attemptCounter = 0;
 
-    // DOM Nodes
-    const contextPanel = document.getElementById('context-panel');
-    const contextText = document.getElementById('context-text');
-    const questionText = document.getElementById('question-text');
-    const optionsContainer = document.getElementById('options-container');
-    const currentQNum = document.getElementById('current-q-num');
-    const totalQNum = document.getElementById('total-q-num');
-    const timerDisplay = document.getElementById('timer-display');
-    const scoreDisplay = document.getElementById('score-display');
-    const retryPrompt = document.getElementById('retry-prompt');
-    
-    const quizInfoBar = document.getElementById('quiz-info-bar');
-    const mainCard = questionText.parentElement;
-    const resultsPanel = document.getElementById('results-panel');
+    // Trigger Screen 1 Sequence (Splash -> Instruction after 5s)
+    setTimeout(() => {
+      splashScreen.style.opacity = '0';
+      splashScreen.style.visibility = 'hidden';
+      instructionScreen.classList.remove('hidden');
+    }, 5000);
 
-    totalQNum.textContent = quizDatabase.length;
+    // Trigger Screen 2 Sequence (Instruction -> Game)
+    document.getElementById('start-challenge-btn').addEventListener('click', () => {
+      instructionScreen.classList.add('hidden');
+      gameHeader.classList.remove('hidden');
+      gameBody.classList.remove('hidden');
+      renderQuestion();
+    });
 
-    // 4. Timer Logic
+    // Mute Controller Setup
+    document.getElementById('mute-btn').addEventListener('click', () => {
+      isMuted = !isMuted;
+      document.getElementById('sound-on-icon').classList.toggle('hidden', isMuted);
+      document.getElementById('sound-off-icon').classList.toggle('hidden', !isMuted);
+    });
+
     function startTimer() {
       clearInterval(countdownInterval);
       timerValue = 60;
-      timerDisplay.textContent = `${timerValue}s`;
+      document.getElementById('timer-display').textContent = `${timerValue}s`;
       
       countdownInterval = setInterval(() => {
         timerValue--;
-        timerDisplay.textContent = `${timerValue}s`;
-        
+        document.getElementById('timer-display').textContent = `${timerValue}s`;
         if (timerValue <= 0) {
           clearInterval(countdownInterval);
-          // System handles timeout as incorrect progression directly
           playSound('wrong');
-          advanceToNextQuestion();
+          autoRevealAndNext();
         }
       }, 1000);
     }
 
-    // 5. Quiz Layout Assembler
-    function renderCurrentQuestion() {
+    function renderQuestion() {
       if (currentIndex >= quizDatabase.length) {
-        showQuizSummary();
+        showResults();
         return;
       }
 
-      // Reset standard layout elements
       attemptCounter = 0;
-      retryPrompt.classList.add('hidden');
-      currentQNum.textContent = currentIndex + 1;
+      document.getElementById('retry-prompt').classList.add('hidden');
+      document.getElementById('reveal-prompt').classList.add('hidden');
+      document.getElementById('current-q-num').textContent = currentIndex + 1;
       startTimer();
 
       const item = quizDatabase[currentIndex];
-
-      // Handle Case Scenario visibility
+      const contextPanel = document.getElementById('context-panel');
       if (item.context) {
-        contextText.textContent = item.context;
+        document.getElementById('context-text').textContent = item.context;
         contextPanel.classList.remove('hidden');
       } else {
         contextPanel.classList.add('hidden');
       }
 
-      // Render Question Formatting cleanly
-      questionText.innerHTML = item.question.replace(/\n/g, '<br>');
+      document.getElementById('question-text').innerHTML = item.question.replace(/\n/g, '<br>');
+      const container = document.getElementById('options-container');
+      container.innerHTML = '';
 
-      // Clear layout and populate selectable large options
-      optionsContainer.innerHTML = '';
       item.options.forEach((opt, idx) => {
         const btn = document.createElement('button');
-        btn.className = "w-full text-left font-semibold text-gray-800 bg-gray-50 border-2 border-gray-200 px-5 py-4 rounded-xl text-base md:text-lg hover:bg-slate-100 hover:border-gray-300 transition-all duration-150 cursor-pointer active:scale-[0.99] focus:outline-none focus:ring-2 focus:ring-indigo-500 block";
-        btn.innerHTML = `<span class="inline-block bg-white text-gray-500 border border-gray-300 w-7 h-7 rounded-md text-center text-xs leading-6 font-bold mr-3">${String.fromCharCode(65 + idx)}</span>${opt}`;
-        
-        btn.addEventListener('click', () => handleOptionSelection(idx, btn));
-        optionsContainer.appendChild(btn);
+        btn.className = "w-full text-left font-semibold text-slate-800 bg-slate-50 border-2 border-slate-200 px-5 py-4 rounded-xl text-base transition-all duration-150 cursor-pointer active:scale-[0.99] focus:outline-none block";
+        btn.innerHTML = `<span class="inline-block bg-white text-slate-400 border border-slate-200 w-7 h-7 rounded-md text-center text-xs leading-6 font-bold mr-3">${String.fromCharCode(65 + idx)}</span> ${opt}`;
+        btn.addEventListener('click', () => handleSelection(idx, btn));
+        container.appendChild(btn);
       });
     }
 
-    // 6. Response Validation with Retry Protocol
-    function handleOptionSelection(selectedIdx, selectedButton) {
-      const currentItem = quizDatabase[currentIndex];
+    function handleSelection(selectedIdx, btnElement) {
+      const item = quizDatabase[currentIndex];
       attemptCounter++;
 
-      if (selectedIdx === currentItem.correctIndex) {
-        // Correct Action
+      if (selectedIdx === item.correctIndex) {
         clearInterval(countdownInterval);
-        selectedButton.classList.remove('bg-gray-50', 'border-gray-200', 'hover:bg-slate-100');
-        selectedButton.classList.add('bg-emerald-50', 'border-emerald-500', 'text-emerald-900');
-        
-        // Add Score value
+        btnElement.className = "w-full text-left font-semibold bg-emerald-50 border-2 border-emerald-500 text-emerald-900 px-5 py-4 rounded-xl text-base block";
         finalScore++;
-        scoreDisplay.textContent = finalScore;
-
-        // Visual and auditory satisfaction cues
+        document.getElementById('score-display').textContent = finalScore;
         playSound('correct');
-        triggerConfettiFX();
-
-        // Safe short delay for children interaction flow stability
-        disableAllOptionButtons();
-        setTimeout(advanceToNextQuestion, 1200);
-
+        confetti({ particleCount: 50, spread: 60, origin: { y: 0.7 } });
+        lockOptions();
+        setTimeout(nextQuestion, 1500);
       } else {
-        // Wrong Answer Handling
         if (attemptCounter === 1) {
-          // Trigger first mistake fallback (1 retry rule applied here)
+          btnElement.className = "w-full text-left font-semibold bg-rose-50 border-2 border-rose-200 text-rose-400 px-5 py-4 rounded-xl text-base opacity-60 block cursor-not-allowed";
+          btnElement.disabled = true;
+          document.getElementById('retry-prompt').classList.remove('hidden');
           playSound('wrong');
-          selectedButton.classList.remove('bg-gray-50', 'border-gray-200');
-          selectedButton.classList.add('bg-rose-50', 'border-rose-300', 'text-rose-800', 'opacity-60');
-          selectedButton.disabled = true; // Block this incorrect route choice
-          
-          retryPrompt.classList.remove('hidden');
         } else {
-          // Second consecutive wrong response: lock out choice progression
           clearInterval(countdownInterval);
-          selectedButton.classList.remove('bg-gray-50', 'border-gray-200');
-          selectedButton.classList.add('bg-rose-50', 'border-rose-500', 'text-rose-900');
-          
+          btnElement.className = "w-full text-left font-semibold bg-rose-50 border-2 border-rose-500 text-rose-900 px-5 py-4 rounded-xl text-base block";
+          document.getElementById('retry-prompt').classList.add('hidden');
+          document.getElementById('reveal-prompt').classList.remove('hidden');
           playSound('wrong');
-          disableAllOptionButtons();
-          setTimeout(advanceToNextQuestion, 1200);
+          highlightCorrectAnswer();
+          lockOptions();
+          setTimeout(nextQuestion, 2500);
         }
       }
     }
 
-    function disableAllOptionButtons() {
-      const buttons = optionsContainer.querySelectorAll('button');
-      buttons.forEach(btn => btn.disabled = true);
+    function highlightCorrectAnswer() {
+      const item = quizDatabase[currentIndex];
+      const buttons = document.getElementById('options-container').querySelectorAll('button');
+      buttons[item.correctIndex].className = "w-full text-left font-semibold bg-emerald-50 border-2 border-emerald-500 text-emerald-900 px-5 py-4 rounded-xl text-base block ring-4 ring-emerald-100 animate-pulse";
     }
 
-    function advanceToNextQuestion() {
+    function autoRevealAndNext() {
+      document.getElementById('reveal-prompt').classList.remove('hidden');
+      highlightCorrectAnswer();
+      lockOptions();
+      setTimeout(nextQuestion, 2500);
+    }
+
+    function lockOptions() {
+      const buttons = document.getElementById('options-container').querySelectorAll('button');
+      buttons.forEach(b => b.disabled = true);
+    }
+
+    function nextQuestion() {
       currentIndex++;
-      renderCurrentQuestion();
+      renderQuestion();
     }
 
-    // 7. Micro-animation celebration logic via canvas-confetti
-    function triggerConfettiFX() {
-      confetti({
-        particleCount: 60,
-        spread: 55,
-        origin: { y: 0.65 }
-      });
-    }
+    function showResults() {
+      gameHeader.classList.add('hidden');
+      gameBody.classList.add('hidden');
+      resultsScreen.classList.remove('hidden');
 
-    // 8. Results Processing & Output Engine
-    function showQuizSummary() {
-      // Disassemble Active Elements
-      clearInterval(countdownInterval);
-      quizInfoBar.classList.add('hidden');
-      mainCard.classList.add('hidden');
-      
-      // Calculate Performance Metrics
-      const totalQuestions = quizDatabase.length;
-      const percentage = Math.round((finalScore / totalQuestions) * 100);
-      
-      document.getElementById('final-score-text').textContent = `${finalScore} / ${totalQuestions}`;
-      document.getElementById('final-percentage').textContent = `(${percentage}%)`;
+      const percent = Math.round((finalScore / quizDatabase.length) * 100);
+      document.getElementById('final-score-text').textContent = `${finalScore} / ${quizDatabase.length}`;
+      document.getElementById('final-percentage').textContent = `${percent}% Score`;
 
-      const msgContainer = document.getElementById('result-message');
-      
-      // Apply exact evaluation logic parameters defined
-      if (percentage >= 75) {
-        msgContainer.textContent = "Good job";
-        msgContainer.className = "text-lg font-bold p-4 rounded-xl border max-w-sm mx-auto mb-6 bg-emerald-50 text-emerald-800 border-emerald-200";
+      const msg = document.getElementById('result-message');
+      if (percent >= 75) {
+        msg.textContent = "Good job";
+        msg.className = "text-base font-bold max-w-xs mx-auto p-3.5 rounded-xl border mb-8 bg-emerald-50 text-emerald-800 border-emerald-100";
         playSound('cheers');
-      } else if (percentage >= 40) {
-        msgContainer.textContent = "Review this chapter and try again";
-        msgContainer.className = "text-lg font-bold p-4 rounded-xl border max-w-sm mx-auto mb-6 bg-amber-50 text-amber-800 border-amber-200";
+        // Extra confetti for grand ending celebration
+        let end = Date.now() + (2 * 1000);
+        (function frame() {
+          confetti({ particleCount: 3, angle: 60, spread: 55, origin: { x: 0 } });
+          confetti({ particleCount: 3, angle: 120, spread: 55, origin: { x: 1 } });
+          if (Date.now() < end) requestAnimationFrame(frame);
+        }());
+      } else if (percent >= 40) {
+        msg.textContent = "Review this chapter and try again";
+        msg.className = "text-base font-bold max-w-xs mx-auto p-3.5 rounded-xl border mb-8 bg-amber-50 text-amber-800 border-amber-100";
       } else {
-        msgContainer.textContent = "Let’s practise more";
-        msgContainer.className = "text-lg font-bold p-4 rounded-xl border max-w-sm mx-auto mb-6 bg-rose-50 text-rose-800 border-rose-200";
+        msg.textContent = "Let’s practise more";
+        msg.className = "text-base font-bold max-w-xs mx-auto p-3.5 rounded-xl border mb-8 bg-rose-50 text-rose-800 border-rose-100";
       }
-
-      // Display Final Summary State Container
-      resultsPanel.classList.remove('hidden');
     }
-
-    // Init Execution Lifecycle
-    window.onload = () => {
-      renderCurrentQuestion();
-    };
   </script>
 </body>
 </html>
