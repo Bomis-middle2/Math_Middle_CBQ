@@ -1,334 +1,131 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> Large Numbers</title>
-    <style>
-        :root {
-            --primary: #2980b9;
-            --accent: #3498db;
-            --success: #27ae60;
-            --danger: #c0392b;
-            --bg: #f4f7f6;
-            --card-shadow: 0 8px 30px rgba(0,0,0,0.15);
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: var(--bg);
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-        }
-
-        /* Initializing Screen with Innovine Logo placeholder */
-        #brand-screen {
-            position: fixed;
-            inset: 0;
-            background: white;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            z-index: 1000;
-        }
-        #brand-screen img { max-width: 250px; margin-bottom: 20px; }
-        .spinner {
-            border: 4px solid rgba(0, 0, 0, 0.1);
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            border-left-color: var(--primary);
-            animation: spin 1s linear infinite;
-        }
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-        /* Main Game Card */
-        .game-card {
-            width: 90%;
-            max-width: 700px;
-            background: white;
-            padding: 35px;
-            border-radius: 25px;
-            box-shadow: var(--card-shadow);
-            border: 4px solid var(--primary);
-            position: relative;
-        }
-
-        .hidden { display: none !important; }
-
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .branding-title { font-size: 1.5rem; font-weight: bold; color: var(--primary); margin: 0; }
-
-        .hud { font-weight: bold; color: #2c3e50; display: flex; gap: 20px; }
-
-        .progress-container { height: 12px; background: #eee; border-radius: 10px; margin: 15px 0; overflow: hidden; }
-        #progress-bar { height: 100%; background: var(--primary); width: 0%; transition: width 0.4s; }
-
-        .question-text { font-size: 1.2rem; color: #2c3e50; line-height: 1.6; margin-bottom: 20px; font-weight: 500; }
-
-        /* Table Design for Data-Based Challenge */
-        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; background: #fdfefe; }
-        th, td { border: 1px solid #d5dbdb; padding: 12px; text-align: left; font-size: 1rem; }
-        th { background: var(--primary); color: white; }
-
-        .options-grid { display: grid; gap: 12px; }
-        .option-btn {
-            padding: 15px;
-            border: 2px solid #e0e0e0;
-            border-radius: 12px;
-            background: #fff;
-            cursor: pointer;
-            font-size: 1rem;
-            text-align: left;
-            transition: all 0.2s;
-            color: #34495e;
-        }
-        .option-btn:hover:not(:disabled) { border-color: var(--primary); background: #f0f7fc; }
-        .correct { background: var(--success) !important; color: white; border-color: #1e8449 !important; font-weight: bold; }
-        .wrong { background: var(--danger) !important; color: white; border-color: #922b21 !important; animation: shake 0.4s; }
-
-        @keyframes shake { 0%, 100% {transform: translateX(0);} 25% {transform: translateX(-5px);} 75% {transform: translateX(5px);} }
-
-        .feedback-box { margin-top: 20px; padding: 15px; border-radius: 12px; background: #ebf5fb; border-left: 5px solid var(--primary); color: #2c3e50; line-height: 1.5; }
-
-        .btn-next {
-            margin-top: 20px;
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 12px 30px;
-            border-radius: 50px;
-            font-weight: bold;
-            cursor: pointer;
-            float: right;
-            box-shadow: 0 4px 0 #1b4f72;
-            transition: background 0.2s;
-        }
-        .btn-next:hover { background: var(--accent); }
-        .btn-next:active { transform: translateY(2px); box-shadow: 0 2px 0 #1b4f72; }
-    </style>
+<meta charset="UTF-8">
+<title>Large Numbers CBQ</title>
+<style>
+body{font-family:Arial;background:#f4f7f6;margin:0;display:flex;justify-content:center;align-items:center;min-height:100vh}
+.game-card{width:90%;max-width:700px;background:#fff;padding:30px;border-radius:20px;box-shadow:0 8px 30px rgba(0,0,0,0.15)}
+button{padding:12px;border-radius:10px;border:0;background:#2980b9;color:#fff;cursor:pointer;margin:6px 0;width:100%}
+button:hover{background:#3498db}
+.correct{background:#27ae60!important;color:#fff}
+.wrong{background:#c0392b!important;color:#fff}
+.hidden{display:none}
+</style>
 </head>
 <body>
 
-<div id="brand-screen">
-    <img src="assets/logo.png" alt="Innovine Logo">
-    <div class="spinner"></div>
+<div class="game-card">
+<h2>Large Numbers Quiz</h2>
 
-</div>
+<div id="question"></div>
+<div id="options"></div>
+<p id="explain"></p>
 
-<div class="game-card hidden" id="game-card">
-    <div class="header">
-        
-        <div class="hud">
-            <span>Challenge: <span id="q-num">1</span>/10</span>
-            <span>Stars: ⭐ <span id="score">0</span></span>
-        </div>
-    </div>
-
-    <div class="progress-container"><div id="progress-bar"></div></div>
-
-    <div id="quiz-content">
-        <div id="data-table-container"></div>
-        <div class="question-text" id="q-text"></div>
-        <div class="options-grid" id="options-box"></div>
-        <div id="feedback-area" class="feedback-box hidden"></div>
-        <div style="height: 60px;">
-            <button id="next-btn" class="btn-next hidden" onclick="handleNext()">Next Challenge ➡️</button>
-        </div>
-    </div>
-
-    <div id="result-screen" class="hidden" style="text-align: center;">
-        <h1 style="color: var(--primary);">Lab Assessment Complete!</h1>
-        <h2 id="final-score" style="font-size: 3rem; margin: 10px 0; color: #2c3e50;">0/10</h2>
-        <p id="result-msg" style="font-size: 1.2rem; color: #7f8c8d; margin-bottom: 25px;"></p>
-        <button class="btn-next" style="float: none;" onclick="location.reload()">Restart Lab</button>
-    </div>
+<button onclick="nextQ()">Next</button>
 </div>
 
 <script>
-    const audio = {
-        correct: new Audio('assets/correct.mp3'),
-        wrong: new Audio('assets/wrong.mp3'),
-        claps: new Audio('assets/freesound_community-claps-44774.mp3')
-    };
 
-    const questions = [
-        {
-            q: "A news report states that the population of a small town is 8,75,420. If 1 more person moves into the town today, what will the new population be?",
-            options: ["8,75,421", "8,75,430", "8,76,420", "9,75,420"],
-            ans: 0,
-            explain: "Adding 1 to the ones place gives the successor: 8,75,420 + 1 = 8,75,421."
-        },
-        {
-            q: "Look at the cost of four different cars in the table below. Which car is the cheapest?",
-            table: [["Car", "Price (in ₹)"], ["Car A", "₹8,50,000"], ["Car B", "₹8,01,500"], ["Car C", "₹9,00,500"], ["Car D", "₹8,00,500"]],
-            options: ["Car A", "Car B", "Car C", "Car D"],
-            ans: 3,
-            explain: "Comparing from the highest place value down, ₹8,00,500 is the smallest amount. Therefore, Car D is the cheapest."
-        },
-        {
-            q: "In the number 5,28,394, the digit '2' is at the Ten-Thousands place. If you swap it with the digit at the Hundreds place (3), what will the new number be?",
-            options: ["5,38,294", "5,28,394", "5,82,394", "2,58,394"],
-            ans: 0,
-            explain: "Swapping the digits at the 10,000s place (2) and 100s position (3) produces 5,38,294."
-        },
-        {
-            q: "An athlete ran 1,200,000 meters. How would an International sports magazine write this number using commas?",
-            options: ["12,00,000", "1,200,000", "120,00,00", "1,2,00,000"],
-            ans: 1,
-            explain: "The International system groups periods in sequences of three digits from right to left (ones, thousands, millions)."
-        },
-        {
-            q: "A baker made 4,872 cookies. If he wants to tell his friend the approximate number of cookies rounded to the nearest thousand, what should he say?",
-            options: ["4,000", "4,800", "4,900", "5,000"],
-            ans: 3,
-            explain: "Since the value in the hundreds place (872) is 500 or greater, we round up to the next highest thousand."
-        },
-        {
-            q: "A library database displays a total calculation of 90,000 + 5,000 + 40 + 2 books. How many books are there in total?",
-            options: ["9,542", "95,402", "95,042", "9,50,42"],
-            ans: 2,
-            explain: "Summing up the expanded notation values results in 95,042. The zero acts as a required placeholder for the missing hundreds position."
-        },
-        {
-            q: "Which of the following is the largest 7-digit number you can make using the digits 3, 0, 9, 1, 5, 2, 7 without repeating any digit?",
-            options: ["9,75,321", "9,75,32,10", "9,75,32,01", "97,53,210"],
-            ans: 3,
-            explain: "To construct the maximum numeric configuration, arrange the raw digits in strict descending order: 9, 7, 5, 3, 2, 1, 0."
-        },
-        {
-            q: "Rahul was asked to write 'Seven lakh four thousand' in figures. He wrote 7,40,000. What mistake did he make?",
-            options: [
-                "He wrote seventy thousand instead of four thousand.",
-                "He wrote forty thousand instead of four thousand.",
-                "He wrote seven million instead of seven lakh.",
-                "He forgot to add the zero at the end."
-            ],
-            ans: 1,
-            explain: "By writing 7,40,000, Rahul inadvertently placed the '4' digit inside the ten-thousands slot instead of the standard thousands slot."
-        },
-        {
-            q: "A ticket counter sold ticket number 9,99,999. What is the sequential number of the very next ticket to be sold?",
-            options: ["9,99,998", "10,00,000", "1,00,000", "1,00,00,000"],
-            ans: 1,
-            explain: "Adding 1 to 9,99,999 yields 10,00,000 (Ten Lakh)."
-        },
-        {
-            q: "A school clock uses classical Roman Numerals. If the hour hand points exactly at IX, what time is it in standard Hindu-Arabic numerals?",
-            options: ["11 o'clock", "4 o'clock", "9 o'clock", "6 o'clock"],
-            ans: 2,
-            explain: "In Roman numerals, a smaller unit (I) placed before a larger unit (X) denotes subtraction: 10 - 1 = 9."
-        }
-    ];
+const questions = [
 
-    let currentIdx = 0, score = 0, attempts = 0;
+{
+q:"A news report states that the population of a small town is 8,75,420. If 1 more person moves in, what is the new population?",
+options:["8,75,421","8,75,430","8,76,420","9,75,420"],
+ans:0,
+explain:"Adding 1 increases ones place: 8,75,420 → 8,75,421"
+},
 
-    // Splash display timeout
-    setTimeout(() => {
-        document.getElementById('brand-screen').style.display = 'none';
-        document.getElementById('game-card').classList.remove('hidden');
-        loadQuestion();
-    }, 2500);
+{
+q:"Look at the cost of cars. Which is cheapest?",
+options:["Car A","Car B","Car C","Car D"],
+ans:3,
+explain:"₹8,00,500 is the smallest value"
+},
 
-    function loadQuestion() {
-        const data = questions[currentIdx];
-        attempts = 0;
-        document.getElementById('q-num').innerText = currentIdx + 1;
-        document.getElementById('q-text').innerText = data.q;
-        document.getElementById('feedback-area').classList.add('hidden');
-        document.getElementById('next-btn').classList.add('hidden');
-        document.getElementById('progress-bar').style.width = ((currentIdx / questions.length) * 100) + '%';
+// 🔥 Q3 UPDATED CBQ
+{
+q:"A teacher asks students to form different numbers using digits of a given number. In 5,28,394, Ayaan swaps the digit in the Ten-Thousands place with the digit in the Hundreds place. What will be the new number formed?",
+options:["5,38,294","5,28,394","5,82,394","2,58,394"],
+ans:0,
+explain:"2 (Ten-Thousands) is swapped with 3 (Hundreds), giving 5,38,294"
+},
 
-        // Render table dynamically if defined
-        const tableCont = document.getElementById('data-table-container');
-        tableCont.innerHTML = '';
-        if (data.table) {
-            const table = document.createElement('table');
-            data.table.forEach((row, i) => {
-                const tr = document.createElement('tr');
-                row.forEach(cell => {
-                    const el = i === 0 ? document.createElement('th') : document.createElement('td');
-                    el.innerText = cell;
-                    tr.appendChild(el);
-                });
-                table.appendChild(tr);
-            });
-            tableCont.appendChild(table);
-        }
+{
+q:"Write 1,200,000 in international format",
+options:["12,00,000","1,200,000","120,00,00","1,2,00,000"],
+ans:1,
+explain:"International system groups in thousands (1,200,000)"
+},
 
-        // Render options buttons
-        const box = document.getElementById('options-box');
-        box.innerHTML = '';
-        data.options.forEach((opt, i) => {
-            const btn = document.createElement('button');
-            btn.className = 'option-btn';
-            btn.innerText = opt;
-            btn.onclick = () => checkAnswer(i, btn);
-            box.appendChild(btn);
-        });
-    }
+{
+q:"Round 4,872 to nearest thousand",
+options:["4,000","4,800","4,900","5,000"],
+ans:3,
+explain:"872 ≥ 500 so round up to 5,000"
+},
 
-    function checkAnswer(idx, btn) {
-        const data = questions[currentIdx];
-        const feedback = document.getElementById('feedback-area');
-        const allBtns = document.querySelectorAll('.option-btn');
+// 🔥 Q8 UPDATED CBQ
+{
+q:"While writing a cheque in the bank, Rahul wrote '7,40,000' for 'Seven lakh four thousand'. What mistake did he make?",
+options:[
+"He wrote seventy thousand instead of four thousand",
+"He wrote forty thousand instead of four thousand",
+"He wrote seven million instead of seven lakh",
+"He forgot to add the zero at the end"
+],
+ans:1,
+explain:"Correct number is 7,04,000 but Rahul wrote 7,40,000 (4 shifted to ten-thousands place)"
+},
 
-        allBtns.forEach(b => b.disabled = true);
+{
+q:"9,99,999 + 1 = ?",
+options:["9,99,998","10,00,000","1,00,000","1,00,00,000"],
+ans:1,
+explain:"Successor of 9,99,999 is 10,00,000"
+}
 
-        if (idx === data.ans) {
-            btn.classList.add('correct');
-            audio.correct.play();
-            if (attempts === 0) score++;
-            document.getElementById('score').innerText = score;
-            feedback.innerHTML = `<b>🌟 Correct!</b><br>${data.explain}`;
-            feedback.classList.remove('hidden');
-            document.getElementById('next-btn').classList.remove('hidden');
-            if(currentIdx === questions.length - 1) audio.claps.play();
-        } else {
-            btn.classList.add('wrong');
-            audio.wrong.play();
-            attempts++;
-            if (attempts < 2) {
-                setTimeout(() => {
-                    allBtns.forEach(b => { if(!b.classList.contains('wrong')) b.disabled = false; });
-                    feedback.innerHTML = `<b>Not quite right!</b> Review the place values. You have 1 attempt remaining.`;
-                    feedback.classList.remove('hidden');
-                }, 400);
-            } else {
-                allBtns[data.ans].classList.add('correct');
-                feedback.innerHTML = `<b>Out of attempts!</b> The correct choice was: <i>${data.options[data.ans]}</i>.<br>${data.explain}`;
-                feedback.classList.remove('hidden');
-                document.getElementById('next-btn').classList.remove('hidden');
-            }
-        }
-    }
+];
 
-    function handleNext() {
-        currentIdx++;
-        if (currentIdx < questions.length) {
-            loadQuestion();
-        } else {
-            showResults();
-        }
-    }
+let i=0;
 
-    function showResults() {
-        document.getElementById('quiz-content').classList.add('hidden');
-        document.getElementById('result-screen').classList.remove('hidden');
-        document.getElementById('progress-bar').style.width = '100%';
-        document.getElementById('final-score').innerText = `${score}/${questions.length}`;
-        audio.claps.play();
-        
-        let msg = "Keep sharpening those mathematical instincts!";
-        if (score === questions.length) msg = "Sensational! Perfect calculation accuracy score! 🏅📐";
-        else if (score >= 8) msg = "Great job! You have acquired an excellent command over large scale notation numbers.";
-        
-        document.getElementById('result-msg').innerText = msg;
-    }
+function load(){
+let q=questions[i];
+document.getElementById("question").innerHTML=q.q;
+
+let opt="";
+q.options.forEach((o,index)=>{
+opt+=`<button onclick="check(${index},this)">${o}</button>`;
+});
+
+document.getElementById("options").innerHTML=opt;
+document.getElementById("explain").innerHTML="";
+}
+
+function check(ans,btn){
+let q=questions[i];
+
+if(ans==q.ans){
+btn.classList.add("correct");
+document.getElementById("explain").innerHTML="✔ "+q.explain;
+}else{
+btn.classList.add("wrong");
+document.getElementById("explain").innerHTML="❌ Try again conceptually";
+}
+}
+
+function nextQ(){
+i++;
+if(i<questions.length){
+load();
+}else{
+document.getElementById("question").innerHTML="Completed!";
+document.getElementById("options").innerHTML="";
+}
+}
+
+load();
+
 </script>
 
 </body>
