@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Basic Operations</title>
+    <title>Innovine Lab - Basic Operations</title>
     <style>
         :root {
             --primary: #d35400;
@@ -75,8 +75,8 @@
 
         .hidden { display: none !important; }
 
-        .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-        .branding-title { font-size: 1.5rem; font-weight: bold; color: var(--primary); margin: 0; }
+        /* Adjusted header layout to properly position tracking tools when title is omitted */
+        .header { display: flex; justify-content: flex-end; align-items: center; margin-bottom: 20px; }
 
         .hud { font-weight: bold; color: #2c3e50; display: flex; gap: 20px; }
 
@@ -157,7 +157,6 @@
     
     <div id="game-play-area" class="hidden">
         <div class="header">
-         
             <div class="hud">
                 <span>Challenge: <span id="q-num">1</span>/10</span>
                 <span>Stars: ⭐ <span id="score">0</span></span>
@@ -181,7 +180,7 @@
         <div class="creative-pop">🌟🏆🌟</div>
         <h1 style="color: var(--primary); margin: 10px 0;">Congratulations on Completion!</h1>
         <p id="result-msg" style="font-size: 1.2rem; color: #34495e; line-height: 1.6; margin-bottom: 30px;"></p>
-        <button class="btn-next" style="float: none;" onclick="location.reload()">Restart </button>
+        <button class="btn-next" style="float: none;" onclick="location.reload()">Restart Lab</button>
     </div>
 </div>
 
@@ -192,10 +191,10 @@
         claps: new Audio('assets/freesound_community-claps-44774.mp3')
     };
 
-    // 6) Rewritten to make authentic CBQ style questions (Case contexts integrated directly into questions)
+    // Authentic CBQ level Grade 5 data structures
     const questions = [
         {
-            q: "Case Scenario: A city council launches an eco-plantation drive across two separate forest reserves. According to the field logs, the north reserve was populated with 12,450 Hindi non-flowering shrubs and the south reserve received 15,200 English decorative trees. Based on this environmental project data, what is the combined total number of plant assets introduced to the community spaces?",
+            q: "Case Scenario: A city council launches an eco-plantation drive across two separate forest reserves. According to the field logs, the north reserve was populated with 12,450 non-flowering shrubs and the south reserve received 15,200 decorative trees. Based on this environmental project data, what is the combined total number of plant assets introduced to the community spaces?",
             options: ["A) 27,650", "B) 2,750", "C) 27,450", "D) 37,650"],
             ans: 0,
             explain: "To solve this case evaluation, add both plant segments together: 12,450 + 15,200 = 27,650 total assets."
@@ -259,7 +258,6 @@
 
     let currentIdx = 0, score = 0, attempts = 0;
 
-    // Durstenfeld Shuffle algorithm to randomize the CBQ data objects seamlessly
     function randomizeQuestions() {
         for (let i = questions.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
@@ -267,14 +265,13 @@
         }
     }
 
-    // 1) Logo screen stays visible for exactly 5000 milliseconds (5 seconds)
+    // 1) Logo screen stays visible for exactly 5 seconds
     setTimeout(() => {
-        randomizeQuestions(); // Scrambles the questions before game load
+        randomizeQuestions();
         document.getElementById('brand-screen').style.display = 'none';
         document.getElementById('game-card').classList.remove('hidden');
     }, 5000);
 
-    // Moves player from instruction panel to play area
     function startQuizGame() {
         document.getElementById('instruction-screen').classList.add('hidden');
         document.getElementById('game-play-area').classList.remove('hidden');
@@ -317,7 +314,7 @@
         });
     }
 
-    // 5) Each question gives 2 chances to select correct answer and then shows right answer
+    // 5) 2 chances calculation loop logic
     function checkAnswer(idx, btn) {
         const data = questions[currentIdx];
         const feedback = document.getElementById('feedback-area');
@@ -340,14 +337,12 @@
             attempts++;
 
             if (attempts < 2) {
-                // Re-enable remaining buttons for the second attempt
                 setTimeout(() => {
                     allBtns.forEach(b => { if(!b.classList.contains('wrong')) b.disabled = false; });
                     feedback.innerHTML = `<b>Incorrect deduction!</b> Examine the case values again. You have 1 final attempt remaining.`;
                     feedback.classList.remove('hidden');
                 }, 400);
             } else {
-                // Out of chances, auto-highlight correct choice
                 allBtns[data.ans].classList.add('correct');
                 feedback.innerHTML = `<b>Out of attempts!</b> The correct case solution choice was: <i>${data.options[data.ans]}</i>.<br>${data.explain}`;
                 feedback.classList.remove('hidden');
@@ -371,7 +366,7 @@
         document.getElementById('progress-bar').style.width = '100%';
         try { audio.claps.play(); } catch(e){}
         
-        let msg = "Fantastic effort! You have successfully resolved all our case scenarios and finalized the laboratory assignment modules!";
+        let msg = "Fantastic effort! You have successfully resolved all our case scenarios and finalized the assignment modules!";
         if (score === questions.length) msg = "Sensational work! You managed to solve every single practical case application with absolute precision. Incredible job!";
         
         document.getElementById('result-msg').innerText = msg;
