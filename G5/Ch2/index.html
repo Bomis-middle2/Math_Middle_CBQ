@@ -223,9 +223,10 @@
     <div id="instruction-screen">
         <h2 style="color: var(--primary); margin-bottom: 15px;">Learning Outcomes</h2>
         <p style="font-size: 1.1rem; color: #cbd5e1; line-height: 1.6; margin-bottom: 25px;">
-            • Solve high-level, multi-step real-world problems using combined operations.<br>
-            • Apply fundamental operations to compute complex, word-based math expressions.<br>
-            • Maximize computational precision across large-scale calculations.<br><br>
+            • Performing addition and subtraction of large numbers.<br>
+            • Performing multiplication and division of large numbers.<br>
+            • Performing division by 10, 100, 1000, 10000, etc.<br>
+            • Solving word problems based on four basic operations.<br><br>
             You have <b>2 attempts</b> per question to lock in your final choice.
         </p>
         <button class="btn-next" style="float: none;" onclick="startQuizGame()">Start Game</button>
@@ -266,8 +267,7 @@
         claps: new Audio('assets/freesound_community-claps-44774.mp3')
     };
 
-    // Upgraded Higher-Level Basic Operations Questions with Rupees (₹)
-    // Question 5 replaced from abstract hierarchy expression to an explicit, situational arithmetic scenario
+    // Corrected, text-aligned, and strictly verified question list matching textbook criteria
     const questions = [
         {
             q: "A large warehouse ordered 14,250 boxes of electronics. They shipped out 5,875 boxes in the morning and 4,390 boxes in the afternoon. How many boxes remain in the warehouse?",
@@ -294,10 +294,10 @@
             explain: "Dividing 1,845 by 15 gives exactly 123 with a remainder of 0."
         },
         {
-            q: "An electronics store purchases a shipment of 80 soundbars for ₹1,200 each. If they sell 45 of them for ₹1,800 each and the remaining units at a discount for ₹1,400 each, what is the store's total revenue?",
-            options: ["A) ₹110,000", "B) ₹130,000", "C) ₹145,000", "D) ₹153,000"],
-            ans: 1,
-            explain: "Revenue from first batch: 45 × ₹1,800 = ₹81,000. Remaining soundbars: 80 - 45 = 35 units. Revenue from discounted batch: 35 × ₹1,400 = ₹49,000. Total revenue = ₹81,000 + ₹49,000 = ₹130,000."
+            q: "A mega relief fund collected ₹8,45,000 to assist local communities. If the fund manager distributes exactly ₹10,000 to each registered relief center, how many centers can receive full funding, and what amount is left over?",
+            options: ["A) 84 centers funded, ₹5,000 left over", "B) 845 centers funded, ₹0 left over", "C) 84 centers funded, ₹500 left over", "D) 85 centers funded, ₹5,000 left over"],
+            ans: 0,
+            explain: "Dividing ₹8,45,000 by 10,000 leaves a quotient of 84 (centers funded) and a remainder of 5,000 (₹5,000 left over)."
         },
         {
             q: "A factory manufactures 345 toy cars every hour. The factory runs for two 8-hour shifts every day. How many toy cars are produced in 5 days?",
@@ -340,7 +340,6 @@
         }
     }
 
-    // Precise Logo progress timer tracking exactly 5000ms (5 seconds)
     window.addEventListener('DOMContentLoaded', () => {
         const fill = document.getElementById('loader-fill');
         let pct = 0;
@@ -354,7 +353,7 @@
                 document.getElementById('brand-screen').style.display = 'none';
                 document.getElementById('game-card').classList.remove('hidden');
             }
-        }, 50); // 100 iterations * 50ms = 5000ms
+        }, 50);
     });
 
     function startQuizGame() {
