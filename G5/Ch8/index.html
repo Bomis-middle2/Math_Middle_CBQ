@@ -2,125 +2,74 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>CBQ Map Skills - Innovine</title>
+<title>Grade 5 CBQ - Map Skills</title>
 
 <style>
 body{
     margin:0;
-    font-family: Arial, sans-serif;
-    background:#f2f6ff;
-    overflow:hidden;
+    font-family:Arial;
+    background:#eef3ff;
 }
 
-/* SPLASH */
 .screen{
     display:none;
-    width:100%;
-    height:100vh;
-    justify-content:center;
-    align-items:center;
-    flex-direction:column;
     text-align:center;
+    padding:20px;
 }
 
-#splash{
-    background:white;
+#game{
+    display:none;
 }
 
-/* BUTTON */
-button{
-    padding:12px 25px;
-    font-size:18px;
-    border:none;
-    border-radius:10px;
-    background:#2e6ef7;
-    color:white;
-}
-
-/* GAME BOX */
-.game-box{
-    width:95%;
+.box{
     max-width:900px;
+    margin:auto;
     background:white;
     padding:15px;
     border-radius:12px;
     box-shadow:0 0 10px rgba(0,0,0,0.1);
 }
 
-.options button{
-    display:block;
+button{
     width:100%;
-    margin:10px 0;
+    padding:12px;
+    margin:8px 0;
+    font-size:16px;
+    border:none;
+    border-radius:8px;
 }
 
-/* FEEDBACK */
-.correct{
-    background:green !important;
-}
-.wrong{
-    background:red !important;
-}
-
-/* CONFETTI */
-.confetti {
-    position: fixed;
-    width: 10px;
-    height: 10px;
-    background: gold;
-    animation: fall 3s linear infinite;
-}
-
-@keyframes fall {
-    0% {transform: translateY(-100px) rotate(0deg);}
-    100% {transform: translateY(100vh) rotate(360deg);}
+#msg{
+    font-weight:bold;
+    margin-top:10px;
 }
 </style>
 </head>
 
 <body>
 
-<!-- ================= SPLASH ================= -->
-<div id="splash" class="screen" style="display:flex;">
-    <img src="innovine-logo.png" width="200">
-    <h2>Innovine Learning</h2>
+<!-- SPLASH -->
+<div id="splash" class="screen" style="display:block;">
+    <img src="innovine-logo.png" width="180">
+    <h2>Innovine CBQ Learning</h2>
 </div>
 
-<!-- ================= INSTRUCTIONS ================= -->
-<div id="instruction" class="screen">
-    <h2>📍 Map Skills CBQ</h2>
-    <p>Read the map carefully and answer the question.</p>
-    <button onclick="startGame()">Start</button>
-</div>
-
-<!-- ================= GAME ================= -->
+<!-- GAME -->
 <div id="game" class="screen">
-    <div class="game-box">
+<div class="box">
 
-        <h3>Q1 — Direction Understanding</h3>
+<h3 id="qtitle"></h3>
 
-        <!-- MAP IMAGE -->
-        <img src="/mnt/data/a_clean_educational_worksheet_multiple_choice_qu.png"
-             style="width:100%;border-radius:10px;margin:10px 0;">
+<!-- IMAGE ONLY WHEN REQUIRED -->
+<img id="qimg" style="width:100%;border-radius:10px;display:none;">
 
-        <p>
-        If a student walks from Playground to Library, which direction does the student move?
-        </p>
+<p id="qtext"></p>
 
-        <div class="options">
-            <button onclick="check(this,'South')">A. South</button>
-            <button onclick="check(this,'North')">B. North</button>
-            <button onclick="check(this,'East')">C. East</button>
-            <button onclick="check(this,'West')">D. West</button>
-        </div>
+<div id="options"></div>
 
-        <p id="msg"></p>
-    </div>
+<div id="msg"></div>
+
 </div>
-
-<!-- ================= END ================= -->
-<div id="end" class="screen">
-    <h1>🎉 Good Job!</h1>
-    <p>You completed the challenge</p>
 </div>
 
 <!-- AUDIO -->
@@ -129,63 +78,176 @@ button{
 
 <script>
 
-let attempts = 0;
-let correctAnswer = "North";
-
 setTimeout(()=>{
     document.getElementById("splash").style.display="none";
-    document.getElementById("instruction").style.display="flex";
-}, 5000);
+    document.getElementById("game").style.display="block";
+    loadQuestion(0);
+},3000);
 
-function startGame(){
-    document.getElementById("instruction").style.display="none";
-    document.getElementById("game").style.display="flex";
+let index = 0;
+let attempts = 0;
+
+const quiz = [
+
+/* Q1 */
+{
+q:"Q1: From Playground to Library, direction is?",
+img:"q1.png",
+options:["South","North","East","West"],
+ans:"North"
+},
+
+/* Q2 */
+{
+q:"Q2: From Library to Playground direction is?",
+img:"q2.png",
+options:["North","East","South","West"],
+ans:"South"
+},
+
+/* Q3 */
+{
+q:"Q3: Garden is located?",
+img:"q3.png",
+options:["West of Library","East of Library","North of Gate","South of Playground"],
+ans:"East of Library"
+},
+
+/* Q4 */
+{
+q:"Q4: Scale 1cm = 10m, 3cm = ?",
+img:"q4.png",
+options:["13m","30m","300m","3m"],
+ans:"30m"
+},
+
+/* Q5 */
+{
+q:"Q5: Why is scale important?",
+img:"q5.png",
+options:[
+"Shows colours",
+"Converts map to real distance",
+"Decorates map",
+"Removes directions"
+],
+ans:"Converts map to real distance"
+},
+
+/* Q6 NO IMAGE */
+{
+q:"Q6: Blue wavy line represents?",
+img:"",
+options:["Road","River","Forest","Mountain"],
+ans:"River"
+},
+
+/* Q7 NO IMAGE */
+{
+q:"Q7: Shortest route is found using?",
+img:"",
+options:["Colours","Scale distance","Shapes","Names"],
+ans:"Scale distance"
+},
+
+/* Q8 NO IMAGE */
+{
+q:"Q8: Sun rises in which direction?",
+img:"",
+options:["North","South","East","West"],
+ans:"East"
+},
+
+/* Q9 NO IMAGE */
+{
+q:"Q9: Maps are not exact real size because?",
+img:"",
+options:[
+"Smaller using scale",
+"Only drawings",
+"Change direction",
+"No distance shown"
+],
+ans:"Smaller using scale"
+},
+
+/* Q10 NO IMAGE */
+{
+q:"Q10: Hospital west of school and east of park means?",
+img:"",
+options:[
+"Between both",
+"North",
+"South",
+"Outside"
+],
+ans:"Between both"
 }
 
-function check(btn, answer){
+];
 
-    if(attempts >= 2) return;
+function loadQuestion(i){
 
+attempts = 0;
+let q = quiz[i];
+
+document.getElementById("qtitle").innerText = q.q;
+document.getElementById("msg").innerText = "";
+
+let img = document.getElementById("qimg");
+
+if(q.img){
+    img.src = q.img;
+    img.style.display = "block";
+}else{
+    img.style.display = "none";
+}
+
+let optBox = document.getElementById("options");
+optBox.innerHTML = "";
+
+q.options.forEach(opt=>{
+    let btn = document.createElement("button");
+    btn.innerText = opt;
+    btn.onclick = ()=>checkAnswer(opt);
+    optBox.appendChild(btn);
+});
+
+}
+
+function checkAnswer(opt){
+
+let q = quiz[index];
+
+if(opt === q.ans){
+
+    document.getElementById("correctSound").play();
+
+    index++;
+
+    setTimeout(()=>{
+        if(index < quiz.length){
+            loadQuestion(index);
+        }else{
+            document.getElementById("game").innerHTML =
+            "<h1>🎉 Excellent Work!</h1>";
+        }
+    },800);
+
+}else{
+
+    document.getElementById("wrongSound").play();
     attempts++;
 
-    if(answer === correctAnswer){
-
-        document.getElementById("correctSound").play();
-        btn.classList.add("correct");
-
-        setTimeout(()=>{
-            showEnd();
-        },1000);
-
-    } else {
-
-        document.getElementById("wrongSound").play();
-        btn.classList.add("wrong");
-
-        if(attempts == 2){
-            document.getElementById("msg").innerHTML =
-            "✔ Correct Answer: North";
-        } else {
-            document.getElementById("msg").innerHTML =
-            "Try again!";
-        }
+    if(attempts == 2){
+        document.getElementById("msg").innerText =
+        "Correct Answer: " + q.ans;
+    }else{
+        document.getElementById("msg").innerText =
+        "Try Again!";
     }
 }
 
-function showEnd(){
-    document.getElementById("game").style.display="none";
-    document.getElementById("end").style.display="flex";
-    launchConfetti();
-}
-
-function launchConfetti(){
-    for(let i=0;i<50;i++){
-        let c = document.createElement("div");
-        c.className="confetti";
-        c.style.left = Math.random()*100 + "vw";
-        c.style.background = ["gold","blue","red","green"][Math.floor(Math.random()*4)];
-        document.body.appendChild(c);
-    }
 }
 
 </script>
