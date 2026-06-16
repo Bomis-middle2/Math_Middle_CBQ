@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Map Skills</title>
+<title>Map Skills CBQ</title>
 
 <style>
 body{
@@ -59,10 +59,8 @@ button{
 
 <h3 id="qtitle"></h3>
 
-<!-- IMAGE ONLY WHEN REQUIRED -->
+<!-- IMAGE -->
 <img id="qimg" style="width:100%;border-radius:10px;display:none;">
-
-<p id="qtext"></p>
 
 <div id="options"></div>
 
@@ -86,6 +84,7 @@ setTimeout(()=>{
 let index = 0;
 let attempts = 0;
 
+/* ---------------- QUESTIONS ---------------- */
 const quiz = [
 
 /* Q1 */
@@ -96,7 +95,7 @@ options:["South","North","East","West"],
 ans:"North"
 },
 
-/* Q2 */
+/* Q2 (SAME IMAGE) */
 {
 q:"Q2: From Library to Playground direction is?",
 img:"assets/q1.jpg",
@@ -104,7 +103,7 @@ options:["North","East","South","West"],
 ans:"South"
 },
 
-/* Q3 */
+/* Q3 (SAME IMAGE) */
 {
 q:"Q3: Garden is located?",
 img:"assets/q1.jpg",
@@ -112,7 +111,7 @@ options:["West of Library","East of Library","North of Gate","South of Playgroun
 ans:"East of Library"
 },
 
-/* Q4 */
+/* Q4 (SAME IMAGE) */
 {
 q:"Q4: Scale 1cm = 10m, 3cm = ?",
 img:"assets/q1.jpg",
@@ -120,7 +119,7 @@ options:["13m","30m","300m","3m"],
 ans:"30m"
 },
 
-/* Q5 */
+/* Q5 (SAME IMAGE) */
 {
 q:"Q5: Why is scale important?",
 img:"assets/q1.jpg",
@@ -141,7 +140,7 @@ options:["Road","River","Forest","Mountain"],
 ans:"River"
 },
 
-/* Q7 NO IMAGE */
+/* Q7 */
 {
 q:"Q7: Shortest route is found using?",
 img:"",
@@ -149,7 +148,7 @@ options:["Colours","Scale distance","Shapes","Names"],
 ans:"Scale distance"
 },
 
-/* Q8 NO IMAGE */
+/* Q8 */
 {
 q:"Q8: Sun rises in which direction?",
 img:"",
@@ -157,7 +156,7 @@ options:["North","South","East","West"],
 ans:"East"
 },
 
-/* Q9 NO IMAGE */
+/* Q9 */
 {
 q:"Q9: Maps are not exact real size because?",
 img:"",
@@ -170,7 +169,7 @@ options:[
 ans:"Smaller using scale"
 },
 
-/* Q10 NO IMAGE */
+/* Q10 */
 {
 q:"Q10: Hospital west of school and east of park means?",
 img:"",
@@ -185,9 +184,11 @@ ans:"Between both"
 
 ];
 
+/* ---------------- LOAD QUESTION ---------------- */
 function loadQuestion(i){
 
 attempts = 0;
+
 let q = quiz[i];
 
 document.getElementById("qtitle").innerText = q.q;
@@ -202,18 +203,20 @@ if(q.img){
     img.style.display = "none";
 }
 
-let optBox = document.getElementById("options");
-optBox.innerHTML = "";
+/* OPTIONS */
+let box = document.getElementById("options");
+box.innerHTML = "";
 
 q.options.forEach(opt=>{
     let btn = document.createElement("button");
     btn.innerText = opt;
     btn.onclick = ()=>checkAnswer(opt);
-    optBox.appendChild(btn);
+    box.appendChild(btn);
 });
 
 }
 
+/* ---------------- CHECK ---------------- */
 function checkAnswer(opt){
 
 let q = quiz[index];
