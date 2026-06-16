@@ -209,7 +209,6 @@
 </head>
 <body>
 
-<!-- White Startup Logo Layer (Only Logo Image, No Brand Text Displayed) -->
 <div id="brand-screen">
     <div class="logo-wrapper">
         <img src="assets/logo.png" alt="Logo" onerror="this.style.opacity='0.5';">
@@ -221,18 +220,17 @@
 
 <div class="game-card hidden" id="game-card">
 
-    <!-- Instructions Interface -->
     <div id="instruction-screen">
-        <h2 style="color: var(--primary); margin-bottom: 15px;">Basic Operations Challenge</h2>
+        <h2 style="color: var(--primary); margin-bottom: 15px;">Learning Outcomes</h2>
         <p style="font-size: 1.1rem; color: #cbd5e1; line-height: 1.6; margin-bottom: 25px;">
-            • Test your advanced addition, subtraction, multiplication, and division skills!<br>
-            • You have <b>2 attempts</b> to solve each multi-step mathematical puzzle.<br>
-            • Read carefully and apply proper order of operations. Good luck!
+            • Solve high-level, multi-step real-world problems using combined operations.<br>
+            • Apply the correct operational hierarchy to compute complex math expressions.<br>
+            • Maximize computational precision across large-scale calculations.<br><br>
+            You have <b>2 attempts</b> per question to lock in your final choice.
         </p>
         <button class="btn-next" style="float: none;" onclick="startQuizGame()">Start Game</button>
     </div>
     
-    <!-- Gameplay Loop Deck -->
     <div id="game-play-area" class="hidden">
         <div class="header">
             <div class="hud">
@@ -253,7 +251,6 @@
         </div>
     </div>
 
-    <!-- Final Result Windows -->
     <div id="result-screen" class="hidden" style="text-align: center; padding: 20px 0;">
         <div class="creative-pop">🎉🧮⚡</div>
         <h1 style="color: var(--primary); margin: 10px 0;">Challenge Complete!</h1>
@@ -437,7 +434,7 @@
         try { audio.claps.play(); } catch(e){}
         
         let msg = `Great effort! You completed the challenge and earned ${score} out of 10 stars!`;
-        if (score === questions.length) msg = "Sensational! Perfect operational logic. You have completely mastered complex problem solving!";
+        if (score === questions.length) msg = "Sensational! Perfect operational logic. You have successfully demonstrated mastery over all learning objectives!";
         
         document.getElementById('result-msg').innerText = msg;
     }
