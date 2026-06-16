@@ -3,25 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Basic Operations</title>
+    <title>Factors and Multiples Game</title>
     <style>
         :root {
-            --primary: #d35400;
-            --accent: #e67e22;
+            --primary: #8e44ad;
+            --accent: #9b59b6;
             --success: #27ae60;
             --danger: #c0392b;
-            --bg: #f4f7f6;
-            --card-shadow: 0 8px 30px rgba(0,0,0,0.15);
+            --bg: #0f172a;
+            --card-shadow: 0 8px 30px rgba(0,0,0,0.3);
         }
 
         * {
             box-sizing: border-box;
+            margin: 0;
+            padding: 0;
         }
 
-        body 
+        body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: var(--bg);
-            margin: 0;
+            color: #f8fafc;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -29,102 +31,171 @@
             padding: 15px;
         }
 
-        /* 1) Innovine logo screen at start for 5 seconds.. nothing else */
+        /* 1) Fixed Centered Logo Screen Style */
         #brand-screen {
             position: fixed;
             inset: 0;
-            background: white;
+            background: #0f172a;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             z-index: 1000;
+            text-align: center;
+            padding: 20px;
+        }
+        .logo-wrapper {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 180px;
+            margin-bottom: 20px;
+            width: 100%;
         }
         #brand-screen img { 
             width: 80%;
-            max-width: 250px; 
+            max-width: 220px; 
             height: auto;
+            object-fit: contain;
+        }
+        .loader-bar-bg {
+            width: 200px;
+            height: 6px;
+            background: #1e293b;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+        .loader-bar-fill {
+            width: 0%;
+            height: 100%;
+            background: var(--primary);
+            box-shadow: 0 0 10px var(--primary);
         }
 
-        /* 3) Playable on all screen type laptop, desktop, mobile, tablet */
+        /* 3) Adaptive Cross-Device Container Box */
         .game-card {
             width: 100%;
-            max-width: 700px;
-            background: white;
+            max-width: 650px;
+            background: #1e293b;
             padding: 35px;
-            border-radius: 25px;
+            border-radius: 24px;
             box-shadow: var(--card-shadow);
-            border: 4px solid var(--primary);
+            border: 3px solid var(--primary);
             position: relative;
-            margin: auto;
         }
 
         @media (max-width: 600px) {
             .game-card {
-                padding: 20px 15px;
-                border-radius: 15px;
-            }
-            .header {
-                flex-direction: column;
-                gap: 10px;
-                align-items: flex-start;
+                padding: 24px 16px;
+                border-radius: 16px;
             }
             .option-btn {
-                padding: 12px !important;
+                padding: 14px !important;
+                font-size: 1rem !important;
+            }
+            #q-text {
+                font-size: 1.15rem !important;
             }
         }
 
         .hidden { display: none !important; }
 
-        /* Adjusted header layout to properly position tracking tools when title is omitted */
-        .header { display: flex; justify-content: flex-end; align-items: center; margin-bottom: 20px; }
+        .header { 
+            display: flex; 
+            justify-content: flex-end; 
+            align-items: center; 
+            margin-bottom: 15px; 
+        }
+        .hud { 
+            font-weight: bold; 
+            color: #38bdf8; 
+            display: flex; 
+            gap: 20px; 
+            font-size: 1.1rem;
+        }
 
-        .hud { font-weight: bold; color: #2c3e50; display: flex; gap: 20px; }
+        .progress-container { 
+            height: 10px; 
+            background: #334155; 
+            border-radius: 10px; 
+            margin-bottom: 25px; 
+            overflow: hidden; 
+        }
+        #progress-bar { 
+            height: 100%; 
+            background: var(--primary); 
+            width: 0%; 
+            transition: width 0.4s ease; 
+        }
 
-        .progress-container { height: 12px; background: #eee; border-radius: 10px; margin: 15px 0; overflow: hidden; }
-        #progress-bar { height: 100%; background: var(--primary); width: 0%; transition: width 0.4s; }
+        .question-text { 
+            font-size: 1.3rem; 
+            color: #f1f5f9; 
+            line-height: 1.5; 
+            margin-bottom: 25px; 
+            font-weight: 600; 
+        }
 
-        .question-text { font-size: 1.2rem; color: #2c3e50; line-height: 1.6; margin-bottom: 20px; font-weight: 500; }
-
-        table { width: 100%; border-collapse: collapse; margin-bottom: 20px; background: #fdfefe; }
-        th, td { border: 1px solid #d5dbdb; padding: 12px; text-align: left; font-size: 1rem; }
-        th { background: var(--primary); color: white; }
-
-        .options-grid { display: grid; gap: 12px; }
+        .options-grid { 
+            display: grid; 
+            grid-template-columns: 1fr;
+            gap: 14px; 
+        }
         .option-btn {
-            padding: 15px;
-            border: 2px solid #e0e0e0;
-            border-radius: 12px;
-            background: #fff;
+            padding: 16px;
+            border: 2px solid #334155;
+            border-radius: 14px;
+            background: #334155;
             cursor: pointer;
-            font-size: 1rem;
+            font-size: 1.1rem;
+            font-weight: 500;
             text-align: left;
-            transition: all 0.2s;
-            color: #34495e;
+            transition: background 0.2s, border-color 0.2s;
+            color: #f1f5f9;
             width: 100%;
         }
-        .option-btn:hover:not(:disabled) { border-color: var(--primary); background: #fffcf9; }
+        .option-btn:hover:not(:disabled) { 
+            border-color: var(--primary); 
+            background: #475569; 
+        }
+        
+        /* 5) Feedback & Chance Indicators */
         .correct { background: var(--success) !important; color: white; border-color: #1e8449 !important; font-weight: bold; }
         .wrong { background: var(--danger) !important; color: white; border-color: #922b21 !important; animation: shake 0.4s; }
 
-        @keyframes shake { 0%, 100% {transform: translateX(0);} 25% {transform: translateX(-5px);} 75% {transform: translateX(5px);} }
+        @keyframes shake { 
+            0%, 100% { transform: translateX(0); } 
+            25% { transform: translateX(-6px); } 
+            75% { transform: translateX(6px); } 
+        }
 
-        .feedback-box { margin-top: 20px; padding: 15px; border-radius: 12px; background: #fdf2e9; border-left: 5px solid var(--primary); color: #2c3e50; line-height: 1.5; }
+        .feedback-box { 
+            margin-top: 20px; 
+            padding: 16px; 
+            border-radius: 14px; 
+            background: #0f172a; 
+            border-left: 5px solid var(--primary); 
+            color: #cbd5e1; 
+            line-height: 1.5; 
+            font-size: 1.05rem;
+        }
 
         .btn-next {
             margin-top: 20px;
             background: var(--primary);
             color: white;
             border: none;
-            padding: 12px 30px;
+            padding: 12px 32px;
             border-radius: 50px;
             font-weight: bold;
+            font-size: 1.05rem;
             cursor: pointer;
             float: right;
-            box-shadow: 0 4px 0 #a04000;
-            transition: background 0.2s;
+            box-shadow: 0 4px 0 #6c3483;
+            transition: background 0.2s, transform 0.1s;
         }
         .btn-next:hover { background: var(--accent); }
-        .btn-next:active { transform: translateY(2px); box-shadow: 0 2px 0 #a04000; }
+        .btn-next:active { transform: translateY(2px); box-shadow: 0 2px 0 #6c3483; }
 
         .creative-pop {
             font-size: 4.5rem;
@@ -133,24 +204,30 @@
         }
         @keyframes popScale {
             0% { transform: scale(1); }
-            100% { transform: scale(1.12); }
+            100% { transform: scale(1.1); }
         }
     </style>
 </head>
 <body>
 
 <div id="brand-screen">
-    <img src="assets/logo.png" alt="Innovine Logo">
+    <div class="logo-wrapper">
+        <img src="assets/logo.png" alt="Innovine Logo" onerror="this.style.opacity='0.5';">
+    </div>
+    <h2 style="color: #f8fafc; font-size: 1.8rem; margin-bottom: 20px; letter-spacing: 1px; font-weight: 700;">INNOVINE MATH</h2>
+    <div class="loader-bar-bg">
+        <div id="loader-fill" class="loader-bar-fill"></div>
+    </div>
 </div>
 
 <div class="game-card hidden" id="game-card">
 
     <div id="instruction-screen">
-        <h2 style="color: var(--primary); margin-top: 0;">Instructions</h2>
-        <p style="font-size: 1.1rem; color: #2c3e50; line-height: 1.6; margin-bottom: 25px;">
-            • Read each case study scenario carefully.<br>
-            • You will get 2 chances to select the correct answer.<br>
-            • If both answers are wrong, the right answer will be displayed.
+        <h2 style="color: var(--primary); margin-bottom: 15px;">How to Play</h2>
+        <p style="font-size: 1.1rem; color: #cbd5e1; line-height: 1.6; margin-bottom: 25px;">
+            • Read each factors and multiples question carefully.<br>
+            • You have <b>2 attempts</b> to select the right path on each question.<br>
+            • Missing both options activates automated corrections.
         </p>
         <button class="btn-next" style="float: none;" onclick="startQuizGame()">Start Game</button>
     </div>
@@ -158,7 +235,7 @@
     <div id="game-play-area" class="hidden">
         <div class="header">
             <div class="hud">
-                <span>Challenge: <span id="q-num">1</span>/10</span>
+                <span>Sprint: <span id="q-num">1</span>/10</span>
                 <span>Stars: ⭐ <span id="score">0</span></span>
             </div>
         </div>
@@ -166,7 +243,6 @@
         <div class="progress-container"><div id="progress-bar"></div></div>
 
         <div id="quiz-content">
-            <div id="data-table-container"></div>
             <div class="question-text" id="q-text"></div>
             <div class="options-grid" id="options-box"></div>
             <div id="feedback-area" class="feedback-box hidden"></div>
@@ -177,10 +253,10 @@
     </div>
 
     <div id="result-screen" class="hidden" style="text-align: center; padding: 20px 0;">
-        <div class="creative-pop">🌟🏆🌟</div>
-        <h1 style="color: var(--primary); margin: 10px 0;">Congratulations on Completion!</h1>
-        <p id="result-msg" style="font-size: 1.2rem; color: #34495e; line-height: 1.6; margin-bottom: 30px;"></p>
-        <button class="btn-next" style="float: none;" onclick="location.reload()">Restart</button>
+        <div class="creative-pop">🏆✨🏁</div>
+        <h1 style="color: var(--primary); margin: 10px 0;">Race Finished!</h1>
+        <p id="result-msg" style="font-size: 1.2rem; color: #cbd5e1; line-height: 1.6; margin-bottom: 30px;"></p>
+        <button class="btn-next" style="float: none;" onclick="location.reload()">Play Again</button>
     </div>
 </div>
 
@@ -191,68 +267,66 @@
         claps: new Audio('assets/freesound_community-claps-44774.mp3')
     };
 
-    // Authentic CBQ level Grade 5 data structures
     const questions = [
         {
-            q: "Case Scenario: A city council launches an eco-plantation drive across two separate forest reserves. According to the field logs, the north reserve was populated with 12,450 non-flowering shrubs and the south reserve received 15,200 decorative trees. Based on this environmental project data, what is the combined total number of plant assets introduced to the community spaces?",
-            options: ["A) 27,650", "B) 2,750", "C) 27,450", "D) 37,650"],
-            ans: 0,
-            explain: "To solve this case evaluation, add both plant segments together: 12,450 + 15,200 = 27,650 total assets."
-        },
-        {
-            q: "Case Scenario: An automated processing factory manufactured a macro batch containing 85,000 diagnostic bulb units during its morning run. A secondary quality audit check revealed that exactly 2,400 bulbs sustained damage during fast-sorting transit. Reviewing these factory logistics logs, how many fully operational bulbs are left intact?",
-            options: ["A) 87,400", "B) 82,600", "C) 83,600", "D) 82,000"],
-            ans: 1,
-            explain: "Extract the data patterns and subtract broken inventory allocations from the total production index: 85,000 - 2,400 = 82,600."
-        },
-        {
-            q: "Case Scenario: An international conference coordinator maps layout metrics for student groups. Standard transit parameters show that one specific school bus model can securely carry up to 52 students per route. If the dispatcher assigns 15 of these identical buses to run simultaneously, how many students can be moved?",
-            options: ["A) 780", "B) 520", "C) 670", "D) 800"],
-            ans: 0,
-            explain: "Analyze unit capacities and scale upward via multiplication across the vehicle deployment fleet: 52 × 15 = 780."
-        },
-        {
-            q: "Case Scenario: A local agriculture harvest farmer records a seasonal yield of 1,200 organic apples. He aims to distribute this entire payload equally across 12 identical cardboard layout storage boxes for market delivery. Deduce the exact box capacity requirements: how many apples must be inside each container?",
-            options: ["A) 12", "B) 100", "C) 120", "D) 1,00,0"],
-            ans: 1,
-            explain: "Divide the complete inventory metrics systematically by the structural unit layout count: 1,200 ÷ 12 = 100."
-        },
-        {
-            q: "Case Scenario: Simran monitors her banking wallet ledger which displays a beginning liquidity value of ₹5,000. She then coordinates multiple retail transactions, spending ₹1,200 on an evening dress followed by a ₹800 charge for sports shoes. Evaluating Simran's current expense trends, how much liquid currency remains in her balance?",
-            options: ["A) ₹3,000", "B) ₹2,000", "C) ₹4,200", "D) ₹3,800"],
-            ans: 0,
-            explain: "Aggregate expenditure balance equals ₹1,200 + ₹800 = ₹2,000. Leftover wallet volume is found via subtraction: ₹5,000 - ₹2,000 = ₹3,000."
-        },
-        {
-            q: "Case Scenario: A new school wing features 25 structural classrooms, and architecture designs show that each individual room requires a fixed count of 40 chairs. The logistics manager checks the storage rooms and finds that 900 operational chairs are already available. Calculate the supply discrepancy: how many more chairs must the team buy?",
-            options: ["A) 1,00,0", "B) 100", "C) 1,900", "D) 400"],
-            ans: 1,
-            explain: "Total required target allocation = 25 × 40 = 1,000. Net procurement requirements minus stock baseline: 1,000 - 900 = 100."
-        },
-        {
-            q: "Case Scenario: A software developer writes a data compression algorithm that takes a dynamic, extremely large incoming number stream and runs it through a multiplication loop where the constant modifier variable is locked at absolute 0. No matter how large the initial numbers scale, the algorithm's output will always be:",
-            options: ["A) The number itself", "B) 1", "C) 0", "D) 10"],
+            q: "Which of the following numbers is a factor of 15?",
+            options: ["A) 2", "B) 4", "C) 5", "D) 6"],
             ans: 2,
-            explain: "According to core multiplicative laws, mapping any numeric scale value factor against zero yields an evaluation value of zero."
+            explain: "5 is a factor of 15 because 15 can be divided completely by 5 without leaving any remainder (3 * 5 = 15)."
         },
         {
-            q: "Case Scenario: A student operating a digital desktop lab simulator attempted to scale down a dataset by solving 450 ÷ 10, but the final display mistakenly rendered a value of 4,500. Based on how system interfaces transform numbers, what calculation operation did they perform by accident?",
-            options: ["A) Subtraction", "B) Addition", "C) Multiplication", "D) Estimation"],
-            ans: 2,
-            explain: "Multiplying changes place parameters upward by adding zero placeholders (450 × 10 = 4,500), while division strips place values down (450 ÷ 10 = 45)."
-        },
-        {
-            q: "Case Scenario: A corporate supply officer reviews a financial database logging operational metrics for a distribution branch. She views an interactive market sales ledger covering the last two business days to evaluate growth trends.",
-            table: [["Day", "Sales Revenue"], ["Wednesday", "₹5,100"], ["Tuesday", "₹3,200"]],
-            options: ["A) ₹1,900", "B) ₹2,100", "C) ₹8,300", "D) ₹1,200"],
-            ans: 0,
-            explain: "Isolate the data rows inside the provided table layout and extract the variance via subtraction: ₹5,100 - ₹3,200 = ₹1,900."
-        },
-        {
-            q: "Case Scenario: A regional humanitarian relief camp maintains a grain stock warehouse containing a massive emergency payload of 48,000 kg of rice. Logistics field parameters mandate that exactly 4,000 kg of rice must be dispatched every single day to local families. For how long will this current rice cargo stock run?",
-            options: ["A) 10 days", "B) 12 days", "C) 48 days", "D) 8 days"],
+            q: "Which number is a multiple of 6?",
+            options: ["A) 16", "B) 18", "C) 22", "D) 26"],
             ans: 1,
-            explain: "Calculate the system sustainability rate by dividing total bulk mass by the daily consumption constant: 48,000 ÷ 4,000 = 12."
+            explain: "18 is a multiple of 6 because counting by sixes gives: 6, 12, 18."
+        },
+        {
+            q: "Which of these numbers is a Prime Number?",
+            options: ["A) 9", "B) 12", "C) 13", "D) 15"],
+            ans: 2,
+            explain: "13 is a prime number because it only has two factors: 1 and itself."
+        },
+        {
+            q: "What is the Greatest Common Factor (GCF) of 8 and 12?",
+            options: ["A) 2", "B) 4", "C) 6", "D) 8"],
+            ans: 1,
+            explain: "The factors of 8 are 1, 2, 4, 8 and the factors of 12 are 1, 2, 3, 4, 6, 12. The largest factor they share is 4."
+        },
+        {
+            q: "What is the Least Common Multiple (LCM) of 3 and 4?",
+            options: ["A) 7", "B) 12", "C) 24", "D) 6"],
+            ans: 1,
+            explain: "Multiples of 3 include 3, 6, 9, 12 and multiples of 4 include 4, 8, 12. The first common multiple they meet at is 12."
+        },
+        {
+            q: "Which of these numbers is NOT a factor of 20?",
+            options: ["A) 2", "B) 4", "C) 5", "D) 6"],
+            ans: 3,
+            explain: "6 is not a factor of 20 because 20 cannot be split evenly into groups of 6."
+        },
+        {
+            q: "What is the next multiple of 7 after 21?",
+            options: ["A) 24", "B) 28", "C) 35", "D) 14"],
+            ans: 1,
+            explain: "Counting up by multiples of 7: 7, 14, 21, 28. The next number is 28."
+        },
+        {
+            q: "Which statement about the number 1 is true?",
+            options: ["A) It is prime", "B) It is composite", "C) It is neither prime nor composite", "D) It is a multiple of every number"],
+            ans: 2,
+            explain: "The number 1 is unique because it is mathematically defined as neither a prime nor a composite number."
+        },
+        {
+            q: "If a number ends in 0, it must be divisible by:",
+            options: ["A) 3", "B) 4", "C) 9", "D) 10"],
+            ans: 3,
+            explain: "Any whole number that ends with a 0 in the ones place can always be divided evenly by 10."
+        },
+        {
+            q: "Which number is a composite number?",
+            options: ["A) 2", "B) 5", "C) 7", "D) 9"],
+            ans: 3,
+            explain: "9 is a composite number because it has more than two factors: 1, 3, and 9."
         }
     ];
 
@@ -265,12 +339,22 @@
         }
     }
 
-    // 1) Logo screen stays visible for exactly 5 seconds
-    setTimeout(() => {
-        randomizeQuestions();
-        document.getElementById('brand-screen').style.display = 'none';
-        document.getElementById('game-card').classList.remove('hidden');
-    }, 5000);
+    // Safe logo progress timeline handler tracking exactly 5000ms 
+    window.addEventListener('DOMContentLoaded', () => {
+        const fill = document.getElementById('loader-fill');
+        let pct = 0;
+        
+        const loaderTimer = setInterval(() => {
+            pct += 1;
+            fill.style.width = pct + '%';
+            if (pct >= 100) {
+                clearInterval(loaderTimer);
+                randomizeQuestions();
+                document.getElementById('brand-screen').style.display = 'none';
+                document.getElementById('game-card').classList.remove('hidden');
+            }
+        }, 50);
+    });
 
     function startQuizGame() {
         document.getElementById('instruction-screen').classList.add('hidden');
@@ -287,22 +371,6 @@
         document.getElementById('next-btn').classList.add('hidden');
         document.getElementById('progress-bar').style.width = ((currentIdx / questions.length) * 100) + '%';
 
-        const tableCont = document.getElementById('data-table-container');
-        tableCont.innerHTML = '';
-        if (data.table) {
-            const table = document.createElement('table');
-            data.table.forEach((row, i) => {
-                const tr = document.createElement('tr');
-                row.forEach(cell => {
-                    const el = i === 0 ? document.createElement('th') : document.createElement('td');
-                    el.innerText = cell;
-                    tr.appendChild(el);
-                });
-                table.appendChild(tr);
-            });
-            tableCont.appendChild(table);
-        }
-
         const box = document.getElementById('options-box');
         box.innerHTML = '';
         data.options.forEach((opt, i) => {
@@ -314,7 +382,6 @@
         });
     }
 
-    // 5) 2 chances calculation loop logic
     function checkAnswer(idx, btn) {
         const data = questions[currentIdx];
         const feedback = document.getElementById('feedback-area');
@@ -327,7 +394,7 @@
             try { audio.correct.play(); } catch(e){}
             if (attempts === 0) score++;
             document.getElementById('score').innerText = score;
-            feedback.innerHTML = `<b>🌟 Correct Case Analysis!</b><br>${data.explain}`;
+            feedback.innerHTML = `<b>🌟 Correct!</b><br>${data.explain}`;
             feedback.classList.remove('hidden');
             document.getElementById('next-btn').classList.remove('hidden');
             if(currentIdx === questions.length - 1) { try { audio.claps.play(); } catch(e){} }
@@ -339,12 +406,12 @@
             if (attempts < 2) {
                 setTimeout(() => {
                     allBtns.forEach(b => { if(!b.classList.contains('wrong')) b.disabled = false; });
-                    feedback.innerHTML = `<b>Incorrect deduction!</b> Examine the case values again. You have 1 final attempt remaining.`;
+                    feedback.innerHTML = `<b>Not quite right!</b> Check your math rules. 1 attempt left.`;
                     feedback.classList.remove('hidden');
                 }, 400);
             } else {
                 allBtns[data.ans].classList.add('correct');
-                feedback.innerHTML = `<b>Out of attempts!</b> The correct case solution choice was: <i>${data.options[data.ans]}</i>.<br>${data.explain}`;
+                feedback.innerHTML = `<b>Out of attempts!</b> The correct choice was: <b>${data.options[data.ans]}</b>.<br>${data.explain}`;
                 feedback.classList.remove('hidden');
                 document.getElementById('next-btn').classList.remove('hidden');
             }
@@ -366,8 +433,8 @@
         document.getElementById('progress-bar').style.width = '100%';
         try { audio.claps.play(); } catch(e){}
         
-        let msg = "Fantastic effort! You have successfully resolved all our case scenarios and finalized the assignment modules!";
-        if (score === questions.length) msg = "Sensational work! You managed to solve every single practical case application with absolute precision. Incredible job!";
+        let msg = `Great race! You completed all challenges and scored ${score} out of 10 stars!`;
+        if (score === questions.length) msg = "Sensational! A perfect 10/10 stars. You completely mastered factors and multiples loops!";
         
         document.getElementById('result-msg').innerText = msg;
     }
