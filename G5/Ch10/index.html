@@ -1,1 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Metric Measurement & Conversion Challenge</title>
+    <style>
+        :root {
+            --primary: #2e86de;
+            --primary-dark: #1a5276;
+            --success: #27ae60;
+            --error: #e67e22;
+            --bg: #ebf5fb;
+            --text: #2c3e50;
+        }
 
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: #eaecee;
+            color: var(--text);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 10px;
+        }
+
+        #app-container {
+            width: 100%;
+            max-width: 580px;
+            background: #ffffff;
+            border-radius: 24px;
+            box-shadow: 0 15px 35px rgba(46, 134, 222, 0.12);
+            position: relative;
+            overflow: hidden;
+            min-height: 540px;
+        }
+
+        /* --- 5-SECOND WHITE SPLASH SCREEN --- */
+        #splash-screen {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .splash-logo-img {
+            max-width: 240px;
+            width: 80%;
+            height: auto;
+            object-fit: contain;
+        }
+
+        /* --- MAIN PANELS --- */
+        .quiz-padding {
+            padding: 25px;
+        }
+
+        .instruction-box {
+            background: var(--bg);
+            border-left: 4px solid var(--primary);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: left;
+            margin: 20px 0;
+            font-size: 0.95rem;
+            color: #455a64;
+            line-height: 1.5;
+        }
+        .instruction-box ul { margin: 5px 0 0 20px; padding: 0; }
+        .instruction-box li { margin-bottom: 6px; }
+
+        .hud-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .hud-pill {
+            flex: 1;
+            text-align: center;
+            padding: 12px 6px;
+            border-radius: 14px;
+            font-size: 0.95rem;
+            font-weight: 800;
+            background-color: #d6eaf8;
+            color: var(--primary-dark);
+        }
+        .hud-pill.gold { background-color: #fef9e7; color: #b7950b; }
+
+        .timer-track { width: 100%; height: 8px; background: #e5e8e8; border-radius: 10px; margin-bottom: 20px; overflow: hidden; }
+        #timer-bar { height: 100%; width: 100%; background: var(--primary); transition: width 1s linear; }
+
+        .category-text { font-size: 0.85rem; color: #b7950b; font-weight: 700; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 1px; }
+        .question-text { font-size: 1.1rem; font-weight: 600; line-height: 1.5; margin-bottom: 15px; white-space: pre-line; }
+
+        /* --- GRAPHICS EMBED BOXES --- */
+        .visual-display-box {
+            background: #ffffff;
+            border: 2px solid #e5e8e8;
+            padding: 15px;
+            border-radius: 16px;
+            margin: 15px 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: inset 0 2px 6px rgba(0,0,0,0.02);
+        }
+
+        .metric-visual {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+        .metric-card {
+            background: var(--bg);
+            border: 2px solid var(--primary);
+            padding: 10px 20px;
+            border-radius: 8px;
+            color: var(--primary-dark);
+        }
+        .arrow-indicator {
+            color: #7f8c8d;
+            font-size: 1.5rem;
+        }
+
+        /* --- OPTIONS & INTERACTION --- */
+        .options-grid { display: grid; gap: 12px; }
+        .opt-btn {
+            background: #fff; border: 2px solid #edf2f4; padding: 16px;
+            border-radius: 14px; text-align: left; font-size: 1rem; cursor: pointer; transition: 0.2s;
+            color: #34495e; font-weight: 500;
+        }
+        .opt-btn:hover:not(:disabled) { border-color: var(--primary); background: #fafafa; }
+        .opt-btn.correct { background: #e8f5e9 !important; color: var(--success) !important; border-color: #a5d6a7 !important; font-weight: 700; }
+        .opt-btn.wrong { background: #fdf2e9 !important; color: var(--error) !important; border-color: #f5caba !important; }
+
+        .feedback { margin-top: 20px; padding: 15px; border-radius: 12px; display: none; line-height: 1.5; font-size: 0.95rem; }
+        .hint-box { background: #fef9e7; border: 1px solid #f9e79f; color: #b7950b; }
+        .expl-box { background: #ebf5fb; border: 1px solid #a9dfbf; color: #1f618d; }
+
+        #action-btn { width: 100%; margin-top: 20px; padding: 16px; background: var(--primary); color: white; border: none; border-radius: 14px; font-weight: 700; cursor: pointer; font-size: 1rem; }
+        #action-btn:hover { background: var(--primary-dark); }
+        
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+
+<div id="app-container">
+
+    <div id="splash-screen">
+        <img class="splash-logo-img" src="assets/logo.png" alt="Spatial Challenge Logo" onerror="this.style.display='none'; document.getElementById('splash-fallback').style.display='block';">
+        <h2 id="splash-fallback" style="display:none; color:var(--primary); font-weight:800; letter-spacing:1px;">METRIC SYSTEMS</h2>
+    </div>
+
+    <div id="intro-view" class="hidden">
+        <div class="quiz-padding">
+            <h1 style="text-align:center; color:var(--primary); margin: 10px 0 5px 0; font-size: 26px;">Metric Explorer</h1>
+            <p style="text-align:center; color:#7f8c8d; margin-top: 0; font-weight: 600; text-transform: uppercase; font-size: 12px; letter-spacing: 1px;">Curricular Competency Challenge</p>
+            
+            <div class="instruction-box">
+                <strong>📋 Targets Based on image_4996a5.png:</strong>
+                <ul>
+                    <li>Convert millimeter ($mm$) to centimeter ($cm$), meter ($m$), and kilometer ($km$) scales.</li>
+                    <li>Scale mass units seamlessly between gram ($g$) and kilogram ($kg$).</li>
+                    <li>Convert fluid capacities between litre ($L$) and millilitre ($mL$).</li>
+                    <li>Solve case-based real-world word problems using multi-step metric operations.</li>
+                    <li><b>Rules:</b> 60 seconds per task. Scrambled question variants!</li>
+                </ul>
+            </div>
+
+            <button id="start-btn" style="width:100%; padding:18px; background:var(--primary); color:white; border:none; border-radius:14px; font-weight:bold; font-size:1.1rem; cursor:pointer; margin-top: 10px;">Begin Challenge ⚡</button>
+        </div>
+    </div>
+
+    <div id="quiz-view" class="hidden">
+        <div class="quiz-padding">
+            <div class="hud-row">
+                <div class="hud-pill">Task <span id="q-num">1</span>/10</div>
+                <div class="hud-pill">Score: <span id="score-val">0</span></div>
+                <div class="hud-pill gold"><span id="timer-text">60s</span></div>
+            </div>
+            <div class="timer-track"><div id="timer-bar"></div></div>
+            
+            <div id="q-category" class="category-text"></div>
+            <div id="q-text" class="question-text"></div>
+            
+            <div id="custom-graphics-area"></div>
+            
+            <div id="options-area" class="options-grid"></div>
+            
+            <div id="feedback-box" class="feedback"></div>
+            <button id="action-btn" class="hidden">Next Task →</button>
+        </div>
+    </div>
+
+    <div id="result-view" class="hidden" style="text-align:center;">
+        <div class="quiz-padding">
+            <div style="font-size: 4rem; margin-bottom: 5px;">🏆</div>
+            <h2 style="font-size:1.6rem; margin: 5px 0;">Evaluation Completed!</h2>
+            <div style="font-size: 4rem; font-weight: 800; color: var(--primary); margin: 10px 0;"><span id="final-pts">0</span>/10</div>
+            <div id="result-msg" style="color:#5f6368; font-size: 0.95rem; line-height: 1.5; margin: 0 0 25px 0; text-align: left; background: #f8f9fa; border: 1px solid #e2e8f0; padding: 16px; border-radius: 16px;"></div>
+            <button onclick="location.reload()" style="width:100%; padding:16px; background:var(--primary); color:white; border:none; border-radius:14px; font-weight:700; cursor:pointer; font-size: 1rem;">Start New Session</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Instantiate asset audio files
+    const correctSound = new Audio('assets/correct.mp3');
+    const wrongSound = new Audio('assets/wrong.mp3');
+
+    function playAudio(sound) {
+        sound.currentTime = 0;
+        sound.play().catch(err => console.log("Audio playback waiting for interaction.", err));
+    }
+
+    // Explicit 5-second splash screen transition lifecycle
+    window.addEventListener('DOMContentLoaded', () => {
+        setTimeout(() => {
+            const splash = document.getElementById('splash-screen');
+            splash.style.opacity = '0';
+            setTimeout(() => {
+                splash.style.display = 'none';
+                document.getElementById('intro-view').classList.remove('hidden');
+            }, 800); 
+        }, 5000);
+    });
+
+    // Core case-based math question sets generated directly from image_4996a5.png targets
+    const pool = [
+        { 
+            cat: "Length Conversion ($mm \rightarrow cm$)", 
+            q: "A high-precision smartphone component measures exactly 45 millimeters ($mm$) along its internal baseline.\n\nWhat is this equivalent dimension structural length measured in centimeters ($cm$)?", 
+            showGraphic: true, leftVal: "45 mm", rightVal: "? cm",
+            opts: ["A) 0.45 cm", "B) 4.5 cm", "C) 450 cm", "D) 45,000 cm"], 
+            ans: 1, 
+            hint: "There are exactly 10 millimeters in 1 centimeter. Divide the value by 10.", 
+            expl: "To go from mm to cm, you divide by 10. Therefore, 45 mm ÷ 10 = 4.5 cm." 
+        },
+        { 
+            cat: "Length Conversion ($cm \rightarrow m$)", 
+            q: "An interior floor designer maps out a decorative border tiling segment that extends for exactly 350 centimeters ($cm$).\n\nWhat is the absolute distance value of this tile layout rendered in meters ($m$)?", 
+            showGraphic: true, leftVal: "350 cm", rightVal: "? m",
+            opts: ["A) 0.35 m", "B) 35.0 m", "C) 3.5 m", "D) 3,500 m"], 
+            ans: 2, 
+            hint: "1 meter is composed of exactly 100 centimeters. Convert by dividing your original amount by 100.", 
+            expl: "Moving up from centimeters to meters requires dividing by 100. Thus, 350 cm ÷ 100 = 3.5 meters." 
+        },
+        { 
+            cat: "Length Conversion ($m \rightarrow km$)", 
+            q: "A municipal runner logs a sprint distance tracking map showing exactly 7,200 meters ($m$) along a coastal pathway.\n\nHow many kilometers ($km$) did the runner complete?", 
+            showGraphic: true, leftVal: "7200 m", rightVal: "? km",
+            opts: ["A) 7.2 km", "B) 72.0 km", "C) 0.72 km", "D) 720 km"], 
+            ans: 0, 
+            hint: "Since 1 kilometer equals 1,000 meters, shift the decimal point three units left by dividing by 1,000.", 
+            expl: "Converting meters to kilometers involves dividing by 1,000. Therefore, 7,200 m ÷ 1,000 = 7.2 km." 
+        },
+        { 
+            cat: "Mass Conversion ($g \rightarrow kg$)", 
+            q: "A baking facility checks a package container of cocoa powder recording a wholesale net mass weight of 650 grams ($g$).\n\nWhat is this mass measurement parameter quantified in kilograms ($kg$)?", 
+            showGraphic: true, leftVal: "650 g", rightVal: "? kg",
+            opts: ["A) 6.5 kg", "B) 0.65 kg", "C) 0.065 kg", "D) 65.0 kg"], 
+            ans: 1, 
+            hint: "1 kilogram holds 1,000 grams. Turn grams into kilograms by dividing the value by 1,000.", 
+            expl: "To convert grams to kilograms, apply a division factor of 1,000. This renders 650 g ÷ 1,000 = 0.65 kg." 
+        },
+        { 
+            cat: "Mass Conversion ($kg \rightarrow g$)", 
+            q: "An agricultural crate carrying fresh produce contains a total commodity load weighing precisely 4.8 kilograms ($kg$).\n\nWhat is this load's specific metric weight in grams ($g$)?", 
+            showGraphic: true, leftVal: "4.8 kg", rightVal: "? g",
+            opts: ["A) 480 g", "B) 48,000 g", "C) 4,800 g", "D) 0.0048 g"], 
+            ans: 2, 
+            hint: "Going from a larger unit (kg) to a smaller unit (g) means you must multiply the mass by 1,000.", 
+            expl: "Since 1 kg = 1,000 g, multiply 4.8 kg by 1,000 to arrive at exactly 4,800 grams." 
+        },
+        { 
+            cat: "Capacity Conversion ($L \rightarrow mL$)", 
+            q: "A laboratory technician unboxes a high-capacity distilled fluid flask holding exactly 2.35 litres ($L$) of chemical solvent.\n\nWhat is the absolute fluid volume of this flask when measured in millilitres ($mL$)?", 
+            showGraphic: true, leftVal: "2.35 L", rightVal: "? mL",
+            opts: ["A) 235 mL", "B) 2,350 mL", "C) 23,500 mL", "D) 0.00235 mL"], 
+            ans: 1, 
+            hint: "Every single litre holds exactly 1,000 millilitres. Multiply the initial scale measurement by 1,000.", 
+            expl: "To switch liters directly to milliliters, multiply by 1,000. 2.35 L × 1,000 matches out to 2,350 mL." 
+        },
+        { 
+            cat: "Capacity Conversion ($mL \rightarrow L$)", 
+            q: "A bottle of organic wellness tonic contains 450 millilitres ($mL$) of nutrient juice mixture.\n\nHow is this tonic package volume properly represented on an export manifest file in litres ($L$)?", 
+            showGraphic: true, leftVal: "450 mL", rightVal: "? L",
+            opts: ["A) 0.45 L", "B) 4.5 L", "C) 0.045 L", "D) 45.0 L"], 
+            ans: 0, 
+            hint: "Convert smaller capacity increments up into whole litres by dividing your volume level value by 1,000.", 
+            expl: "Milliliters to liters requires dividing by 1,000. Therefore, 450 mL ÷ 1,000 equals exactly 0.45 liters." 
+        },
+        { 
+            cat: "Word Problems (Length)", 
+            q: "A structural contractor joins three identical reinforced support beams end-to-end. Each individual component beam measures exactly 1 meter and 45 centimeters in length.\n\nWhat is the total continuous length of the compiled construction beam structure?", 
+            opts: ["A) 3.45 m", "B) 4.35 m", "C) 5.15 m", "D) 435 m"], 
+            ans: 1, 
+            hint: "Convert 1 m 45 cm into 1.45 meters first, then multiply that singular component value by 3.", 
+            expl: "Each structural segment equals 1.45 meters. Summing three identical pieces yields 1.45 m × 3 = 4.35 meters total length." 
+        },
+        { 
+            cat: "Word Problems (Mass)", 
+            q: "A shipping parcel dispatcher packs an order containing five identical textbook units. Each separate textbook registers a precise mass weight of 450 grams. The outer shipping carton weighs an extra 150 grams.\n\nWhat is the total gross weight package value of the container in kilograms?", 
+            opts: ["A) 2.4 kg", "B) 2.25 kg", "C) 2.45 kg", "D) 24.0 kg"], 
+            ans: 0, 
+            hint: "Find the mass of all 5 books together first, add the carton weight in grams, and then divide the sum total by 1,000.", 
+            expl: "Five books weight 5 × 450 g = 2,250 g. Adding the 150 g carton brings the load to 2,400 g. 2,400 g ÷ 1,000 yields 2.4 kg." 
+        },
+        { 
+            cat: "Word Problems (Capacity)", 
+            q: "A juice vendor blends a bulk beverage container holding 6 litres of liquid base. Throughout a morning market window, the vendor dispenses 8 customer cups, each containing exactly 350 mL of beverage product.\n\nHow much beverage mix capacity remains stored in the primary reservoir?", 
+            opts: ["A) 2.8 L", "B) 3.2 L", "C) 3.5 L", "D) 4.2 L"], 
+            ans: 1, 
+            hint: "Calculate total fluid sold by multiplying 8 cups by 350 mL. Convert that total to litres and subtract it from the initial 6 L reservoir.", 
+            expl: "Total dispensed volume equals 8 × 350 mL = 2,800 mL, which translates to 2.8 L. Subtracting this from the original supply leaves 6 L - 2.8 L = 3.2 L remaining." 
+        }
+    ];
+
+    let current = 0, score = 0, attempts = 0, timer, timeLeft = 60;
+
+    function shufflePool(arr) {
+        for (let i = arr.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+    }
+
+    document.getElementById('start-btn').onclick = () => {
+        document.getElementById('intro-view').classList.add('hidden');
+        document.getElementById('quiz-view').classList.remove('hidden');
+        shufflePool(pool); 
+        loadQuestion();
+    };
+
+    function loadQuestion() {
+        attempts = 0; timeLeft = 60;
+        const q = pool[current];
+        document.getElementById('feedback-box').style.display = 'none';
+        document.getElementById('action-btn').classList.add('hidden');
+        document.getElementById('q-num').innerText = current + 1;
+        document.getElementById('q-category').innerText = q.cat;
+        document.getElementById('q-text').innerText = q.q;
+        document.getElementById('timer-text').innerText = timeLeft + "s";
+        
+        const graphicArea = document.getElementById('custom-graphics-area');
+        graphicArea.innerHTML = "";
+
+        if (q.showGraphic) {
+            graphicArea.innerHTML = `
+                <div class="visual-display-box">
+                    <div class="metric-visual">
+                        <div class="metric-card">${q.leftVal}</div>
+                        <div class="arrow-indicator">➔</div>
+                        <div class="metric-card" style="background:#fcf3cf; border-color:#f1c40f;">${q.rightVal}</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        const area = document.getElementById('options-area');
+        area.innerHTML = "";
+        q.opts.forEach((o, i) => {
+            const b = document.createElement('button');
+            b.className = 'opt-btn';
+            b.innerText = o;
+            b.onclick = () => check(i, b);
+            area.appendChild(b);
+        });
+        startTimer();
+    }
+
+    function startTimer() {
+        clearInterval(timer);
+        timer = setInterval(() => {
+            timeLeft--;
+            document.getElementById('timer-text').innerText = timeLeft + "s";
+            document.getElementById('timer-bar').style.width = (timeLeft / 60 * 100) + "%";
+            if(timeLeft <= 0) { 
+                clearInterval(timer); 
+                playAudio(wrongSound); 
+                endTurn(); 
+            }
+        }, 1000);
+    }
+
+    function check(i, b) {
+        if(i === pool[current].ans) {
+            clearInterval(timer);
+            playAudio(correctSound);
+            b.classList.add('correct');
+            score++;
+            document.getElementById('score-val').innerText = score;
+            endTurn();
+        } else {
+            attempts++;
+            playAudio(wrongSound);
+            b.classList.add('wrong');
+            b.disabled = true;
+            if(attempts === 1) {
+                const f = document.getElementById('feedback-box');
+                f.className = 'feedback hint-box';
+                f.innerHTML = "<b>💡 Hint:</b> " + pool[current].hint;
+                f.style.display = 'block';
+            } else {
+                clearInterval(timer);
+                endTurn();
+            }
+        }
+    }
+
+    function endTurn() {
+        document.querySelectorAll('.opt-btn').forEach(btn => btn.disabled = true);
+        const f = document.getElementById('feedback-box');
+        f.className = 'feedback expl-box';
+        f.innerHTML = "<b>🔍 Explanation:</b> " + pool[current].expl;
+        f.style.display = 'block';
+        document.querySelectorAll('.opt-btn')[pool[current].ans].classList.add('correct');
+        document.getElementById('action-btn').classList.remove('hidden');
+    }
+
+    document.getElementById('action-btn').onclick = () => {
+        current++;
+        if(current < pool.length) loadQuestion();
+        else {
+            document.getElementById('quiz-view').classList.add('hidden');
+            document.getElementById('result-view').classList.remove('hidden');
+            document.getElementById('final-pts').innerText = score;
+
+            let statusMessage = "Review the core conversion metrics (10mm=1cm, 100cm=1m, 1000m=1km) and retry to achieve perfection.";
+            if(score === 10) {
+                statusMessage = "Excellent performance! You have completely mastered metric calculations, unit tracking, and capacity conversions.";
+            } else if(score >= 7) {
+                statusMessage = "Solid effort! You show a strong understanding of foundational scaling benchmarks.";
+            }
+
+            document.getElementById('result-msg').innerHTML = `
+                <span style="font-weight:700; color:#2c3e50; display:block; margin-bottom:6px;">Performance Summary:</span>
+                ${statusMessage}
+            `;
+        }
+    };
+</script>
+</body>
+</html>
