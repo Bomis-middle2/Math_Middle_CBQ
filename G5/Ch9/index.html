@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Symmetry and Spatial Geometry Challenge</title>
+    <title>Grade 5 Visual Geometry Challenge</title>
     <style>
         :root {
-            --primary: #8e44ad;
-            --primary-dark: #71338c;
+            --primary: #2980b9;
+            --primary-dark: #1f618d;
             --success: #27ae60;
             --error: #e67e22;
-            --bg: #f5eef8;
+            --bg: #ebf5fb;
             --text: #2c3e50;
         }
 
@@ -18,7 +18,7 @@
 
         body {
             font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-            background-color: #eaecee;
+            background-color: #f2f4f4;
             color: var(--text);
             margin: 0;
             display: flex;
@@ -33,13 +33,13 @@
             max-width: 580px;
             background: #ffffff;
             border-radius: 24px;
-            box-shadow: 0 15px 35px rgba(142, 68, 173, 0.12);
+            box-shadow: 0 15px 35px rgba(41, 128, 185, 0.12);
             position: relative;
             overflow: hidden;
             min-height: 540px;
         }
 
-        /* --- 5-SECOND WHITE SPLASH SCREEN --- */
+        /* --- 5-SECOND SPLASH SCREEN --- */
         #splash-screen {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
@@ -49,14 +49,15 @@
             justify-content: center;
             align-items: center;
             z-index: 100;
-            transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: opacity 0.8s ease;
         }
         
-        .splash-logo-img {
-            max-width: 240px;
-            width: 80%;
-            height: auto;
-            object-fit: contain;
+        .splash-title {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 2px;
         }
 
         /* --- MAIN PANELS --- */
@@ -91,7 +92,7 @@
             border-radius: 14px;
             font-size: 0.95rem;
             font-weight: 800;
-            background-color: #ebdef0;
+            background-color: #d6eaf8;
             color: var(--primary-dark);
         }
         .hud-pill.gold { background-color: #fef9e7; color: #b7950b; }
@@ -102,36 +103,47 @@
         .category-text { font-size: 0.85rem; color: #b7950b; font-weight: 700; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 1px; }
         .question-text { font-size: 1.1rem; font-weight: 600; line-height: 1.5; margin-bottom: 15px; white-space: pre-line; }
 
-        /* --- GRAPHICS / CANVAS EMBED BOXES --- */
+        /* --- BUILT-IN COLOURED GRAPHICS CANVAS --- */
         .visual-display-box {
-            background: #ffffff;
-            border: 2px solid #e5e8e8;
-            padding: 15px;
+            background: #fcfcfc;
+            border: 2px dashed #ccd1d1;
+            padding: 20px;
             border-radius: 16px;
             margin: 15px 0;
             display: flex;
             justify-content: center;
             align-items: center;
-            box-shadow: inset 0 2px 6px rgba(0,0,0,0.02);
+            min-height: 120px;
         }
 
-        .canvas-grid {
-            display: grid;
-            grid-template-columns: repeat(4, 40px);
-            grid-template-rows: repeat(4, 40px);
-            gap: 2px;
-            background: #bdc3c7;
-            padding: 2px;
-            border-radius: 4px;
+        /* Heart Mirror Element */
+        .heart-half {
+            width: 50px;
+            height: 80px;
+            background-color: #e74c3c;
+            border-radius: 50px 50px 0 0;
+            transform: rotate(-45deg);
+            transform-origin: 0 100%;
         }
-        .cell { background: #ffffff; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 0.8rem; }
-        .cell.filled { background: #9b59b6; color: white; }
-        .cell.mirror-line { background: #34495e; color: white; }
+        .mirror-axis-line {
+            width: 4px;
+            height: 100px;
+            background: #34495e;
+            margin: 0 30px;
+        }
 
-        .net-wrapper { display: flex; gap: 20px; align-items: center; }
-        .net-shape { display: grid; grid-template-columns: repeat(4, 25px); grid-template-rows: repeat(3, 25px); gap: 1px; background: #ccd1d1; padding: 1px; }
-        .n-cl { background: transparent; }
-        .n-fl { background: #3498db; border: 1px solid #2980b9; }
+        /* Sliding Track Engine */
+        .slide-container { display: flex; gap: 40px; align-items: center; position: relative; }
+        .slide-arrow { font-size: 1.5rem; color: #bdc3c7; }
+
+        /* Flattened Cube Nets Generator */
+        .net-grid { display: grid; grid-template-columns: repeat(4, 30px); grid-template-rows: repeat(3, 30px); gap: 2px; }
+        .box-face { background: #3498db; border: 1px solid #2980b9; border-radius: 4px; }
+        .empty-space { background: transparent; }
+
+        /* Dot Grid */
+        .dot-matrix { display: grid; grid-template-columns: repeat(5, 25px); gap: 15px; justify-content: center; }
+        .grid-dot { width: 8px; height: 8px; background: #95a5a6; border-radius: 50%; }
 
         /* --- OPTIONS & INTERACTION --- */
         .options-grid { display: grid; gap: 12px; }
@@ -146,7 +158,7 @@
 
         .feedback { margin-top: 20px; padding: 15px; border-radius: 12px; display: none; line-height: 1.5; font-size: 0.95rem; }
         .hint-box { background: #fef9e7; border: 1px solid #f9e79f; color: #b7950b; }
-        .expl-box { background: #f4eef8; border: 1px solid #d7bde2; color: #6c3483; }
+        .expl-box { background: #ebf5fb; border: 1px solid #a9dfbf; color: var(--primary-dark); }
 
         #action-btn { width: 100%; margin-top: 20px; padding: 16px; background: var(--primary); color: white; border: none; border-radius: 14px; font-weight: 700; cursor: pointer; font-size: 1rem; }
         #action-btn:hover { background: var(--primary-dark); }
@@ -158,31 +170,30 @@
 
 <div id="app-container">
 
-    <!-- 1. Pure White Splash Screen with static centered logo image asset -->
+    <!-- 1. Pure Static Splash Screen -->
     <div id="splash-screen">
-        <img class="splash-logo-img" src="assets/logo.png" alt="Brand Logo">
+        <div class="splash-title">GEOMETRY MATH</div>
     </div>
 
     <!-- 2. GAME INSTRUCTION PANEL -->
     <div id="intro-view" class="hidden">
         <div class="quiz-padding">
-            <h1 style="text-align:center; color:var(--primary); margin: 10px 0 5px 0; font-size: 26px;">Symmetry & Nets</h1>
-            <p style="text-align:center; color:#7f8c8d; margin-top: 0; font-weight: 600; text-transform: uppercase; font-size: 12px; letter-spacing: 1px;">Spatial Mastery Evaluation</p>
+            <h1 style="text-align:center; color:var(--primary); margin: 10px 0 5px 0; font-size: 26px;">Shape Playground!</h1>
+            <p style="text-align:center; color:#7f8c8d; margin-top: 0; font-weight: 600; text-transform: uppercase; font-size: 12px; letter-spacing: 1px;">Grade 5 Interactive Quiz</p>
             
             <div class="instruction-box">
-                <strong>📋 Core Curricular Benchmarks:</strong>
+                <strong>📋 What We Are Learning Today:</strong>
                 <ul>
-                    <li>Identify and map multi-axial lines of symmetry.</li>
-                    <li>Construct exact reflection paths across specified mirror planes.</li>
-                    <li>Process symmetrical translation metrics and periodic tessellation patterns.</li>
-                    <li>Analyze rotational steps, transformation parameters, and turned patterns.</li>
-                    <li>Deconstruct folded 2D nets into target 3D cubes and cuboids.</li>
-                    <li>Evaluate isometric projections of geometric prisms.</li>
-                    <li><b>Rules:</b> 60 seconds per task. Randomized configuration!</li>
+                    <li>Finding fold lines (lines of symmetry) on shapes.</li>
+                    <li>Seeing how drawings look when they flip in a mirror.</li>
+                    <li>Watching how patterns slide or turn around.</li>
+                    <li>Matching flat paper nets into 3D boxes and cubes.</li>
+                    <li>Drawing blocks on dotted graph sheets.</li>
+                    <li><b>Rules:</b> 60 seconds per question. Look at the built-in graphics!</li>
                 </ul>
             </div>
 
-            <button id="start-btn" style="width:100%; padding:18px; background:var(--primary); color:white; border:none; border-radius:14px; font-weight:bold; font-size:1.1rem; cursor:pointer; margin-top: 10px;">Begin Challenge ⚡</button>
+            <button id="start-btn" style="width:100%; padding:18px; background:var(--primary); color:white; border:none; border-radius:14px; font-weight:bold; font-size:1.1rem; cursor:pointer; margin-top: 10px;">Let's Play! ⚡</button>
         </div>
     </div>
 
@@ -190,7 +201,7 @@
     <div id="quiz-view" class="hidden">
         <div class="quiz-padding">
             <div class="hud-row">
-                <div class="hud-pill">Task <span id="q-num">1</span>/10</div>
+                <div class="hud-pill">Question <span id="q-num">1</span>/10</div>
                 <div class="hud-pill">Score: <span id="score-val">0</span></div>
                 <div class="hud-pill gold"><span id="timer-text">60s</span></div>
             </div>
@@ -199,12 +210,12 @@
             <div id="q-category" class="category-text"></div>
             <div id="q-text" class="question-text"></div>
             
-            <div id="custom-graphics-area"></div>
+            <div id="canvas-render-zone" class="visual-display-box"></div>
             
             <div id="options-area" class="options-grid"></div>
             
             <div id="feedback-box" class="feedback"></div>
-            <button id="action-btn" class="hidden">Next Task →</button>
+            <button id="action-btn" class="hidden">Next Question →</button>
         </div>
     </div>
 
@@ -212,10 +223,10 @@
     <div id="result-view" class="hidden" style="text-align:center;">
         <div class="quiz-padding">
             <div style="font-size: 4rem; margin-bottom: 5px;">🏆</div>
-            <h2 style="font-size:1.6rem; margin: 5px 0;">Evaluation Completed!</h2>
+            <h2 style="font-size:1.6rem; margin: 5px 0;">All Done!</h2>
             <div style="font-size: 4rem; font-weight: 800; color: var(--primary); margin: 10px 0;"><span id="final-pts">0</span>/10</div>
             <div id="result-msg" style="color:#5f6368; font-size: 0.95rem; line-height: 1.5; margin: 0 0 25px 0; text-align: left; background: #f8f9fa; border: 1px solid #e2e8f0; padding: 16px; border-radius: 16px;"></div>
-            <button onclick="location.reload()" style="width:100%; padding:16px; background:var(--primary); color:white; border:none; border-radius:14px; font-weight:700; cursor:pointer; font-size: 1rem;">Start New Session</button>
+            <button onclick="location.reload()" style="width:100%; padding:16px; background:var(--primary); color:white; border:none; border-radius:14px; font-weight:700; cursor:pointer; font-size: 1rem;">Try Again</button>
         </div>
     </div>
 </div>
@@ -233,95 +244,102 @@
         }, 5000);
     });
 
-    // Curated case-based questions mapped to the targeted competencies
+    // Content database completely utilizing self-contained visual types
     const pool = [
         { 
-            cat: "Lines of Symmetry", 
-            q: "An architectural designer is rendering a standard regular octagon layout for a courtyard fountain mosaic.\n\nHow many total distinct lines of symmetry can be drawn through this regular polygon shape?", 
-            opts: ["A) Four lines", "B) Six lines", "C) Eight lines", "D) Unlimited continuous paths"], 
+            cat: "Fold Lines", 
+            q: "Look at the Star below.\n\nHow many fold lines (lines of symmetry) can you find that cut a regular 5-pointed star perfectly in half?", 
+            type: "star",
+            opts: ["A) 2 lines", "B) 4 lines", "C) 5 lines", "D) 8 lines"], 
             ans: 2, 
-            hint: "For any perfectly regular polygon, the number of distinct lines of symmetry matches its total count of side-segments exactly.", 
-            expl: "A regular octagon contains exactly 8 lines of symmetry: 4 passing through opposite pairs of vertices, and 4 cutting perpendicularly through opposite mid-side paths." 
+            hint: "Try picking one point tip of the star and folding straight down through the center middle!", 
+            expl: "A standard regular star has exactly 5 fold lines. Each fold starts at a point tip and splits it evenly." 
         },
         { 
-            cat: "Object Reflection Mapping", 
-            q: "A designer places an asymmetrical 'L-shaped' bracket terminal inside the coordinate matrix shown below. The dark vertical line represents a vertical mirror plane:", 
-            hasGrid: true,
-            opts: ["A) The reflected shape will face backwards horizontally, mirrored across the dark central line.", "B) The shape remains pointing in the identical orientation shifted 4 spaces right.", "C) The shape gets inverted vertically upside down.", "D) The shape rotates 90 degrees clockwise."], 
+            cat: "Mirror Flips", 
+            q: "Look at the diagram showing half of a shape next to a dark vertical mirror line.\n\nWhat will the image look like if you finish drawing its reflection on the right side?", 
+            type: "heart",
+            opts: ["A) A completed heart shape where both sides match up perfectly.", "B) The exact same half-shape facing the same direction.", "C) The shape flipped completely upside down.", "D) A circle with a straight line through it."], 
             ans: 0, 
-            hint: "Reflection flips an image horizontally across a vertical line, reversing the direction it faces while keeping the vertical orientation identical.", 
-            expl: "A vertical reflection line acts as a mirror plane. The horizontal orientation is inverted, making the target shape look flipped, while maintaining its vertical height profile." 
+            hint: "When you look into a mirror, your left side looks like it matches right up with your right side.", 
+            expl: "A vertical reflection line mirrors everything sideways. This completes the matching side to form a full heart shape." 
         },
         { 
-            cat: "Mirror Image Metrics", 
-            q: "An engineer drafts a component trace where an initial point sits exactly at coordinates (x: 3, y: 5). The drafting layout applies a pure transformation across a mirror plane along the vertical y-axis.\n\nWhat are the new coordinates of the resulting mirror image node?", 
-            opts: ["A) (x: 3, y: -5)", "B) (x: -3, y: -5)", "C) (x: -3, y: 5)", "D) (x: 5, y: 3)"], 
+            cat: "Looking in a Mirror", 
+            q: "Look at the toy car pointing to the Left. If you hold it up in front of a mirror, which way will the car point in the mirror image reflection?", 
+            type: "car",
+            opts: ["A) Up towards the ceiling", "B) Down towards the floor", "C) Facing directly to the Right", "D) Still facing to the Left"], 
             ans: 2, 
-            hint: "Reflecting across the vertical y-axis changes the sign of the horizontal coordinate while leaving the vertical value completely unchanged.", 
-            expl: "When a point undergoes a reflection across the y-axis, its horizontal component is negated while the vertical component remains constant. Thus, (3, 5) translates directly to (-3, 5)." 
+            hint: "Mirror reflections flip sideways directions! Left becomes right.", 
+            expl: "A mirror swaps left and right directions. Because of this, a car pointing left will face right in its reflection." 
         },
         { 
-            cat: "Symmetrical Translation", 
-            q: "A textile manufacturer creates a wallpaper border using symmetrical translation. The basic motif stamp is shifted exactly 5 centimeters horizontally to the right, repeated sequentially across the strip.\n\nWhich parameter stays identical for every single translated stamp iteration?", 
-            opts: ["A) Both its original orientation and its scale properties", "B) Only its relative center point coordinates", "C) The absolute distance value from the zero point origin", "D) Its horizontal coordinate positioning profile"], 
+            cat: "Sliding Shapes", 
+            q: "Look at the sliding pattern below. The shape slides straight along the floor line to print a repeated border design without turning.\n\nWhat do we call it when a shape slides in a straight line?", 
+            type: "slide",
+            opts: ["A) Sliding (Translation)", "B) Flipping (Reflection)", "C) Turning (Rotation)", "D) Growing (Scaling)"], 
             ans: 0, 
-            hint: "Pure translation shifts a figure without twisting, flipping, expanding, or distorting its shape.", 
-            expl: "A geometric translation is a rigid transformation. It slides the shape across a vector line without altering its scale, sizing bounds, or angular orientation." 
+            hint: "Think of a train moving along a flat, straight track. It isn't twisting or turning; it's just...", 
+            expl: "In geometry, sliding a shape across a flat surface without turning it around or flipping it over is called a translation." 
         },
         { 
-            cat: "Rotational Turn Patterns", 
-            q: "A graphic artist takes a square tile piece and continually turns it exactly 90 degrees clockwise around its center point to build a recurring floor pattern.\n\nHow many distinct turns are required to complete one full, original rotation pattern?", 
-            opts: ["A) Two turns", "B) Three turns", "C) Four turns", "D) Eight turns"], 
+            cat: "Turning Blocks", 
+            q: "Look at the square block pattern indicator below. The tile turns a quarter-turn clockwise each time it moves.\n\nHow many quarter-turns are needed to make the picture look normal again?", 
+            type: "turn",
+            opts: ["A) 2 turns", "B) 3 turns", "C) 4 turns", "D) 5 turns"], 
             ans: 2, 
-            hint: "A complete rotation covers 360 degrees. Divide that full circle by the degree step of each individual turn.", 
-            expl: "Since a full rotation measures 360°, turning a shape by 90° per step means it requires exactly 4 distinct movements to complete a full circular pattern." 
+            hint: "Think about a clock face! To go all the way around and back to the top takes four quarter steps.", 
+            expl: "Four quarter-turns make up a full circle turn (360 degrees). This brings the pattern tile back to its exact original position." 
         },
         { 
-            cat: "Cube Nets", 
-            q: "Examine the three flattened 2D nets constructed from square faces below:", 
-            hasNets: true,
-            opts: ["A) Configuration 1 and Configuration 2 can fold into cubes, but Configuration 3 cannot.", "B) Only Configuration 2 forms a valid cube net without overlapping faces.", "C) All three configurations are valid folding nets of a standard cube.", "D) None of these configurations can form a structural cube."], 
+            cat: "Flattened Cube Boxes", 
+            q: "Look at the flattened layout pattern made of square blocks from the textbook module page.\n\nWhich statement is true about this flat pattern shape?", 
+            type: "net",
+            opts: ["A) It is too small to build anything.", "B) It has too many square faces to fold.", "C) It can fold perfectly into a hollow 3D cube box.", "D) It can only fold into a flat envelope shape."], 
             ans: 2, 
-            hint: "Check if each pattern contains exactly 6 square faces arranged so that they can fold together cleanly without any overlapping surfaces.", 
-            expl: "All three configurations are valid cube nets. Configuration 1 shows a 1-4-1 layout, Configuration 2 is a 2-3-1 layout, and Configuration 3 forms a staircase pattern, each folding perfectly into a 6-faced cube." 
+            hint: "Count the square faces. There are 6 square blocks arranged so they don't crash when folded.", 
+            expl: "As shown in image_574068.png, this T-shaped layout is a valid net of a cube. It folds perfectly into a 3D box without any faces overlapping." 
         },
         { 
-            cat: "Cuboid Characteristics", 
-            q: "A packaging designer works with a flattened card pattern meant to fold into a standard rectangular shipping cuboid box.\n\nHow many rectangular face units must the valid net contain to wrap the box completely without gaps?", 
-            opts: ["A) 4 faces", "B) 6 faces", "C) 8 faces", "D) 12 faces"], 
+            cat: "Cardboard Box Nets", 
+            q: "Look at the closed cardboard shipping box (a cuboid). If you unfold it along its seams to make it completely flat, how many flat rectangles will you count on its net?", 
+            type: "box",
+            opts: ["A) 4 flat faces", "B) 6 flat faces", "C) 8 flat faces", "D) 12 flat faces"], 
             ans: 1, 
-            hint: "A cuboid features three pairs of matching parallel rectangular faces, requiring the same total number of faces as a standard cube.", 
-            expl: "A cuboid consists of 6 distinct faces, arranged in 3 opposite matching pairs. Its flat layout net must contain exactly 6 rectangular units." 
+            hint: "Count them on a real box: front, back, top, bottom, left side, and right side!", 
+            expl: "A cuboid has 6 sides in total. Therefore, its flat paper net template will always contain exactly 6 rectangular face units." 
         },
         { 
-            cat: "Isometric Projections", 
-            q: "A draftsman is drawing a solid cuboid structure onto a sheet of isometric grid paper.\n\nWhat type of line networks are utilized on isometric sheets to maintain scale perspective across the 3D drawing axis?", 
-            opts: ["A) A series of dots forming small equilateral triangle meshes intersecting at 60-degree angles.", "B) Standard squares crossing at perpendicular 90-degree lines.", "C) Concentric circular ring arrays with outward radiating spokes.", "D) Parallel vertical lines crossed exclusively by horizontal lines."], 
+            cat: "Dotted Graph Sheets", 
+            q: "Look at the grid dots canvas below. When drawing a 3D building block on this type of isometric paper, what shape do the dots form when you connect them?", 
+            type: "dots",
+            opts: ["A) Tiny triangles", "B) Perfect squares", "C) Round circles", "D) Checkerboard stripes"], 
             ans: 0, 
-            hint: "Isometric paper avoids perspective distortions by aligning grid paths at 60-degree increments, creating triangle networks.", 
-            expl: "Isometric sheets use dot or line configurations spaced at 60-degree intervals to form equilateral triangles. This setup allows designers to map 3D width, height, and depth dimensions accurately." 
+            hint: "Look closely at the dots. They don't line up up-and-down like squares; they form slanted diagonal paths.", 
+            expl: "Isometric graph sheets arrange dots in slanted lines that create rows of small triangles. This lets you draw 3D blocks easily!" 
         },
         { 
-            cat: "Net Mapping Rules", 
-            q: "While verifying a pattern net for a custom die-cast block, a quality inspector notes that two opposing face segments are attached directly next to each other along the same baseline row of a 1-4-1 net layout.\n\nWhat structural defect occurs when attempting to fold this invalid configuration?", 
-            opts: ["A) One side of the cuboid remains open while another section overlaps two layers thick.", "B) The resulting folded object shifts into a triangular prism.", "C) The box folds perfectly but exhibits a twisted, non-parallel axis.", "D) The surface area increases dynamically beyond its bounds."], 
+            cat: "Bad Net Folds", 
+            q: "Look at the layout diagram. If a paper net has two square tabs stuck on the same exact side line, what happens when you try to fold it?", 
+            type: "badnet",
+            opts: ["A) They will overlap each other, leaving one side of the box wide open.", "B) It magically turns into a toy pyramid.", "C) It folds together beautifully with zero errors.", "D) The box breaks and turns into a circle."], 
             ans: 0, 
-            hint: "If two tabs fold onto the exact same position, they will overlap, leaving an empty, open gap elsewhere on the 3D shape.", 
-            expl: "If face attachments are placed incorrectly on a net layout, folding causes two adjacent card segments to overlap on the same side. This creates an incomplete wrap with an open gap." 
+            hint: "If two doors are attached to the same frame link, they will close on top of each other, leaving another side open.", 
+            expl: "If shapes are placed incorrectly on a flat net blueprint, squares will overlap onto the same slot, leaving a gap on the other side." 
         },
         { 
-            cat: "Transformation Coding", 
-            q: "A CNC pattern carver executes a sequence where an asymmetric decorative line motif is flipped across a horizontal baseline, shifted 10 units left, and then rotated 180 degrees.\n\nWhat term describes this sequence of operations?", 
-            opts: ["A) A series of combined geometric transformations.", "B) A single pure non-symmetrical translation vector.", "C) An isometric projection scaling transformation.", "D) A simple single-axis linear reflection mapping."], 
+            cat: "Moving Shapes", 
+            q: "Look at the pattern icon box. What are the three simple ways to move a shape piece around a drawing sheet to make patterns?", 
+            type: "summary",
+            opts: ["A) Sliding it, flipping it over, or turning it around like a wheel.", "B) Erasing it, stretching it out, or tearing it up.", "C) Painting it, cutting it, or soaking it in water.", "D) Making it bigger, shrinking it down, or copying it."], 
             ans: 0, 
-            hint: "Consider that the carver is combining three distinct movements: a flip (reflection), a shift (translation), and a turn (rotation).", 
-            expl: "Combining distinct operations like reflection, translation, and rotation forms a sequence of geometric transformations, often used to create complex decorative patterns." 
+            hint: "Think about the main topics: translations (slides), reflections (flips), and rotations (turns)!", 
+            expl: "The three standard ways to transform or move a basic shape around a flat canvas space are sliding it, flipping it, and turning it." 
         }
     ];
 
     let current = 0, score = 0, attempts = 0, timer, timeLeft = 60;
 
-    // Fisher-Yates Shuffling Core Engine
     function shufflePool(arr) {
         for (let i = arr.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
@@ -346,49 +364,45 @@
         document.getElementById('q-text').innerText = q.q;
         document.getElementById('timer-text').innerText = timeLeft + "s";
         
-        const graphicArea = document.getElementById('custom-graphics-area');
-        graphicArea.innerHTML = "";
+        const canvas = document.getElementById('canvas-render-zone');
+        canvas.innerHTML = "";
 
-        if (q.hasGrid) {
-            graphicArea.innerHTML = `
-                <div class="visual-display-box">
-                    <div class="canvas-grid">
-                        <div class="cell filled">■</div><div class="cell"></div><div class="cell mirror-line">|</div><div class="cell"></div>
-                        <div class="cell filled">■</div><div class="cell font-weight:normal"></div><div class="cell mirror-line">|</div><div class="cell"></div>
-                        <div class="cell filled">■</div><div class="cell filled">■</div><div class="cell mirror-line">|</div><div class="cell"></div>
-                        <div class="cell"></div><div class="cell"></div><div class="cell mirror-line">|</div><div class="cell"></div>
-                    </div>
-                </div>
-            `;
-        } else if (q.hasNets) {
-            graphicArea.innerHTML = `
-                <div class="visual-display-box" style="flex-direction:column; gap:10px;">
-                    <div class="net-wrapper">
-                        <span>1:</span>
-                        <div class="net-shape">
-                            <div class="n-cl"></div><div class="n-fl"></div><div class="n-cl"></div><div class="n-cl"></div>
-                            <div class="n-fl"></div><div class="n-fl"></div><div class="n-fl"></div><div class="n-fl"></div>
-                            <div class="n-cl"></div><div class="n-fl"></div><div class="n-cl"></div><div class="n-cl"></div>
-                        </div>
-                    </div>
-                    <div class="net-wrapper">
-                        <span>2:</span>
-                        <div class="net-shape">
-                            <div class="n-fl"></div><div class="n-fl"></div><div class="n-cl"></div><div class="n-cl"></div>
-                            <div class="n-cl"></div><div class="n-fl"></div><div class="n-fl"></div><div class="n-fl"></div>
-                            <div class="n-cl"></div><div class="n-cl"></div><div class="n-fl"></div><div class="n-cl"></div>
-                        </div>
-                    </div>
-                    <div class="net-wrapper">
-                        <span>3:</span>
-                        <div class="net-shape">
-                            <div class="n-fl"></div><div class="n-fl"></div><div class="n-cl"></div><div class="n-cl"></div>
-                            <div class="n-cl"></div><div class="n-fl"></div><div class="n-fl"></div><div class="n-cl"></div>
-                            <div class="n-cl"></div><div class="n-cl"></div><div class="n-fl"></div><div class="n-fl"></div>
-                        </div>
-                    </div>
-                </div>
-            `;
+        // Build Custom Vector Graphics & Visual Displays Live
+        if (q.type === "star") {
+            canvas.innerHTML = "<span style='font-size:4.5rem; filter: drop-shadow(0px 2px 4px rgba(0,0,0,0.1));'>⭐</span>";
+        } else if (q.type === "heart") {
+            canvas.innerHTML = "<div style='display:flex; align-items:center;'><div class='heart-half'></div><div class='mirror-axis-line'></div><div style='width:50px; height:80px; border:2px dashed #bdc3c7; border-radius: 50px 50px 0 0; transform: rotate(45deg); transform-origin: 100% 100%;'></div></div>";
+        } else if (q.type === "car") {
+            canvas.innerHTML = "<span style='font-size:4rem;'>⬅️🚗</span>";
+        } else if (q.type === "slide") {
+            canvas.innerHTML = "<div class='slide-container'><span style='font-size:2.5rem;'>🔷</span><span class='slide-arrow'>➔</span><span style='font-size:2.5rem;'>🔷</span><span class='slide-arrow'>➔</span><span style='font-size:2.5rem;'>🔷</span></div>";
+        } else if (q.type === "turn") {
+            canvas.innerHTML = "<div style='display:flex; flex-direction:column; align-items:center; gap:8px;'><span style='font-size:3.5rem; transform: rotate(90deg); display:inline-block;'>📐</span><span style='font-size:0.8rem; color:#7f8c8d; font-weight:bold;'>[Turn Indicator]</span></div>";
+        } else if (q.type === "net") {
+            canvas.innerHTML = `
+                <div class="net-grid">
+                    <div class="empty-space"></div><div class="box-face"></div><div class="empty-space"></div><div class="empty-space"></div>
+                    <div class="box-face"></div><div class="box-face"></div><div class="box-face"></div><div class="box-face"></div>
+                    <div class="empty-space"></div><div class="box-face"></div><div class="empty-space"></div><div class="empty-space"></div>
+                </div>`;
+        } else if (q.type === "box") {
+            canvas.innerHTML = "<span style='font-size:4.5rem;'>📦</span>";
+        } else if (q.type === "dots") {
+            canvas.innerHTML = `
+                <div class="dot-matrix">
+                    <div class="grid-dot"></div><div class="grid-dot"></div><div class="grid-dot"></div><div class="grid-dot"></div><div class="grid-dot"></div>
+                    <div class="grid-dot" style="margin-left:7px;"></div><div class="grid-dot"></div><div class="grid-dot"></div><div class="grid-dot"></div><div class="grid-dot"></div>
+                    <div class="grid-dot"></div><div class="grid-dot"></div><div class="grid-dot"></div><div class="grid-dot"></div><div class="grid-dot"></div>
+                </div>`;
+        } else if (q.type === "badnet") {
+            canvas.innerHTML = `
+                <div class="net-grid" style="grid-template-columns: repeat(4,25px); grid-template-rows: repeat(3,25px);">
+                    <div class="box-face"></div><div class="box-face"></div><div class="empty-space"></div><div class="empty-space"></div>
+                    <div class="box-face"></div><div class="box-face"></div><div class="box-face"></div><div class="box-face"></div>
+                    <div class="empty-space"></div><div class="empty-space"></div><div class="empty-space"></div><div class="empty-space"></div>
+                </div>`;
+        } else if (q.type === "summary") {
+            canvas.innerHTML = "<div style='font-size:2.2rem; display:flex; gap:15px;'>🏃‍♂️ ↔️ 🔄</div>";
         }
 
         const area = document.getElementById('options-area');
@@ -427,7 +441,7 @@
             if(attempts === 1) {
                 const f = document.getElementById('feedback-box');
                 f.className = 'feedback hint-box';
-                f.innerHTML = "<b>💡 Hint:</b> " + pool[current].hint;
+                f.innerHTML = "<b>💡 Clue:</b> " + pool[current].hint;
                 f.style.display = 'block';
             } else {
                 clearInterval(timer);
@@ -454,15 +468,15 @@
             document.getElementById('result-view').classList.remove('hidden');
             document.getElementById('final-pts').innerText = score;
 
-            let statusMessage = "Review your 2D symmetry reflections and 3D geometric nets to master this unit.";
+            let statusMessage = "Keep playing with reflections, flips, and boxes to become a geometry star!";
             if(score === 10) {
-                statusMessage = "Perfect score! You've demonstrated excellent spatial visualization skills.";
+                statusMessage = "Fantastic job! Perfect score! You understand fold lines, mirror shapes, and paper nets beautifully.";
             } else if(score >= 7) {
-                statusMessage = "Great job! You have a solid grasp of geometric reflections, patterns, and nets.";
+                statusMessage = "Great effort! You have solid skills for matching shapes and patterns.";
             }
 
             document.getElementById('result-msg').innerHTML = `
-                <span style="font-weight:700; color:#2c3e50; display:block; margin-bottom:6px;">Performance Summary:</span>
+                <span style="font-weight:700; color:#2c3e50; display:block; margin-bottom:6px;">Your Results:</span>
                 ${statusMessage}
             `;
         }
