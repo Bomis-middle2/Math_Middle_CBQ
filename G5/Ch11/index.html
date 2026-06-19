@@ -1,1 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Mathematics Mastery Challenge</title>
+    <style>
+        :root {
+            --primary: #4a154b;
+            --primary-dark: #300d31;
+            --success: #27ae60;
+            --error: #e67e22;
+            --bg: #f4ecf7;
+            --text: #2c3e50;
+        }
 
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: #eaecee;
+            color: var(--text);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 10px;
+        }
+
+        #app-container {
+            width: 100%;
+            max-width: 580px;
+            background: #ffffff;
+            border-radius: 24px;
+            box-shadow: 0 15px 35px rgba(74, 21, 75, 0.12);
+            position: relative;
+            overflow: hidden;
+            min-height: 540px;
+        }
+
+        /* --- 5-SECOND WHITE SPLASH SCREEN --- */
+        #splash-screen {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .splash-logo-img {
+            max-width: 240px;
+            width: 80%;
+            height: auto;
+            object-fit: contain;
+        }
+
+        /* --- MAIN PANELS --- */
+        .quiz-padding {
+            padding: 25px;
+        }
+
+        .instruction-box {
+            background: var(--bg);
+            border-left: 4px solid var(--primary);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: left;
+            margin: 20px 0;
+            font-size: 0.95rem;
+            color: #455a64;
+            line-height: 1.5;
+        }
+        .instruction-box ul { margin: 5px 0 0 20px; padding: 0; }
+        .instruction-box li { margin-bottom: 6px; }
+
+        .hud-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .hud-pill {
+            flex: 1;
+            text-align: center;
+            padding: 12px 6px;
+            border-radius: 14px;
+            font-size: 0.95rem;
+            font-weight: 800;
+            background-color: #e8daef;
+            color: var(--primary-dark);
+        }
+        .hud-pill.gold { background-color: #fef9e7; color: #b7950b; }
+
+        .timer-track { width: 100%; height: 8px; background: #e5e8e8; border-radius: 10px; margin-bottom: 20px; overflow: hidden; }
+        #timer-bar { height: 100%; width: 100%; background: var(--primary); transition: width 1s linear; }
+
+        .category-text { font-size: 0.85rem; color: #b7950b; font-weight: 700; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 1px; }
+        .question-text { font-size: 1.1rem; font-weight: 600; line-height: 1.5; margin-bottom: 15px; white-space: pre-line; }
+
+        /* --- GRAPHICS EMBED BOXES --- */
+        .visual-display-box {
+            background: #ffffff;
+            border: 2px solid #e5e8e8;
+            padding: 15px;
+            border-radius: 16px;
+            margin: 15px 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: inset 0 2px 6px rgba(0,0,0,0.02);
+        }
+
+        .shape-visual {
+            border: 3px solid var(--primary);
+            background: var(--bg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            position: relative;
+        }
+        
+        .line-graphic {
+            width: 100%;
+            height: 4px;
+            background: #34495e;
+            position: relative;
+            margin: 20px 0;
+        }
+        .line-node {
+            width: 12px;
+            height: 12px;
+            background: var(--primary);
+            border-radius: 50%;
+            position: absolute;
+            top: -4px;
+        }
+
+        /* --- OPTIONS & INTERACTION --- */
+        .options-grid { display: grid; gap: 12px; }
+        .opt-btn {
+            background: #fff; border: 2px solid #edf2f4; padding: 16px;
+            border-radius: 14px; text-align: left; font-size: 1rem; cursor: pointer; transition: 0.2s;
+            color: #34495e; font-weight: 500;
+        }
+        .opt-btn:hover:not(:disabled) { border-color: var(--primary); background: #fafafa; }
+        .opt-btn.correct { background: #e8f5e9 !important; color: var(--success) !important; border-color: #a5d6a7 !important; font-weight: 700; }
+        .opt-btn.wrong { background: #fdf2e9 !important; color: var(--error) !important; border-color: #f5caba !important; }
+
+        .feedback { margin-top: 20px; padding: 15px; border-radius: 12px; display: none; line-height: 1.5; font-size: 0.95rem; }
+        .hint-box { background: #fef9e7; border: 1px solid #f9e79f; color: #b7950b; }
+        .expl-box { background: #f4ecf7; border: 1px solid #d7bde2; color: #6c3483; }
+
+        #action-btn { width: 100%; margin-top: 20px; padding: 16px; background: var(--primary); color: white; border: none; border-radius: 14px; font-weight: 700; cursor: pointer; font-size: 1rem; }
+        #action-btn:hover { background: var(--primary-dark); }
+        
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+
+<div id="app-container">
+
+    <div id="splash-screen">
+        <img class="splash-logo-img" src="assets/logo.png" alt="Challenge Logo" onerror="this.style.display='none'; document.getElementById('splash-fallback').style.display='block';">
+        <h2 id="splash-fallback" style="display:none; color:var(--primary); font-weight:800; letter-spacing:1px;">MATH CHAMPIONS</h2>
+    </div>
+
+    <div id="intro-view" class="hidden">
+        <div class="quiz-padding">
+            <h1 style="text-align:center; color:var(--primary); margin: 10px 0 5px 0; font-size: 26px;">Math Mastery</h1>
+            <p style="text-align:center; color:#7f8c8d; margin-top: 0; font-weight: 600; text-transform: uppercase; font-size: 12px; letter-spacing: 1px;">Comprehensive Evaluation</p>
+            
+            <div class="instruction-box">
+                <strong>📋 Core Curricular Skills:</strong>
+                <ul>
+                    <li>Handle multi-unit metric system conversions across length, mass, and fluid capacity parameters.</li>
+                    <li>Recognize foundational geometric classifications, lines, angles, and points.</li>
+                    <li>Calculate total perimeter profiles and inner area values for structural shapes.</li>
+                    <li>Solve multi-step, situational math word problems.</li>
+                    <li><b>Rules:</b> 60 seconds per task. Randomized quiz configurations!</li>
+                </ul>
+            </div>
+
+            <button id="start-btn" style="width:100%; padding:18px; background:var(--primary); color:white; border:none; border-radius:14px; font-weight:bold; font-size:1.1rem; cursor:pointer; margin-top: 10px;">Begin Challenge ⚡</button>
+        </div>
+    </div>
+
+    <div id="quiz-view" class="hidden">
+        <div class="quiz-padding">
+            <div class="hud-row">
+                <div class="hud-pill">Task <span id="q-num">1</span>/10</div>
+                <div class="hud-pill">Score: <span id="score-val">0</span></div>
+                <div class="hud-pill gold"><span id="timer-text">60s</span></div>
+            </div>
+            <div class="timer-track"><div id="timer-bar"></div></div>
+            
+            <div id="q-category" class="category-text"></div>
+            <div id="q-text" class="question-text"></div>
+            
+            <div id="custom-graphics-area"></div>
+            
+            <div id="options-area" class="options-grid"></div>
+            
+            <div id="feedback-box" class="feedback"></div>
+            <button id="action-btn" class="hidden">Next Task →</button>
+        </div>
+    </div>
+
+    <div id="result-view" class="hidden" style="text-align:center;">
+        <div class="quiz-padding">
+            <div style="font-size: 4rem; margin-bottom: 5px;">🏆</div>
+            <h2 style="font-size:1.6rem; margin: 5px 0;">Evaluation Completed!</h2>
+            <div style="font-size: 4rem; font-weight: 800; color: var(--primary); margin: 10px 0;"><span id="final-pts">0</span>/10</div>
+            <div id="result-msg" style="color:#5f6368; font-size: 0.95rem; line-height: 1.5; margin: 0 0 25px 0; text-align: left; background: #f8f9fa; border: 1px solid #e2e8f0; padding: 16px; border-radius: 16px;"></div>
+            <button onclick="location.reload()" style="width:100%; padding:16px; background:var(--primary); color:white; border:none; border-radius:14px; font-weight:700; cursor:pointer; font-size: 1rem;">Start New Session</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Instantiate asset files based on repository mapping
+    const correctSound = new Audio('assets/correct.mp3');
+    const wrongSound = new Audio('assets/wrong.mp3');
+    const clapsSound = new Audio('assets/freesound_community-claps-44774.mp3');
+
+    function playAudio(sound) {
+        sound.currentTime = 0;
+        sound.play().catch(err => console.log("Playback interaction lock check", err));
+    }
+
+    // 5-second initial white splash loader screen logic
+    window.addEventListener('DOMContentLoaded', () => {
+        setTimeout(() => {
+            const splash = document.getElementById('splash-screen');
+            splash.style.opacity = '0';
+            setTimeout(() => {
+                splash.style.display = 'none';
+                document.getElementById('intro-view').classList.remove('hidden');
+            }, 800); 
+        }, 5000);
+    });
+
+    // Content pool targeting Learning Outcomes from image_555528, image_4a6c04, and image_49837e
+    const pool = [
+        { 
+            cat: "Measurement - Length", 
+            q: "An architectural model beam measures precisely 850 centimeters long.\n\nWhat is its exact equivalent length value expressed in meters?", 
+            opts: ["A) 0.85 meters", "B) 8.5 meters", "C) 85.0 meters", "D) 0.085 meters"], 
+            ans: 1, 
+            hint: "1 meter is made of exactly 100 centimeters. Divide your original value by 100.", 
+            expl: "To convert from centimeters up to whole meters, apply a division factor of 100: 850 ÷ 100 = 8.5 meters." 
+        },
+        { 
+            cat: "Measurement - Mass", 
+            q: "A bulk ingredient kitchen container holds 4.25 kilograms of organic sugar mix.\n\nWhat is this exact mass storage load quantified in grams?", 
+            opts: ["A) 425 grams", "B) 42,500 grams", "C) 4,250 grams", "D) 42.5 grams"], 
+            ans: 2, 
+            hint: "1 kilogram holds exactly 1,000 grams. Convert by multiplying your value by 1,000.", 
+            expl: "Since 1 kg equals 1000 g, multiply the value by 1000: 4.25 × 1,000 = 4,250 grams." 
+        },
+        { 
+            cat: "Measurement - Capacity", 
+            q: "A lab container holds 3,700 milliliters of chemical solution. The technician extracts exactly 1.2 liters from it.\n\nHow much chemical solution remains left inside the container?", 
+            opts: ["A) 2.5 liters", "B) 250 milliliters", "C) 2,500 milliliters", "D) Both A and C are correct answers"], 
+            ans: 3, 
+            hint: "Convert 1.2 liters to 1,200 mL first, then subtract. Note that 2,500 mL is identical to 2.5 liters.", 
+            expl: "3,700 mL minus 1,200 mL equals 2,500 mL. Since 2,500 mL is exactly 2.5 liters, options A and C are both correct." 
+        },
+        { 
+            cat: "Geometry - Points", 
+            q: "Look at the straight line path segment below featuring three separate marked layout points:", 
+            showLine: true,
+            opts: ["A) These points are classified as non-collinear points", "B) These points are classified as collinear points", "C) These items represent intersecting line loops", "D) These items represent perpendicular configurations"], 
+            ans: 1, 
+            hint: "Points are classified as collinear when they all sit along the same straight line path.", 
+            expl: "Points that lie together along a single straight path line are called collinear points." 
+        },
+        { 
+            cat: "Geometry - Lines & Rays", 
+            q: "A laser pointer shoots a beam that starts at a fixed point and travels forward infinitely in one single direction.\n\nWhich geometric structure best matches this pattern?", 
+            opts: ["A) A line segment", "B) A complete line", "C) A ray", "D) A parallel intersect plane"], 
+            ans: 2, 
+            hint: "Think of an arrow that has a solid starting endpoint on one side, but goes on forever in the other direction.", 
+            expl: "A geometric ray starts at one defined endpoint and continues infinitely forward in a single direction." 
+        },
+        { 
+            cat: "Geometry - Angles", 
+            q: "An engineer uses a protractor tool to check an angle joint, reading a value of exactly 115 degrees.\n\nHow is this angle structurally classified?", 
+            opts: ["A) Acute angle", "B) Right angle", "C) Obtuse angle", "D) Reflex angle"], 
+            ans: 2, 
+            hint: "An angle that measures strictly greater than 90 degrees but less than 180 degrees belongs to this family.", 
+            expl: "Angles that measure between 90 degrees and 180 degrees are called obtuse angles." 
+        },
+        { 
+            cat: "Perimeter & Area - Box Shape", 
+            q: "A rectangular display board layout is displayed below:", 
+            showRect: true,
+            opts: ["A) Perimeter = 36 cm, Area = 80 sq cm", "B) Perimeter = 42 cm, Area = 80 sq cm", "C) Perimeter = 42 cm, Area = 42 sq cm", "D) Perimeter = 80 cm, Area = 42 sq cm"], 
+            ans: 1, 
+            hint: "Perimeter is calculated as 2 × (length + width), while Area is calculated as length × width.", 
+            expl: "Perimeter = 2 × (16 + 5) = 42 cm. Area = 16 × 5 = 80 square cm." 
+        },
+        { 
+            cat: "Perimeter & Area - Triangle", 
+            q: "An equilateral triangle has a perimeter profile measuring exactly 27 centimeters.\n\nWhat is the length of one single side of this triangle?", 
+            opts: ["A) 7 centimeters", "B) 9 centimeters", "C) 13.5 centimeters", "D) 81 centimeters"], 
+            ans: 1, 
+            hint: "An equilateral triangle has three sides of equal length. Divide the total perimeter value by 3.", 
+            expl: "Since all three side segments are identical, divide the perimeter by 3: 27 ÷ 3 = 9 centimeters per side." 
+        },
+        { 
+            cat: "Perimeter & Area - Compound", 
+            q: "A square patio tile measuring 4 meters on each side has a smaller square cut out of its center. The missing piece measures 2 meters on each side.\n\nWhat is the remaining area of the patio tile?", 
+            opts: ["A) 8 square meters", "B) 12 square meters", "C) 14 square meters", "D) 16 square meters"], 
+            ans: 1, 
+            hint: "Calculate the total area of the large outer tile first, then subtract the area of the smaller missing center piece.", 
+            expl: "Total outer area = 4 × 4 = 16 sq m. Missing center area = 2 × 2 = 4 sq m. Remaining tile area = 16 - 4 = 12 square meters." 
+        },
+        { 
+            cat: "Measurement - Case Study", 
+            q: "A shipping crate carries 6 identical product boxes. Each separate product box weighs exactly 650 grams. The empty wooden shipping crate itself adds an extra 1.1 kilograms of weight.\n\nWhat is the combined total weight of the loaded crate in kilograms?", 
+            opts: ["A) 3.9 kilograms", "B) 4.1 kilograms", "C) 5.0 kilograms", "D) 5.2 kilograms"], 
+            ans: 2, 
+            hint: "Find the total weight of the 6 boxes in grams first, convert that value to kilograms, and then add the weight of the crate.", 
+            expl: "6 boxes × 650 g = 3,900 g, which is 3.9 kg. Adding the 1.1 kg crate brings the total weight to 3.9 + 1.1 = 5.0 kilograms." 
+        }
+    ];
+
+    let current = 0, score = 0, attempts = 0, timer, timeLeft = 60;
+
+    function shufflePool(arr) {
+        for (let i = arr.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+    }
+
+    document.getElementById('start-btn').onclick = () => {
+        document.getElementById('intro-view').classList.add('hidden');
+        document.getElementById('quiz-view').classList.remove('hidden');
+        shufflePool(pool); 
+        loadQuestion();
+    };
+
+    function loadQuestion() {
+        attempts = 0; timeLeft = 60;
+        const q = pool[current];
+        document.getElementById('feedback-box').style.display = 'none';
+        document.getElementById('action-btn').classList.add('hidden');
+        document.getElementById('q-num').innerText = current + 1;
+        document.getElementById('q-category').innerText = q.cat;
+        document.getElementById('q-text').innerText = q.q;
+        document.getElementById('timer-text').innerText = timeLeft + "s";
+        
+        const graphicArea = document.getElementById('custom-graphics-area');
+        graphicArea.innerHTML = "";
+
+        if (q.showLine) {
+            graphicArea.innerHTML = `
+                <div class="visual-display-box">
+                    <div style="width:80%;">
+                        <div class="line-graphic">
+                            <div class="line-node" style="left:15%;"></div>
+                            <div class="line-node" style="left:50%;"></div>
+                            <div class="line-node" style="left:85%;"></div>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; font-size:0.85rem; font-weight:bold; color:#7f8c8d; padding:0 10px;">
+                            <span>Point A</span><span>Point B</span><span>Point C</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        } else if (q.showRect) {
+            graphicArea.innerHTML = `
+                <div class="visual-display-box">
+                    <div class="shape-visual" style="width:160px; height:70px;">
+                        <span style="font-size:0.9rem;">Area = ?</span>
+                        <div style="position:absolute; top:-22px; font-size:0.8rem; font-weight:bold; color:#7f8c8d;">Length = 16 cm</div>
+                        <div style="position:absolute; right:-75px; font-size:0.8rem; font-weight:bold; color:#7f8c8d;">Width = 5 cm</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        const area = document.getElementById('options-area');
+        area.innerHTML = "";
+        q.opts.forEach((o, i) => {
+            const b = document.createElement('button');
+            b.className = 'opt-btn';
+            b.innerText = o;
+            b.onclick = () => check(i, b);
+            area.appendChild(b);
+        });
+        startTimer();
+    }
+
+    function startTimer() {
+        clearInterval(timer);
+        timer = setInterval(() => {
+            timeLeft--;
+            document.getElementById('timer-text').innerText = timeLeft + "s";
+            document.getElementById('timer-bar').style.width = (timeLeft / 60 * 100) + "%";
+            if(timeLeft <= 0) { 
+                clearInterval(timer); 
+                playAudio(wrongSound); 
+                endTurn(); 
+            }
+        }, 1000);
+    }
+
+    function check(i, b) {
+        if(i === pool[current].ans) {
+            clearInterval(timer);
+            playAudio(correctSound);
+            b.classList.add('correct');
+            score++;
+            document.getElementById('score-val').innerText = score;
+            endTurn();
+        } else {
+            attempts++;
+            playAudio(wrongSound);
+            b.classList.add('wrong');
+            b.disabled = true;
+            if(attempts === 1) {
+                const f = document.getElementById('feedback-box');
+                f.className = 'feedback hint-box';
+                f.innerHTML = "<b>💡 Hint:</b> " + pool[current].hint;
+                f.style.display = 'block';
+            } else {
+                clearInterval(timer);
+                endTurn();
+            }
+        }
+    }
+
+    function endTurn() {
+        document.querySelectorAll('.opt-btn').forEach(btn => btn.disabled = true);
+        const f = document.getElementById('feedback-box');
+        f.className = 'feedback expl-box';
+        f.innerHTML = "<b>🔍 Explanation:</b> " + pool[current].expl;
+        f.style.display = 'block';
+        document.querySelectorAll('.opt-btn')[pool[current].ans].classList.add('correct');
+        document.getElementById('action-btn').classList.remove('hidden');
+    }
+
+    document.getElementById('action-btn').onclick = () => {
+        current++;
+        if(current < pool.length) loadQuestion();
+        else {
+            document.getElementById('quiz-view').classList.add('hidden');
+            document.getElementById('result-view').classList.remove('hidden');
+            document.getElementById('final-pts').innerText = score;
+
+            let statusMessage = "Review your measurement conversion tables, shape definitions, and geometric formulas to practice this unit.";
+            if(score === 10) {
+                statusMessage = "Amazing work! Perfect score achieved across all mathematical modules.";
+                playAudio(clapsSound);
+            } else if(score >= 7) {
+                statusMessage = "Great job! You have a strong grasp of measurement systems, perimeter calculations, and basic geometry.";
+            }
+
+            document.getElementById('result-msg').innerHTML = `
+                <span style="font-weight:700; color:#2c3e50; display:block; margin-bottom:6px;">Performance Summary:</span>
+                ${statusMessage}
+            `;
+        }
+    };
+</script>
+</body>
+</html>
