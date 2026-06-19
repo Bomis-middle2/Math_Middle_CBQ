@@ -170,11 +170,11 @@
             <p style="text-align:center; color:#7f8c8d; margin-top: 0; font-weight: 600; text-transform: uppercase; font-size: 12px; letter-spacing: 1px;">Curricular Competency Challenge</p>
             
             <div class="instruction-box">
-                <strong>📋 Targets Based on image_4996a5.png:</strong>
+                <strong>📋 Core Learning Outcomes:</strong>
                 <ul>
-                    <li>Convert millimeter ($mm$) to centimeter ($cm$), meter ($m$), and kilometer ($km$) scales.</li>
-                    <li>Scale mass units seamlessly between gram ($g$) and kilogram ($kg$).</li>
-                    <li>Convert fluid capacities between litre ($L$) and millilitre ($mL$).</li>
+                    <li>Convert millimeter (mm) to centimeter (cm), meter (m), and kilometer (km) scales.</li>
+                    <li>Scale mass units seamlessly between gram (g) and kilogram (kg).</li>
+                    <li>Convert fluid capacities between litre (L) and millilitre (mL).</li>
                     <li>Solve case-based real-world word problems using multi-step metric operations.</li>
                     <li><b>Rules:</b> 60 seconds per task. Scrambled question variants!</li>
                 </ul>
@@ -238,11 +238,11 @@
         }, 5000);
     });
 
-    // Core case-based math question sets generated directly from image_4996a5.png targets
+    // Core case-based math question sets generated directly from metric benchmarks
     const pool = [
         { 
-            cat: "Length Conversion ($mm \rightarrow cm$)", 
-            q: "A high-precision smartphone component measures exactly 45 millimeters ($mm$) along its internal baseline.\n\nWhat is this equivalent dimension structural length measured in centimeters ($cm$)?", 
+            cat: "Length Conversion (mm to cm)", 
+            q: "A high-precision smartphone component measures exactly 45 millimeters (mm) along its internal baseline.\n\nWhat is this equivalent dimension structural length measured in centimeters (cm)?", 
             showGraphic: true, leftVal: "45 mm", rightVal: "? cm",
             opts: ["A) 0.45 cm", "B) 4.5 cm", "C) 450 cm", "D) 45,000 cm"], 
             ans: 1, 
@@ -250,8 +250,8 @@
             expl: "To go from mm to cm, you divide by 10. Therefore, 45 mm ÷ 10 = 4.5 cm." 
         },
         { 
-            cat: "Length Conversion ($cm \rightarrow m$)", 
-            q: "An interior floor designer maps out a decorative border tiling segment that extends for exactly 350 centimeters ($cm$).\n\nWhat is the absolute distance value of this tile layout rendered in meters ($m$)?", 
+            cat: "Length Conversion (cm to m)", 
+            q: "An interior floor designer maps out a decorative border tiling segment that extends for exactly 350 centimeters (cm).\n\nWhat is the absolute distance value of this tile layout rendered in meters (m)?", 
             showGraphic: true, leftVal: "350 cm", rightVal: "? m",
             opts: ["A) 0.35 m", "B) 35.0 m", "C) 3.5 m", "D) 3,500 m"], 
             ans: 2, 
@@ -259,8 +259,8 @@
             expl: "Moving up from centimeters to meters requires dividing by 100. Thus, 350 cm ÷ 100 = 3.5 meters." 
         },
         { 
-            cat: "Length Conversion ($m \rightarrow km$)", 
-            q: "A municipal runner logs a sprint distance tracking map showing exactly 7,200 meters ($m$) along a coastal pathway.\n\nHow many kilometers ($km$) did the runner complete?", 
+            cat: "Length Conversion (m to km)", 
+            q: "A municipal runner logs a sprint distance tracking map showing exactly 7,200 meters (m) along a coastal pathway.\n\nHow many kilometers (km) did the runner complete?", 
             showGraphic: true, leftVal: "7200 m", rightVal: "? km",
             opts: ["A) 7.2 km", "B) 72.0 km", "C) 0.72 km", "D) 720 km"], 
             ans: 0, 
@@ -268,8 +268,8 @@
             expl: "Converting meters to kilometers involves dividing by 1,000. Therefore, 7,200 m ÷ 1,000 = 7.2 km." 
         },
         { 
-            cat: "Mass Conversion ($g \rightarrow kg$)", 
-            q: "A baking facility checks a package container of cocoa powder recording a wholesale net mass weight of 650 grams ($g$).\n\nWhat is this mass measurement parameter quantified in kilograms ($kg$)?", 
+            cat: "Mass Conversion (g to kg)", 
+            q: "A baking facility checks a package container of cocoa powder recording a wholesale net mass weight of 650 grams (g).\n\nWhat is this mass measurement parameter quantified in kilograms (kg)?", 
             showGraphic: true, leftVal: "650 g", rightVal: "? kg",
             opts: ["A) 6.5 kg", "B) 0.65 kg", "C) 0.065 kg", "D) 65.0 kg"], 
             ans: 1, 
@@ -277,8 +277,8 @@
             expl: "To convert grams to kilograms, apply a division factor of 1,000. This renders 650 g ÷ 1,000 = 0.65 kg." 
         },
         { 
-            cat: "Mass Conversion ($kg \rightarrow g$)", 
-            q: "An agricultural crate carrying fresh produce contains a total commodity load weighing precisely 4.8 kilograms ($kg$).\n\nWhat is this load's specific metric weight in grams ($g$)?", 
+            cat: "Mass Conversion (kg to g)", 
+            q: "An agricultural crate carrying fresh produce contains a total commodity load weighing precisely 4.8 kilograms (kg).\n\nWhat is this load's specific metric weight in grams (g)?", 
             showGraphic: true, leftVal: "4.8 kg", rightVal: "? g",
             opts: ["A) 480 g", "B) 48,000 g", "C) 4,800 g", "D) 0.0048 g"], 
             ans: 2, 
@@ -286,8 +286,8 @@
             expl: "Since 1 kg = 1,000 g, multiply 4.8 kg by 1,000 to arrive at exactly 4,800 grams." 
         },
         { 
-            cat: "Capacity Conversion ($L \rightarrow mL$)", 
-            q: "A laboratory technician unboxes a high-capacity distilled fluid flask holding exactly 2.35 litres ($L$) of chemical solvent.\n\nWhat is the absolute fluid volume of this flask when measured in millilitres ($mL$)?", 
+            cat: "Capacity Conversion (L to mL)", 
+            q: "A laboratory technician unboxes a high-capacity distilled fluid flask holding exactly 2.35 litres (L) of chemical solvent.\n\nWhat is the absolute fluid volume of this flask when measured in millilitres (mL)?", 
             showGraphic: true, leftVal: "2.35 L", rightVal: "? mL",
             opts: ["A) 235 mL", "B) 2,350 mL", "C) 23,500 mL", "D) 0.00235 mL"], 
             ans: 1, 
@@ -295,8 +295,8 @@
             expl: "To switch liters directly to milliliters, multiply by 1,000. 2.35 L × 1,000 matches out to 2,350 mL." 
         },
         { 
-            cat: "Capacity Conversion ($mL \rightarrow L$)", 
-            q: "A bottle of organic wellness tonic contains 450 millilitres ($mL$) of nutrient juice mixture.\n\nHow is this tonic package volume properly represented on an export manifest file in litres ($L$)?", 
+            cat: "Capacity Conversion (mL to L)", 
+            q: "A bottle of organic wellness tonic contains 450 millilitres (mL) of nutrient juice mixture.\n\nHow is this tonic package volume properly represented on an export manifest file in litres (L)?", 
             showGraphic: true, leftVal: "450 mL", rightVal: "? L",
             opts: ["A) 0.45 L", "B) 4.5 L", "C) 0.045 L", "D) 45.0 L"], 
             ans: 0, 
