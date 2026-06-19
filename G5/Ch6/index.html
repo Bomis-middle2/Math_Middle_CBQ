@@ -102,18 +102,52 @@
         .category-text { font-size: 0.85rem; color: #b7950b; font-weight: 700; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 1px; }
         .question-text { font-size: 1.1rem; font-weight: 600; line-height: 1.5; margin-bottom: 15px; white-space: pre-line; }
 
+        /* --- DYNAMIC GRAPHICS/IMAGE STAND-IN BOX --- */
         .visual-display-box {
-            background: #fcfcfc;
-            border: 2px dashed #bdc3c7;
-            padding: 15px;
-            border-radius: 12px;
-            text-align: center;
-            font-family: monospace;
-            font-size: 1.1rem;
-            font-weight: bold;
-            margin: 15px 0;
-            line-height: 1.4;
+            background: #fdfefe;
+            border: 2px solid #bdc3c7;
+            padding: 18px;
+            border-radius: 16px;
+            margin: 18px 0;
+            box-shadow: inset 0 2px 8px rgba(0,0,0,0.03);
         }
+
+        .vector-canvas {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            gap: 15px;
+            margin-top: 10px;
+            background: #f4f6f6;
+            padding: 20px 10px;
+            border-radius: 12px;
+        }
+
+        .vector-group {
+            text-align: center;
+            font-weight: bold;
+            font-size: 0.85rem;
+            color: #7f8c8d;
+            flex: 1;
+        }
+
+        .graphic-render {
+            width: 100%;
+            height: 80px;
+            background: #ffffff;
+            border: 1px solid #e5e8e8;
+            border-radius: 8px;
+            margin-bottom: 6px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        /* Vector Line Art Embeds */
+        .line-p1 { position: absolute; width: 80%; height: 2px; background: #2980b9; left: 10%; top: 30%; }
+        .line-p2 { position: absolute; width: 80%; height: 2px; background: #2980b9; left: 10%; top: 65%; }
+        
+        .line-i1 { position: absolute; width: 90%; height: 2px; background: #e74c3c; left: 5%; top: 50%; transform: rotate(25deg); }
+        .line-i2 { position: absolute; width: 90%; height: 2px; background: #e74c3c; left: 5%; top: 50%; transform: rotate(-35deg); }
 
         .options-grid { display: grid; gap: 12px; }
         .opt-btn {
@@ -158,7 +192,7 @@
                     <li>Classify right, acute, obtuse, straight, and reflex angle types.</li>
                     <li>Read protractor mapping positions precisely.</li>
                     <li>Differentiate parallel, concurrent, intersecting, and perpendicular vector frameworks.</li>
-                    <li><b>Rules:</b> 60s per turn. Up to 2 attempts per task!</li>
+                    <li><b>Rules:</b> 60s per turn. Questions are fully randomized!</li>
                 </ul>
             </div>
 
@@ -216,48 +250,48 @@
         { 
             cat: "Geometric Terms", 
             q: "A civil engineer checks a blueprint drawing containing a beam that has a single fixed anchor point on one end but extends outward indefinitely on the other end.\n\nWhich geometric element best models this specific layout component?", 
-            opts: ["A) Line Segment", "B) Ray", "C) Infinite Line", "D) Intersecting Vertex"], 
-            ans: 1, 
+            opts: ["A) Line Segment", "B) Infinite Line", "C) Ray", "D) Intersecting Vertex"], 
+            ans: 2, 
             hint: "Think about an element that has exactly one fixed starting origin point and no end point in the opposite direction.", 
             expl: "A ray starts at a distinct fixed point and travels infinitely in one direction. A line segment has two distinct endpoints, and a line extends infinitely in both directions." 
         },
         { 
             cat: "Points and Alignment", 
             q: "A land surveyor marks three tracking coordinates on a flat plane. The coordinates align perfectly along a taut, straight baseline boundary path.\n\nWhat is the precise mathematical term for this specific set of spatial points?", 
-            opts: ["A) Concurrent Points", "B) Collinear Points", "C) Non-collinear Points", "D) Perpendicular Vertices"], 
-            ans: 1, 
+            opts: ["A) Collinear Points", "B) Concurrent Points", "C) Non-collinear Points", "D) Perpendicular Vertices"], 
+            ans: 0, 
             hint: "Look for the prefix meaning 'together' joined with the word for a straight dimensional path.", 
             expl: "Points are classified as collinear if they lie along the exact same straight line. If they do not align on a single line, they are non-collinear." 
         },
         { 
             cat: "Open & Closed Figures", 
             q: "A security designer outlines paths using electronic fence boundaries. \n\nWhich of the following configurations describes an open figure structure?", 
-            opts: ["A) A loop that starts and terminates at the exact same location node.", "B) A path made of connected line segments where the starting point does not meet the ending point.", "C) A perfect continuous flat circular boundary.", "D) A four-sided closed perimeter box."], 
-            ans: 1, 
+            opts: ["A) A loop that starts and terminates at the exact same location node.", "B) A perfect continuous flat circular boundary.", "C) A four-sided closed perimeter box.", "D) A path made of connected line segments where the starting point does not meet the ending point."], 
+            ans: 3, 
             hint: "An open figure leaves a gap, meaning you can move into its interior space without crossing a boundary line.", 
             expl: "An open figure has separate, unconnected starting and ending positions. Closed figures form an unbroken perimeter loop containing an interior region." 
         },
         { 
             cat: "Anatomy of an Angle", 
             q: "Two straight metal rods meet at a single shared endpoint to form a corner bracket hinge inside a machine frame.\n\nWhat is the correct geometric term used to describe this shared endpoint?", 
-            opts: ["A) Arm", "B) Protractor Pivot", "C) Vertex", "D) Ray Base"], 
-            ans: 2, 
+            opts: ["A) Arm Pin", "B) Protractor Pivot", "C) Ray Base", "D) Vertex"], 
+            ans: 3, 
             hint: "This term describes the corner point where two rays or sides intersect to form an angle.", 
             expl: "The two straight sides or rays are called the arms of the angle, and the common endpoint where they meet is the vertex." 
         },
         { 
             cat: "Angle Classification", 
             q: "A solar panel array tilts automatically to form an angle measuring exactly 115 degrees relative to its flat support platform.\n\nHow is this angle classified based on its measurement?", 
-            opts: ["A) Acute Angle", "B) Right Angle", "C) Obtuse Angle", "D) Reflex Angle"], 
-            ans: 2, 
+            opts: ["A) Obtuse Angle", "B) Right Angle", "C) Acute Angle", "D) Reflex Angle"], 
+            ans: 0, 
             hint: "Determine where 115 degrees falls relative to the baseline boundaries of 90 degrees and 180 degrees.", 
             expl: "Angles greater than 90° but less than 180° are classified as obtuse. Acute angles are under 90°, and reflex angles are greater than 180°." 
         },
         { 
             cat: "Protractor Mapping", 
             q: "A student aligns a standard protractor base along the initial bottom arm of an angle. The terminal top arm crosses the inner protractor scale directly halfway between the 60 and 70 markings.\n\nWhat is the value of this angle, and how is it categorized?", 
-            opts: ["A) 65°: Acute Angle", "B) 65°: Obtuse Angle", "C) 135°: Acute Angle", "D) 55°: Right Angle"], 
-            ans: 0, 
+            opts: ["A) 135°: Acute Angle", "B) 55°: Right Angle", "C) 65°: Acute Angle", "D) 65°: Obtuse Angle"], 
+            ans: 2, 
             hint: "Find the midpoint between 60 and 70, then check if that value is less than 90 degrees.", 
             expl: "The midpoint between 60° and 70° is 65°. Because 65° is strictly less than 90°, it is an acute angle." 
         },
@@ -280,27 +314,36 @@
         { 
             cat: "Concurrent Properties", 
             q: "A regional transport map highlights four distinct highway paths. All four paths cross through the exact same central toll plaza node.\n\nWhat is the correct geometric term for three or more lines that pass through the same point?", 
-            opts: ["A) Parallel Lines", "B) Concurrent Lines", "C) Collinear Segments", "D) Open Polygons"], 
-            ans: 1, 
+            opts: ["A) Concurrent Lines", "B) Parallel Lines", "C) Collinear Segments", "D) Open Polygons"], 
+            ans: 0, 
             hint: "When exactly two lines cross, they intersect. When three or more lines cross at the same point, they are called...", 
             expl: "Lines are concurrent if three or more of them intersect at a single shared point. The shared point is called the point of concurrence." 
         },
         { 
             cat: "Visual Logic Analysis", 
-            q: "Examine the geometric configuration panel displayed below:", 
+            q: "Examine the dynamic vector schematic diagram rendered below:\n\nAnalyze the structural behavior of the lines to determine their proper classification properties.", 
             hasVisual: true,
-            opts: ["A) Vector Pair 1 is parallel, and Vector Pair 2 is intersecting.", "B) Vector Pair 1 is intersecting, and Vector Pair 2 is parallel.", "C) Both Vector Pairs show perpendicular configurations.", "D) Neither pair can be classified because they lack endpoints."], 
-            ans: 0, 
-            hint: "Look at which pair will never meet and which pair crosses at a specific point.", 
+            opts: ["A) Vector Pair 1 is intersecting, and Vector Pair 2 is parallel.", "B) Both Vector Pairs show perpendicular configurations.", "C) Neither pair can be classified because they lack endpoints.", "D) Vector Pair 1 is parallel, and Vector Pair 2 is intersecting."], 
+            ans: 3, 
+            hint: "Look at which pair runs perfectly aligned alongside each other and which pair has lines cutting across each other.", 
             expl: "Vector Pair 1 consists of lines that run side-by-side at a constant distance and never meet (parallel). Vector Pair 2 shows two lines crossing through a single shared point (intersecting)." 
         }
     ];
 
     let current = 0, score = 0, attempts = 0, timer, timeLeft = 60;
 
+    // Fisher-Yates Question Shuffling Engine
+    function shuffleQuestions(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+    }
+
     document.getElementById('start-btn').onclick = () => {
         document.getElementById('intro-view').classList.add('hidden');
         document.getElementById('quiz-view').classList.remove('hidden');
+        shuffleQuestions(pool); 
         loadQuestion();
     };
 
@@ -318,8 +361,22 @@
         if (q.hasVisual) {
             tableArea.innerHTML = `
                 <div class="visual-display-box">
-                    Vector Pair 1: Line (AB) // Line (CD) [Separation: Constant 3cm] <br>
-                    Vector Pair 2: Line (EF) X Line (GH) [Crossing Point: Node Z]
+                    <div class="vector-canvas">
+                        <div class="vector-group">
+                            <div class="graphic-render">
+                                <div class="line-p1"></div>
+                                <div class="line-p2"></div>
+                            </div>
+                            Vector Pair 1
+                        </div>
+                        <div class="vector-group">
+                            <div class="graphic-render">
+                                <div class="line-i1"></div>
+                                <div class="line-i2"></div>
+                            </div>
+                            Vector Pair 2
+                        </div>
+                    </div>
                 </div>
             `;
         } else {
