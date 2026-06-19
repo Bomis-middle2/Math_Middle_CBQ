@@ -159,7 +159,9 @@
 <div id="app-container">
 
     <div id="splash-screen">
-        <img class="splash-logo-img" src="assets/logo.png" alt="Brand Logo">
+        <!-- Integrated Logo with a generic text fallback if it loads slowly -->
+        <img class="splash-logo-img" src="assets/logo.png" alt="Spatial Challenge Logo" onerror="this.style.display='none'; document.getElementById('splash-fallback').style.display='block';">
+        <h2 id="splash-fallback" style="display:none; color:var(--primary); font-weight:800; letter-spacing:1px;">SPATIAL MASTERY</h2>
     </div>
 
     <div id="intro-view" class="hidden">
@@ -221,6 +223,12 @@
     const correctSound = new Audio('assets/correct.mp3');
     const wrongSound = new Audio('assets/wrong.mp3');
 
+    // Safe sound triggering wrapper to handle browser autoplay policies
+    function playAudio(sound) {
+        sound.currentTime = 0;
+        sound.play().catch(err => console.log("Audio playback blocked until user interacts with the document.", err));
+    }
+
     // Handle splash screen exit lifecycle at exactly 5.0 seconds
     window.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => {
@@ -274,13 +282,13 @@
             opts: ["A) Two turns", "B) Three turns", "C) Four turns", "D) Eight turns"], 
             ans: 2, 
             hint: "A complete rotation covers 360 degrees. Divide that full circle by the degree step of each individual turn.", 
-            expl: "Since a full rotation measures 360°, turning a shape by 90° per step means it requires exactly 4 distinct movements to complete a full circular pattern." 
+            expl: "Since a full rotation measures 360°, turning a shape by 90° per step means it requires exactly 4 distinct structural movements to return to its initial orientation." 
         },
         { 
             cat: "Cube Nets", 
             q: "Examine the three flattened 2D nets constructed from square faces below:", 
             hasNets: true,
-            opts: ["A) Configuration 1 and Configuration 2 can fold into cubes, but Configuration 3 cannot.", "B) Only Configuration 2 forms a valid cube net without overlapping faces.", "C) All three configurations are valid folding nets of a standard cube.", "D) None of these configurations can form a structural cube."], 
+            opts: ["A) Configuration 1 and Configuration 2 fold into cubes, but Configuration 3 does not.", "B) Only Configuration 2 forms a valid cube net without overlapping faces.", "C) All three configurations are valid folding nets of a standard cube.", "D) None of these configurations can form a structural cube."], 
             ans: 2, 
             hint: "Check if each pattern contains exactly 6 square faces arranged so that they can fold together cleanly without any overlapping surfaces.", 
             expl: "All three configurations are valid cube nets. Configuration 1 shows a 1-4-1 layout, Configuration 2 is a 2-3-1 layout, and Configuration 3 forms a staircase pattern, each folding perfectly into a 6-faced cube." 
@@ -354,7 +362,7 @@
                 <div class="visual-display-box">
                     <div class="canvas-grid">
                         <div class="cell filled">■</div><div class="cell"></div><div class="cell mirror-line">|</div><div class="cell"></div>
-                        <div class="cell filled">■</div><div class="cell font-weight:normal"></div><div class="cell mirror-line">|</div><div class="cell"></div>
+                        <div class="cell filled">■</div><div class="cell"></div><div class="cell mirror-line">|</div><div class="cell"></div>
                         <div class="cell filled">■</div><div class="cell filled">■</div><div class="cell mirror-line">|</div><div class="cell"></div>
                         <div class="cell"></div><div class="cell"></div><div class="cell mirror-line">|</div><div class="cell"></div>
                     </div>
@@ -411,7 +419,7 @@
             document.getElementById('timer-bar').style.width = (timeLeft / 60 * 100) + "%";
             if(timeLeft <= 0) { 
                 clearInterval(timer); 
-                wrongSound.play(); // Play wrong answer track on timeout
+                playAudio(wrongSound); 
                 endTurn(); 
             }
         }, 1000);
@@ -420,14 +428,14 @@
     function check(i, b) {
         if(i === pool[current].ans) {
             clearInterval(timer);
-            correctSound.play(); // Play success tone
+            playAudio(correctSound);
             b.classList.add('correct');
             score++;
             document.getElementById('score-val').innerText = score;
             endTurn();
         } else {
             attempts++;
-            wrongSound.play(); // Play fail tone
+            playAudio(wrongSound);
             b.classList.add('wrong');
             b.disabled = true;
             if(attempts === 1) {
