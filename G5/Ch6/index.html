@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Geometry</title>
+    <title>Geometry Challenge</title>
     <style>
         :root {
             --primary: #2980b9;
@@ -142,14 +142,15 @@
 </head>
 <body>
 
+<audio id="snd-correct" src="assets/correct.mp3" preload="auto"></audio>
+<audio id="snd-wrong" src="assets/wrong.mp3" preload="auto"></audio>
+
 <div id="app-container">
 
-    <!-- 1. Pure White Splash Screen with static centered logo image asset -->
     <div id="splash-screen">
         <img class="splash-logo-img" src="assets/logo.png" alt="Brand Logo">
     </div>
 
-    <!-- 2. GAME INSTRUCTION PANEL -->
     <div id="intro-view" class="hidden">
         <div class="quiz-padding">
             <h1 style="text-align:center; color:var(--primary); margin: 10px 0 5px 0; font-size: 26px;">Geometry Core Quiz</h1>
@@ -171,7 +172,6 @@
         </div>
     </div>
 
-    <!-- 3. INTERACTIVE QUIZ APPLICATION INTERFACE -->
     <div id="quiz-view" class="hidden">
         <div class="quiz-padding">
             <div class="hud-row">
@@ -193,7 +193,6 @@
         </div>
     </div>
 
-    <!-- 4. FINAL PERFORMANCE OVERVIEW -->
     <div id="result-view" class="hidden" style="text-align:center;">
         <div class="quiz-padding">
             <div style="font-size: 4rem; margin-bottom: 5px;">🏆</div>
@@ -206,67 +205,13 @@
 </div>
 
 <script>
-    // --- SYNTHESIZED AUDIO SYSTEM (Web Audio API) ---
-    let audioCtx = null;
-
-    function initAudio() {
-        if (!audioCtx) {
-            audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        }
-    }
-
-    function playSound(type) {
-        initAudio();
-        if (!audioCtx) return;
-
-        const osc = audioCtx.createOscillator();
-        const gainNode = audioCtx.createGain();
-        osc.connect(gainNode);
-        gainNode.connect(audioCtx.destination);
-
-        const now = audioCtx.currentTime;
-
-        if (type === 'click') {
-            osc.type = 'sine';
-            osc.frequency.setValueAtTime(500, now);
-            gainNode.gain.setValueAtTime(0.08, now);
-            gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.05);
-            osc.start(now);
-            osc.stop(now + 0.05);
-        } 
-        else if (type === 'correct') {
-            osc.type = 'triangle';
-            osc.frequency.setValueAtTime(587.33, now); // D5
-            osc.frequency.setValueAtTime(880.00, now + 0.08); // A5
-            gainNode.gain.setValueAtTime(0.12, now);
-            gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
-            osc.start(now);
-            osc.stop(now + 0.25);
-        } 
-        else if (type === 'wrong') {
-            osc.type = 'sawtooth';
-            osc.frequency.setValueAtTime(150, now);
-            osc.frequency.linearRampToValueAtTime(100, now + 0.22);
-            gainNode.gain.setValueAtTime(0.12, now);
-            gainNode.gain.exponentialRampToValueAtTime(0.01, now + 0.22);
-            osc.start(now);
-            osc.stop(now + 0.22);
-        }
-        else if (type === 'victory') {
-            const notes = [523.25, 659.25, 783.99, 1046.50];
-            notes.forEach((freq, index) => {
-                const subOsc = audioCtx.createOscillator();
-                const subGain = audioCtx.createGain();
-                subOsc.connect(subGain);
-                subGain.connect(audioCtx.destination);
-                
-                subOsc.type = 'triangle';
-                subOsc.frequency.setValueAtTime(freq, now + (index * 0.08));
-                subGain.gain.setValueAtTime(0.1, now + (index * 0.08));
-                subGain.gain.exponentialRampToValueAtTime(0.01, now + (index * 0.08) + 0.3);
-                
-                subOsc.start(now + (index * 0.08));
-                subOsc.stop(now + (index * 0.08) + 0.3);
+    // --- NATIVE ASSET PLAYBACK SYSTEM ---
+    function playAudioTrack(id) {
+        const audioTrack = document.getElementById(id);
+        if (audioTrack) {
+            audioTrack.currentTime = 0; // Rewind to start for responsive triggers
+            audioTrack.play().catch(err => {
+                console.log("Audio play blocked until user interaction", err);
             });
         }
     }
@@ -283,7 +228,7 @@
         }, 5000);
     });
 
-    // 8 Core case-based questions mapped to the outcomes in image_4a6c04.png
+    // 8 Core case-based questions mapped to the outcomes in the blueprints
     const pool = [
         { 
             cat: "Collinear & Non-Collinear Points", 
@@ -363,7 +308,6 @@
     }
 
     document.getElementById('start-btn').onclick = () => {
-        playSound('click');
         document.getElementById('intro-view').classList.add('hidden');
         document.getElementById('quiz-view').classList.remove('hidden');
         shufflePool(pool); 
@@ -409,7 +353,7 @@
             document.getElementById('timer-bar').style.width = (timeLeft / 60 * 100) + "%";
             if(timeLeft <= 0) { 
                 clearInterval(timer); 
-                playSound('wrong');
+                playAudioTrack('snd-wrong');
                 endTurn(); 
             }
         }, 1000);
@@ -418,7 +362,7 @@
     function check(i, b) {
         if(i === pool[current].ans) {
             clearInterval(timer);
-            playSound('correct');
+            playAudioTrack('snd-correct');
             b.classList.add('correct');
             score++;
             document.getElementById('score-val').innerText = score;
@@ -428,14 +372,14 @@
             b.classList.add('wrong');
             b.disabled = true;
             if(attempts === 1) {
-                playSound('wrong');
+                playAudioTrack('snd-wrong');
                 const f = document.getElementById('feedback-box');
                 f.className = 'feedback hint-box';
                 f.innerHTML = "<b>💡 Hint:</b> " + pool[current].hint;
                 f.style.display = 'block';
             } else {
                 clearInterval(timer);
-                playSound('wrong');
+                playAudioTrack('snd-wrong');
                 endTurn();
             }
         }
@@ -452,15 +396,12 @@
     }
 
     document.getElementById('action-btn').onclick = () => {
-        playSound('click');
         current++;
         if(current < pool.length) loadQuestion();
         else {
             document.getElementById('quiz-view').classList.add('hidden');
             document.getElementById('result-view').classList.remove('hidden');
             document.getElementById('final-pts').innerText = score;
-
-            playSound('victory');
 
             let statusMessage = "Review your lines, angles, and intersection definitions to reinforce your core geometric skill set.";
             if(score === 8) {
@@ -477,7 +418,6 @@
     };
 
     document.getElementById('restart-btn').onclick = () => {
-        playSound('click');
         location.reload();
     };
 </script>
