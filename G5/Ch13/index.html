@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Grade 5 Data Handling Mastery Challenge</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --primary-dark: #1a252f;
+            --success: #27ae60;
+            --error: #e67e22;
+            --bg: #f8f9fa;
+            --text: #34495e;
+            --accent: #8e44ad;
+        }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: #d5dbdb;
+            color: var(--text);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 10px;
+        }
+
+        #app-container {
+            width: 100%;
+            max-width: 580px;
+            background: #ffffff;
+            border-radius: 24px;
+            box-shadow: 0 15px 35px rgba(44, 62, 80, 0.15);
+            position: relative;
+            overflow: hidden;
+            min-height: 560px;
+        }
+
+        /* --- 5-SECOND WHITE SPLASH SCREEN --- */
+        #splash-screen {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .splash-logo-img {
+            max-width: 240px;
+            width: 80%;
+            height: auto;
+            object-fit: contain;
+        }
+
+        /* --- CONTENT SCANNABILITY CORES --- */
+        .quiz-padding {
+            padding: 25px;
+        }
+
+        .instruction-box {
+            background: #f5eeeb;
+            border-left: 4px solid var(--accent);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: left;
+            margin: 20px 0;
+            font-size: 0.95rem;
+            color: #2c3e50;
+            line-height: 1.5;
+        }
+        .instruction-box ul { margin: 5px 0 0 20px; padding: 0; }
+        .instruction-box li { margin-bottom: 6px; }
+
+        .hud-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .hud-pill {
+            flex: 1;
+            text-align: center;
+            padding: 12px 6px;
+            border-radius: 14px;
+            font-size: 0.95rem;
+            font-weight: 800;
+            background-color: #eaeded;
+            color: var(--primary-dark);
+        }
+        .hud-pill.gold { background-color: #fef9e7; color: #b7950b; }
+
+        .timer-track { width: 100%; height: 8px; background: #e5e8e8; border-radius: 10px; margin-bottom: 20px; overflow: hidden; }
+        #timer-bar { height: 100%; width: 100%; background: var(--accent); transition: width 1s linear; }
+
+        .category-text { font-size: 0.85rem; color: #b7950b; font-weight: 700; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 1px; }
+        .question-text { font-size: 1.1rem; font-weight: 600; line-height: 1.5; margin-bottom: 15px; white-space: pre-line; }
+
+        /* --- CSS VISUAL CHART GENERATION --- */
+        .visual-display-box {
+            background: #ffffff;
+            border: 2px solid #e5e8e8;
+            padding: 20px;
+            border-radius: 16px;
+            margin: 15px 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            box-shadow: inset 0 2px 6px rgba(0,0,0,0.02);
+        }
+
+        /* Pictograph Row Layout */
+        .picto-grid { width: 100%; display: grid; gap: 8px; font-size: 0.95rem; }
+        .picto-row { display: flex; align-items: center; gap: 10px; }
+        .picto-label { width: 80px; font-weight: 600; }
+        .picto-icons { color: #f39c12; font-size: 1.2rem; letter-spacing: 4px; }
+
+        /* Tally Format */
+        .tally-row { font-size: 1.3rem; font-weight: bold; color: #2980b9; letter-spacing: 3px; }
+
+        /* Pure CSS Bar Graph */
+        .bar-chart-frame { display: flex; align-items: flex-end; justify-content: space-around; width: 100%; height: 120px; border-bottom: 2px solid var(--primary); padding-top: 10px; }
+        .bar-column { width: 45px; background: #3498db; text-align: center; color: white; font-size: 0.8rem; font-weight: bold; padding-top: 5px; border-radius: 4px 4px 0 0; position: relative; }
+        .bar-lbl { position: absolute; bottom: -22px; left: 0; width: 100%; color: var(--text); font-size: 0.75rem; font-weight: 600; }
+
+        /* Circle Graph CSS Representation */
+        .circle-graph-pie { width: 110px; height: 110px; border-radius: 50%; background: conic-gradient(#e74c3c 0% 60%, #f1c40f 60% 100%); position: relative; }
+        .circle-legend { display: flex; gap: 15px; margin-top: 15px; font-size: 0.8rem; font-weight: bold; }
+        .legend-item { display: flex; align-items: center; gap: 5px; }
+
+        /* Table Data Frame */
+        .data-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; text-align: center; }
+        .data-table th, .data-table td { border: 1px solid #d5dbdb; padding: 8px; }
+        .data-table th { background-color: #f2f4f4; }
+
+        /* --- OPTIONS INTERACTION GRIDS --- */
+        .options-grid { display: grid; gap: 12px; }
+        .opt-btn {
+            background: #fff; border: 2px solid #edf2f4; padding: 16px;
+            border-radius: 14px; text-align: left; font-size: 1rem; cursor: pointer; transition: 0.2s;
+            color: #34495e; font-weight: 500;
+        }
+        .opt-btn:hover:not(:disabled) { border-color: var(--accent); background: #fafafa; }
+        .opt-btn.correct { background: #e8f5e9 !important; color: var(--success) !important; border-color: #a5d6a7 !important; font-weight: 700; }
+        .opt-btn.wrong { background: #fdf2e9 !important; color: var(--error) !important; border-color: #f5caba !important; }
+
+        .feedback { margin-top: 20px; padding: 15px; border-radius: 12px; display: none; line-height: 1.5; font-size: 0.95rem; }
+        .hint-box { background: #fef9e7; border: 1px solid #f9e79f; color: #b7950b; }
+        .expl-box { background: #e8f4f8; border: 1px solid #bee3f8; color: #2b6cb0; }
+
+        #action-btn { width: 100%; margin-top: 20px; padding: 16px; background: var(--accent); color: white; border: none; border-radius: 14px; font-weight: 700; cursor: pointer; font-size: 1rem; }
+        #action-btn:hover { background: var(--primary-dark); }
+        
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+
+<div id="app-container">
+
+    <!-- 5-Second White Splash Loader -->
+    <div id="splash-screen">
+        <img class="splash-logo-img" src="assets/logo.png" alt="Quiz Logo" onerror="this.style.display='none'; document.getElementById('splash-fallback').style.display='block';">
+        <h2 id="splash-fallback" style="display:none; color:#8e44ad; font-weight:800; letter-spacing:1px;">DATA HANDLING</h2>
+    </div>
+
+    <!-- Instructions Screen -->
+    <div id="intro-view" class="hidden">
+        <div class="quiz-padding">
+            <h1 style="text-align:center; color:var(--primary); margin: 10px 0 5px 0; font-size: 26px;">Data Handling Arena</h1>
+            <p style="text-align:center; color:#7f8c8d; margin-top: 0; font-weight: 600; text-transform: uppercase; font-size: 12px; letter-spacing: 1px;">Grade 5 Data Analytics</p>
+            
+            <div class="instruction-box">
+                <strong>📋 Targeted Data Learning Outcomes:</strong>
+                <ul>
+                    <li>Interpret data and trends accurately from graphs.</li>
+                    <li>Display and read data values using pictographs with scale keys.</li>
+                    <li>Collect, record, and interpret datasets using tally marks.</li>
+                    <li>Analyze, interpret, and structuralize information on a Bar Graph.</li>
+                    <li>Evaluate percentages and fractional shares inside a Circle Graph.</li>
+                    <li>Convert coordinates from Line Graphs directly into structured data tables.</li>
+                </ul>
+            </div>
+
+            <button id="start-btn" style="width:100%; padding:18px; background:var(--accent); color:white; border:none; border-radius:14px; font-weight:bold; font-size:1.1rem; cursor:pointer; margin-top: 10px;">Begin Data Challenge ⚡</button>
+        </div>
+    </div>
+
+    <!-- Active Question HUD Layout -->
+    <div id="quiz-view" class="hidden">
+        <div class="quiz-padding">
+            <div class="hud-row">
+                <div class="hud-pill">Question <span id="q-num">1</span>/6</div>
+                <div class="hud-pill">Score: <span id="score-val">0</span></div>
+                <div class="hud-pill gold"><span id="timer-text">60s</span></div>
+            </div>
+            <div class="timer-track"><div id="timer-bar"></div></div>
+            
+            <div id="q-category" class="category-text"></div>
+            <div id="q-text" class="question-text"></div>
+            
+            <div id="custom-graphics-area"></div>
+            
+            <div id="options-area" class="options-grid"></div>
+            
+            <div id="feedback-box" class="feedback"></div>
+            <button id="action-btn" class="hidden">Next Question →</button>
+        </div>
+    </div>
+
+    <!-- Results Overview Window -->
+    <div id="result-view" class="hidden" style="text-align:center;">
+        <div class="quiz-padding">
+            <div style="font-size: 4rem; margin-bottom: 5px;">📊</div>
+            <h2 style="font-size:1.6rem; margin: 5px 0;">Evaluation Completed!</h2>
+            <div style="font-size: 4rem; font-weight: 800; color: var(--accent); margin: 10px 0;"><span id="final-pts">0</span>/6</div>
+            <div id="result-msg" style="color:#5f6368; font-size: 0.95rem; line-height: 1.5; margin: 0 0 25px 0; text-align: left; background: #f8f9fa; border: 1px solid #e2e8f0; padding: 16px; border-radius: 16px;"></div>
+            <button onclick="location.reload()" style="width:100%; padding:16px; background:var(--accent); color:white; border:none; border-radius:14px; font-weight:700; cursor:pointer; font-size: 1rem;">Restart Assessment</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Asset sound paths mapping
+    const correctSound = new Audio('assets/correct.mp3');
+    const wrongSound = new Audio('assets/wrong.mp3');
+    const victorySound = new Audio('assets/freesound_community-claps-44774.mp3');
+
+    function playAudio(sound) {
+        sound.currentTime = 0;
+        sound.play().catch(e => console.log("User interaction barrier bypass tracker", e));
+    }
+
+    // Direct 5-second splash controller
+    window.addEventListener('DOMContentLoaded', () => {
+        setTimeout(() => {
+            const splash = document.getElementById('splash-screen');
+            splash.style.opacity = '0';
+            setTimeout(() => {
+                splash.style.display = 'none';
+                document.getElementById('intro-view').classList.remove('hidden');
+            }, 800); 
+        }, 5000);
+    });
+
+    // 6 Competency Questions mapped to the 6 exact bullets in image_3ce760.png
+    const pool = [
+        {
+            cat: "Read and Display a Pictograph",
+            q: "A local book club tracks book distributions using this pictograph. Look carefully at the icons and key:\n\nKey: Each 📚 icon represents exactly 4 books.",
+            showPicto: true,
+            opts: ["A) Group Blue has 3 books total", "B) Group Blue has 12 books total", "C) Group Blue has 7 books total", "D) Group Blue has 4 books total"],
+            ans: 1,
+            hint: "Count the number of book icons next to Group Blue and multiply that count by the Key value of 4.",
+            expl: "Group Blue shows 3 icons. Since each icon represents 4 books, the total is 3 × 4 = 12 books."
+        },
+        {
+            cat: "Interpret Data via Tally Marks",
+            q: "A park ranger stands by a trail to record passing birds. Check the final recorded tally system logs:\n\nWhat value should be registered into the digital spreadsheet?",
+            showTally: true,
+            opts: ["A) 12 birds", "B) 10 birds", "C) 13 birds", "D) 8 birds"],
+            ans: 2,
+            hint: "Each grouped crossed block equals 5 tallies. Add up the complete groups and the loose ticks.",
+            expl: "Two complete structural sets of five equal 10, plus 3 individual tick marks yields a sum of 13 birds total."
+        },
+        {
+            cat: "Analyse and Interpret a Bar Graph",
+            q: "This bar chart displays the daily snack counts sold at a stadium food counter. Compare the bar profiles for Popcorn and Nachos:\n\nHow many more units of Popcorn were sold than Nachos?",
+            showBar: true,
+            opts: ["A) 40 more units", "B) 10 more units", "C) 20 more units", "D) 30 more units"],
+            ans: 2,
+            hint: "Find the height value of Popcorn (50) and subtract the height value of Nachos (30) from it.",
+            expl: "Popcorn sold 50 units and Nachos sold 30 units. The difference between them is 50 - 30 = 20 more units."
+        },
+        {
+            cat: "Analyse and Interpret a Circle Graph",
+            q: "A city garden charts its seasonal field space using a circle graph. Look at the split pie profile:\n\nRed Section (Roses): 60%\nYellow Section (Tulips): 40%\n\nIf the total garden space is 200 square meters, what area is covered by Tulips?",
+            showCircle: true,
+            opts: ["A) 40 square meters", "B) 120 square meters", "C) 80 square meters", "D) 60 square meters"],
+            ans: 2,
+            hint: "Calculate 40% of the total 200 square meters garden space area.",
+            expl: "Tulips make up 40% of the circle chart. 40% of 200 is found by calculating (40/100) × 200 = 80 square meters."
+        },
+        {
+            cat: "Convert Line Graph Data to a Table",
+            q: "A weather tracking app monitors temperature changes across three consecutive hours:\n\nHour 1 -> 15°C  |  Hour 2 -> 18°C  |  Hour 3 -> 22°C\n\nWhich data table accurately converts and preserves this identical sequence?",
+            showTable: true,
+            opts: [
+                "A) Hour 1: 15°C , Hour 2: 18°C , Hour 3: 22°C",
+                "B) Hour 1: 22°C , Hour 2: 18°C , Hour 3: 15°C",
+                "C) Hour 1: 15°C , Hour 2: 22°C , Hour 3: 18°C",
+                "D) Hour 1: 18°C , Hour 2: 15°C , Hour 3: 22°C"
+            ],
+            ans: 0,
+            hint: "Match each hour number with its correct original tracking temperature value precisely line-by-line.",
+            expl: "Option A accurately lists Hour 1 at 15°C, Hour 2 at 18°C, and Hour 3 at 22°C in perfect sequence matching the original tracking data."
+        },
+        {
+            cat: "Interpret General Graph Trends",
+            q: "An electronics factory charts monthly assembly line output data across a four-month period:\n\nJan: 100 units  |  Feb: 150 units  |  Mar: 190 units  |  Apr: 240 units\n\nWhat overall production trend does this data show?",
+            opts: ["A) Production counts are decreasing over time", "B) Production stays completely static and unchanged", "C) Production counts are steadily increasing over time", "D) Production drops down to zero every second month"],
+            ans: 2,
+            hint: "Look at whether the numbers grow larger or smaller as you progress from January through April.",
+            expl: "The unit totals increase every consecutive month (100 to 150 to 190 to 240), displaying a clear upward trend."
+        }
+    ];
+
+    let current = 0, score = 0, attempts = 0, timer, timeLeft = 60;
+
+    function shuffleArray(arr) {
+        for (let i = arr.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+    }
+
+    document.getElementById('start-btn').onclick = () => {
+        shuffleArray(pool); // Fully randomizing the question pool order
+        document.getElementById('intro-view').classList.add('hidden');
+        document.getElementById('quiz-view').classList.remove('hidden');
+        loadQuestion();
+    };
+
+    function loadQuestion() {
+        attempts = 0; timeLeft = 60;
+        const q = pool[current];
+        document.getElementById('feedback-box').style.display = 'none';
+        document.getElementById('action-btn').classList.add('hidden');
+        document.getElementById('q-num').innerText = current + 1;
+        document.getElementById('q-category').innerText = q.cat;
+        document.getElementById('q-text').innerText = q.q;
+        document.getElementById('timer-text').innerText = timeLeft + "s";
+        
+        const graphicArea = document.getElementById('custom-graphics-area');
+        graphicArea.innerHTML = "";
+        graphicArea.style.display = "flex";
+
+        // Dynamic CSS Asset Render Engine based on question features
+        if (q.showPicto) {
+            graphicArea.innerHTML = `
+                <div class="picto-grid">
+                    <div class="picto-row"><div class="picto-label">Group Red:</div><div class="picto-icons">📚📚</div></div>
+                    <div class="picto-row"><div class="picto-label">Group Blue:</div><div class="picto-icons">📚📚📚</div></div>
+                </div>
+            `;
+        } else if (q.showTally) {
+            graphicArea.innerHTML = `<div class="tally-row">卌  卌  |||</div>`;
+        } else if (q.showBar) {
+            graphicArea.innerHTML = `
+                <div class="bar-chart-frame">
+                    <div class="bar-column" style="height: 100px;">50<div class="bar-lbl">Popcorn</div></div>
+                    <div class="bar-column" style="height: 60px; background:#e67e22;">30<div class="bar-lbl">Nachos</div></div>
+                </div>
+                <div style="margin-top:25px;"></div>
+            `;
+        } else if (q.showCircle) {
+            graphicArea.innerHTML = `
+                <div class="circle-graph-pie"></div>
+                <div class="circle-legend">
+                    <div class="legend-item"><span style="display:inline-block; width:10px; height:10px; background:#e74c3c;"></span> Roses (60%)</div>
+                    <div class="legend-item"><span style="display:inline-block; width:10px; height:10px; background:#f1c40f;"></span> Tulips (40%)</div>
+                </div>
+            `;
+        } else if (q.showTable) {
+            graphicArea.innerHTML = `
+                <table class="data-table">
+                    <tr><th>Interval Tracking Line</th><th>Recorded Temperature</th></tr>
+                    <tr><td>Hour 1</td><td>15°C</td></tr>
+                    <tr><td>Hour 2</td><td>18°C</td></tr>
+                    <tr><td>Hour 3</td><td>22°C</td></tr>
+                </table>
+            `;
+        } else {
+            graphicArea.style.display = "none";
+        }
+
+        const area = document.getElementById('options-area');
+        area.innerHTML = "";
+
+        const correctText = q.opts[q.ans];
+        shuffleArray(q.opts);
+        const newCorrectIdx = q.opts.indexOf(correctText);
+
+        q.opts.forEach((o, i) => {
+            const b = document.createElement('button');
+            b.className = 'opt-btn';
+            b.innerText = o;
+            b.onclick = () => check(i, newCorrectIdx, b);
+            area.appendChild(b);
+        });
+        startTimer(newCorrectIdx);
+    }
+
+    function startTimer(correctIdx) {
+        clearInterval(timer);
+        timer = setInterval(() => {
+            timeLeft--;
+            document.getElementById('timer-text').innerText = timeLeft + "s";
+            document.getElementById('timer-bar').style.width = (timeLeft / 60 * 100) + "%";
+            if(timeLeft <= 0) { 
+                clearInterval(timer); 
+                playAudio(wrongSound); 
+                endTurn(correctIdx); 
+            }
+        }, 1000);
+    }
+
+    function check(clickedIdx, correctIdx, b) {
+        if(clickedIdx === correctIdx) {
+            clearInterval(timer);
+            playAudio(correctSound);
+            b.classList.add('correct');
+            score++;
+            document.getElementById('score-val').innerText = score;
+            endTurn(correctIdx);
+        } else {
+            attempts++;
+            playAudio(wrongSound);
+            b.classList.add('wrong');
+            b.disabled = true;
+            if(attempts === 1) {
+                const f = document.getElementById('feedback-box');
+                f.className = 'feedback hint-box';
+                f.innerHTML = "<b>💡 Instructive Hint:</b> " + pool[current].hint;
+                f.style.display = 'block';
+            } else {
+                clearInterval(timer);
+                endTurn(correctIdx);
+            }
+        }
+    }
+
+    function endTurn(correctIdx) {
+        document.querySelectorAll('.opt-btn').forEach(btn => btn.disabled = true);
+        const f = document.getElementById('feedback-box');
+        f.className = 'feedback expl-box';
+        f.innerHTML = "<b>🔍 Step Explanation:</b> " + pool[current].expl;
+        f.style.display = 'block';
+        document.querySelectorAll('.opt-btn')[correctIdx].classList.add('correct');
+        document.getElementById('action-btn').classList.remove('hidden');
+    }
+
+    document.getElementById('action-btn').onclick = () => {
+        current++;
+        if(current < pool.length) loadQuestion();
+        else {
+            document.getElementById('quiz-view').classList.add('hidden');
+            document.getElementById('result-view').classList.remove('hidden');
+            document.getElementById('final-pts').innerText = score;
+
+            let finalAnalysis = "Review tally mark groups, bar readings, and circle percentages to solidify your data skills.";
+            if(score === 6) {
+                finalAnalysis = "Perfect score! You have successfully mastered every data handling objective, from pictographs to chart conversions!";
+                playAudio(victorySound);
+            } else if(score >= 4) {
+                finalAnalysis = "Great work! You demonstrate strong competency in analyzing and interpreting diverse graphical sets.";
+            }
+
+            document.getElementById('result-msg').innerHTML = `
+                <span style="font-weight:700; color:var(--primary); display:block; margin-bottom:6px;">Performance Summary:</span>
+                ${finalAnalysis}
+            `;
+        }
+    };
+</script>
+</body>
+</html>
