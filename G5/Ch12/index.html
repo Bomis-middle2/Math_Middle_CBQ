@@ -186,8 +186,8 @@
                     <li>Understand volume as the amount of space occupied by a 3D object.</li>
                     <li>Calculate the volume of cubes and cuboids using dimensions.</li>
                     <li>Convert accurately between liters, milliliters, and cubic units.</li>
-                    <li>Apply volume concepts to real-world scenarios like filling storage containers.</li>
-                    <li><b>Rules:</b> 60 seconds per item. Options shuffle automatically on load.</li>
+                    <li>Apply volume concepts to real-world scenarios like filling containers.</li>
+                    <li><b>Rules:</b> 60 seconds per item. Questions and options are fully randomized!</li>
                 </ul>
             </div>
 
@@ -305,7 +305,8 @@
 
     let current = 0, score = 0, attempts = 0, timer, timeLeft = 60;
 
-    function shuffleOptions(arr) {
+    // Helper to shuffle any array (Fisher-Yates)
+    function shuffleArray(arr) {
         for (let i = arr.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
             [arr[i], arr[j]] = [arr[j], arr[i]];
@@ -313,6 +314,9 @@
     }
 
     document.getElementById('start-btn').onclick = () => {
+        // RANDOMIZE THE QUESTIONS POOL BEFORE STARTING
+        shuffleArray(pool);
+        
         document.getElementById('intro-view').classList.add('hidden');
         document.getElementById('quiz-view').classList.remove('hidden');
         loadQuestion();
@@ -346,8 +350,9 @@
         const area = document.getElementById('options-area');
         area.innerHTML = "";
 
+        // Store copy and shuffle operational choices
         const correctText = q.opts[q.ans];
-        shuffleOptions(q.opts);
+        shuffleArray(q.opts);
         const newCorrectIdx = q.opts.indexOf(correctText);
 
         q.opts.forEach((o, i) => {
@@ -368,7 +373,7 @@
             document.getElementById('timer-bar').style.width = (timeLeft / 60 * 100) + "%";
             if(timeLeft <= 0) { 
                 clearInterval(timer); 
-                playAudio(wrongSound); 
+                playAudio(wrongSound);
                 endTurn(correctIdx); 
             }
         }, 1000);
@@ -419,7 +424,7 @@
 
             let finalAnalysis = "Review cubic unit multiplication and storage capacity conversion rules to secure these core skills.";
             if(score === 6) {
-                finalAnalysis = "Perfect score! You completely understand 3D dimensions, liquid conversions, and capacity limits.";
+                finalAnalysis = "Perfect score! You completely understand 3D dimensions, liquid conversions, and capacity limits. Excellent job!";
                 playAudio(victorySound);
             } else if(score >= 4) {
                 finalAnalysis = "Great work! You demonstrate strong competency in analyzing spatial storage capacities and conversions.";
