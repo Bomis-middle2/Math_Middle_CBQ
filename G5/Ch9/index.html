@@ -3,21 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Grade 5 Visual Geometry Challenge</title>
+    <title>Grade 5 Shapes & Patterns Challenge</title>
     <style>
+        /* ==========================================
+           BRANDING VARIABLES (Change these anytime!)
+           ========================================== */
         :root {
-            --primary: #2980b9;
-            --primary-dark: #1f618d;
-            --success: #27ae60;
-            --error: #e67e22;
-            --bg: #ebf5fb;
-            --text: #2c3e50;
+            --primary: #2980b9;        /* Main Brand Color */
+            --primary-dark: #1f618d;   /* Darker Shade for Buttons/Hover */
+            --success: #27ae60;        /* Correct Answer Green */
+            --error: #e67e22;          /* Wrong Answer Orange/Red */
+            --bg: #ebf5fb;             /* Light Panel Background */
+            --text: #2c3e50;           /* Main Text Color */
+            --font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
         }
 
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
 
         body {
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            font-family: var(--font-family);
             background-color: #f2f4f4;
             color: var(--text);
             margin: 0;
@@ -158,7 +162,7 @@
 
         .feedback { margin-top: 20px; padding: 15px; border-radius: 12px; display: none; line-height: 1.5; font-size: 0.95rem; }
         .hint-box { background: #fef9e7; border: 1px solid #f9e79f; color: #b7950b; }
-        .expl-box { background: #ebf5fb; border: 1px solid #a9dfbf; color: var(--primary-dark); }
+        .expl-box { background: var(--bg); border: 1px solid #a9dfbf; color: var(--primary-dark); }
 
         #action-btn { width: 100%; margin-top: 20px; padding: 16px; background: var(--primary); color: white; border: none; border-radius: 14px; font-weight: 700; cursor: pointer; font-size: 1rem; }
         #action-btn:hover { background: var(--primary-dark); }
@@ -170,12 +174,10 @@
 
 <div id="app-container">
 
-    <!-- 1. Pure Static Splash Screen -->
     <div id="splash-screen">
         <div class="splash-title">GEOMETRY MATH</div>
     </div>
 
-    <!-- 2. GAME INSTRUCTION PANEL -->
     <div id="intro-view" class="hidden">
         <div class="quiz-padding">
             <h1 style="text-align:center; color:var(--primary); margin: 10px 0 5px 0; font-size: 26px;">Shape Playground!</h1>
@@ -197,7 +199,6 @@
         </div>
     </div>
 
-    <!-- 3. INTERACTIVE QUIZ APPLICATION INTERFACE -->
     <div id="quiz-view" class="hidden">
         <div class="quiz-padding">
             <div class="hud-row">
@@ -219,7 +220,6 @@
         </div>
     </div>
 
-    <!-- 4. FINAL PERFORMANCE OVERVIEW -->
     <div id="result-view" class="hidden" style="text-align:center;">
         <div class="quiz-padding">
             <div style="font-size: 4rem; margin-bottom: 5px;">🏆</div>
@@ -298,7 +298,7 @@
             opts: ["A) It is too small to build anything.", "B) It has too many square faces to fold.", "C) It can fold perfectly into a hollow 3D cube box.", "D) It can only fold into a flat envelope shape."], 
             ans: 2, 
             hint: "Count the square faces. There are 6 square blocks arranged so they don't crash when folded.", 
-            expl: "As shown in image_574068.png, this T-shaped layout is a valid net of a cube. It folds perfectly into a 3D box without any faces overlapping." 
+            expl: "This T-shaped layout is a valid net of a cube. It folds perfectly into a 3D box without any faces overlapping." 
         },
         { 
             cat: "Cardboard Box Nets", 
