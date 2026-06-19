@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Grade 5 Volume Mastery Challenge</title>
+    <style>
+        :root {
+            --primary: #2e4053;
+            --primary-dark: #1b2631;
+            --success: #27ae60;
+            --error: #e67e22;
+            --bg: #f2f4f4;
+            --text: #2c3e50;
+        }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: #d6dbdf;
+            color: var(--text);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 10px;
+        }
+
+        #app-container {
+            width: 100%;
+            max-width: 580px;
+            background: #ffffff;
+            border-radius: 24px;
+            box-shadow: 0 15px 35px rgba(46, 64, 83, 0.15);
+            position: relative;
+            overflow: hidden;
+            min-height: 540px;
+        }
+
+        /* --- 5-SECOND WHITE SPLASH SCREEN --- */
+        #splash-screen {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background-color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+            transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .splash-logo-img {
+            max-width: 240px;
+            width: 80%;
+            height: auto;
+            object-fit: contain;
+        }
+
+        /* --- CONTENT SCANNABILITY CORES --- */
+        .quiz-padding {
+            padding: 25px;
+        }
+
+        .instruction-box {
+            background: #ebf5fb;
+            border-left: 4px solid #3498db;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: left;
+            margin: 20px 0;
+            font-size: 0.95rem;
+            color: #2c3e50;
+            line-height: 1.5;
+        }
+        .instruction-box ul { margin: 5px 0 0 20px; padding: 0; }
+        .instruction-box li { margin-bottom: 6px; }
+
+        .hud-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        .hud-pill {
+            flex: 1;
+            text-align: center;
+            padding: 12px 6px;
+            border-radius: 14px;
+            font-size: 0.95rem;
+            font-weight: 800;
+            background-color: #e5e8e8;
+            color: var(--primary-dark);
+        }
+        .hud-pill.gold { background-color: #fef9e7; color: #b7950b; }
+
+        .timer-track { width: 100%; height: 8px; background: #e5e8e8; border-radius: 10px; margin-bottom: 20px; overflow: hidden; }
+        #timer-bar { height: 100%; width: 100%; background: #3498db; transition: width 1s linear; }
+
+        .category-text { font-size: 0.85rem; color: #b7950b; font-weight: 700; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 1px; }
+        .question-text { font-size: 1.1rem; font-weight: 600; line-height: 1.5; margin-bottom: 15px; white-space: pre-line; }
+
+        /* --- VISUAL INTERACTIVE RENDERING BOX --- */
+        .visual-display-box {
+            background: #ffffff;
+            border: 2px solid #e5e8e8;
+            padding: 20px;
+            border-radius: 16px;
+            margin: 15px 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: inset 0 2px 6px rgba(0,0,0,0.02);
+        }
+
+        .isometric-cube-sketch {
+            width: 100px;
+            height: 100px;
+            background: #e8f4f8;
+            border: 2px solid var(--primary);
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        .isometric-cube-sketch::before {
+            content: '';
+            position: absolute;
+            top: -12px; left: 6px;
+            width: 100px; height: 12px;
+            background: #d4e6f1;
+            border: 2px solid var(--primary);
+            transform: skewX(-45deg);
+        }
+        .isometric-cube-sketch::after {
+            content: '';
+            position: absolute;
+            top: -6px; right: -14px;
+            width: 12px; height: 100px;
+            background: #a9cce3;
+            border: 2px solid var(--primary);
+            transform: skewY(-45deg);
+        }
+
+        /* --- OPTIONS INTERACTION GRIDS --- */
+        .options-grid { display: grid; gap: 12px; }
+        .opt-btn {
+            background: #fff; border: 2px solid #edf2f4; padding: 16px;
+            border-radius: 14px; text-align: left; font-size: 1rem; cursor: pointer; transition: 0.2s;
+            color: #34495e; font-weight: 500;
+        }
+        .opt-btn:hover:not(:disabled) { border-color: #3498db; background: #fafafa; }
+        .opt-btn.correct { background: #e8f5e9 !important; color: var(--success) !important; border-color: #a5d6a7 !important; font-weight: 700; }
+        .opt-btn.wrong { background: #fdf2e9 !important; color: var(--error) !important; border-color: #f5caba !important; }
+
+        .feedback { margin-top: 20px; padding: 15px; border-radius: 12px; display: none; line-height: 1.5; font-size: 0.95rem; }
+        .hint-box { background: #fef9e7; border: 1px solid #f9e79f; color: #b7950b; }
+        .expl-box { background: #e8f4f8; border: 1px solid #bee3f8; color: #2b6cb0; }
+
+        #action-btn { width: 100%; margin-top: 20px; padding: 16px; background: #3498db; color: white; border: none; border-radius: 14px; font-weight: 700; cursor: pointer; font-size: 1rem; }
+        #action-btn:hover { background: var(--primary-dark); }
+        
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body>
+
+<div id="app-container">
+
+    <div id="splash-screen">
+        <img class="splash-logo-img" src="assets/logo.png" alt="Quiz Logo" onerror="this.style.display='none'; document.getElementById('splash-fallback').style.display='block';">
+        <h2 id="splash-fallback" style="display:none; color:#3498db; font-weight:800; letter-spacing:1px;">VOLUME ASSESSMENT</h2>
+    </div>
+
+    <div id="intro-view" class="hidden">
+        <div class="quiz-padding">
+            <h1 style="text-align:center; color:var(--primary); margin: 10px 0 5px 0; font-size: 26px;">3D Space & Capacity</h1>
+            <p style="text-align:center; color:#7f8c8d; margin-top: 0; font-weight: 600; text-transform: uppercase; font-size: 12px; letter-spacing: 1px;">Grade 5 Volume Evaluation</p>
+            
+            <div class="instruction-box">
+                <strong>📋 Targeted Volume Learning Outcomes:</strong>
+                <ul>
+                    <li>Understand volume as the amount of space occupied by a 3D object.</li>
+                    <li>Calculate the volume of cubes and cuboids using dimensions.</li>
+                    <li>Convert accurately between liters, milliliters, and cubic units.</li>
+                    <li>Apply volume concepts to real-world scenarios like filling storage containers.</li>
+                    <li><b>Rules:</b> 60 seconds per item. Options shuffle automatically on load.</li>
+                </ul>
+            </div>
+
+            <button id="start-btn" style="width:100%; padding:18px; background:#3498db; color:white; border:none; border-radius:14px; font-weight:bold; font-size:1.1rem; cursor:pointer; margin-top: 10px;">Begin Evaluation ⚡</button>
+        </div>
+    </div>
+
+    <div id="quiz-view" class="hidden">
+        <div class="quiz-padding">
+            <div class="hud-row">
+                <div class="hud-pill">Question <span id="q-num">1</span>/6</div>
+                <div class="hud-pill">Score: <span id="score-val">0</span></div>
+                <div class="hud-pill gold"><span id="timer-text">60s</span></div>
+            </div>
+            <div class="timer-track"><div id="timer-bar"></div></div>
+            
+            <div id="q-category" class="category-text"></div>
+            <div id="q-text" class="question-text"></div>
+            
+            <div id="custom-graphics-area"></div>
+            
+            <div id="options-area" class="options-grid"></div>
+            
+            <div id="feedback-box" class="feedback"></div>
+            <button id="action-btn" class="hidden">Next Question →</button>
+        </div>
+    </div>
+
+    <div id="result-view" class="hidden" style="text-align:center;">
+        <div class="quiz-padding">
+            <div style="font-size: 4rem; margin-bottom: 5px;">📦</div>
+            <h2 style="font-size:1.6rem; margin: 5px 0;">Volume Evaluation Completed!</h2>
+            <div style="font-size: 4rem; font-weight: 800; color: #3498db; margin: 10px 0;"><span id="final-pts">0</span>/6</div>
+            <div id="result-msg" style="color:#5f6368; font-size: 0.95rem; line-height: 1.5; margin: 0 0 25px 0; text-align: left; background: #f8f9fa; border: 1px solid #e2e8f0; padding: 16px; border-radius: 16px;"></div>
+            <button onclick="location.reload()" style="width:100%; padding:16px; background:#3498db; color:white; border:none; border-radius:14px; font-weight:700; cursor:pointer; font-size: 1rem;">Restart Assessment</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Asset hooks mapped to asset folders
+    const correctSound = new Audio('assets/correct.mp3');
+    const wrongSound = new Audio('assets/wrong.mp3');
+    const victorySound = new Audio('assets/freesound_community-claps-44774.mp3');
+
+    function playAudio(sound) {
+        sound.currentTime = 0;
+        sound.play().catch(e => console.log("Interaction barrier check", e));
+    }
+
+    // Direct 5-second splash controller
+    window.addEventListener('DOMContentLoaded', () => {
+        setTimeout(() => {
+            const splash = document.getElementById('splash-screen');
+            splash.style.opacity = '0';
+            setTimeout(() => {
+                splash.style.display = 'none';
+                document.getElementById('intro-view').classList.remove('hidden');
+            }, 800); 
+        }, 5000);
+    });
+
+    // 6 Competency Questions dedicated strictly to Volume Chapter 12
+    const pool = [
+        {
+            cat: "Concept of Volume",
+            q: "Two empty cargo boxes sit side-by-side on a warehouse shelf. Box A can hold 24 individual unit blocks, while Box B can hold exactly 36 of the same unit blocks.\n\nWhich statement correctly compares the properties of these boxes?",
+            opts: ["A) Box A has a greater perimeter profile than Box B", "B) Box B occupies more three-dimensional space, meaning it has a greater volume", "C) Both containers feature the exact same surface space capacity", "D) Box A contains more height metrics than Box B"],
+            ans: 1,
+            hint: "Volume measures the total amount of three-dimensional space an object takes up or can hold inside.",
+            expl: "Volume is defined as the amount of space occupied by a three-dimensional object. Since Box B can hold more unit blocks, it has a larger capacity and volume."
+        },
+        {
+            cat: "Volume of a Cube",
+            q: "A concrete block used for building foundations is shaped like a perfect cube. Each edge of this block measures exactly 6 centimeters.\n\nWhat is the total volume of space occupied by this concrete block?",
+            showCube: true, sideLength: "6 cm",
+            opts: ["A) 36 cubic centimeters", "B) 24 cubic centimeters", "C) 216 cubic centimeters", "D) 144 cubic centimeters"],
+            ans: 2,
+            hint: "The formula for the volume of a perfect cube is Side multiplied by Side multiplied by Side.",
+            expl: "Volume of a cube = Side × Side × Side. For this block: 6 cm × 6 cm × 6 cm = 216 cubic centimeters."
+        },
+        {
+            cat: "Volume of a Cuboid",
+            q: "An aquarium tank builder crafts a rectangular glass water tank. The finished design measures 10 decimeters long, 4 decimeters wide, and 5 decimeters tall.\n\nWhat is the total internal storage volume of this aquarium tank?",
+            opts: ["A) 19 cubic decimeters", "B) 200 cubic decimeters", "C) 100 cubic decimeters", "D) 400 cubic decimeters"],
+            ans: 1,
+            hint: "The volume of a rectangular cuboid is found by multiplying its three primary dimensions together: Length × Width × Height.",
+            expl: "Volume of a cuboid = Length × Width × Height. For this tank: 10 × 4 × 5 = 200 cubic decimeters."
+        },
+        {
+            cat: "Standard Unit Conversion",
+            q: "An environmental research container collects 3.8 liters of local rainwater sample over a weekend.\n\nWhat is this captured liquid metric equivalent to when expressed in milliliters?",
+            opts: ["A) 380 milliliters", "B) 38,000 milliliters", "C) 3,800 milliliters", "D) 38 milliliters"],
+            ans: 2,
+            hint: "1 single liter is exactly equivalent to 1,000 milliliters. Multiply your liter value by 1,000.",
+            expl: "To switch liquid measures from liters down to milliliters, multiply by 1,000: 3.8 × 1,000 = 3,800 milliliters."
+        },
+        {
+            cat: "Real-Life Application",
+            q: "A small kitchen juice carton holds 250 milliliters of liquid. A chef wants to completely fill a large empty 2-liter bowl with juice from these cartons.\n\nWhat is the total number of cartons required to fill the bowl?",
+            opts: ["A) 4 cartons", "B) 8 cartons", "C) 6 cartons", "D) 10 cartons"],
+            ans: 1,
+            hint: "Convert 2 liters to milliliters first (2,000 mL), then divide that total amount by the capacity of one juice carton (250 mL).",
+            expl: "2 liters equals 2,000 milliliters. Dividing the total bowl space by the carton volume gives: 2,000 mL ÷ 250 mL = 8 cartons."
+        },
+        {
+            cat: "Multi-Step Volume Problem",
+            q: "A shipping delivery crate is a cuboid that measures 5 meters long, 2 meters wide, and 3 meters high. Inside, it is packed with smaller box packages that each have a fixed volume of exactly 2 cubic meters.\n\nWhat is the absolute maximum number of small box packages that can fit inside the large crate?",
+            opts: ["A) 15 packages", "B) 30 packages", "C) 10 packages", "D) 60 packages"],
+            ans: 0,
+            hint: "Calculate the total volume of the large shipping crate first using Length × Width × Height, then divide that result by the size of one small package.",
+            expl: "Total crate volume = 5 m × 2 m × 3 m = 30 cubic meters. Maximum item space capacity = 30 cubic meters ÷ 2 cubic meters per package = 15 packages."
+        }
+    ];
+
+    let current = 0, score = 0, attempts = 0, timer, timeLeft = 60;
+
+    function shuffleOptions(arr) {
+        for (let i = arr.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [arr[i], arr[j]] = [arr[j], arr[i]];
+        }
+    }
+
+    document.getElementById('start-btn').onclick = () => {
+        document.getElementById('intro-view').classList.add('hidden');
+        document.getElementById('quiz-view').classList.remove('hidden');
+        loadQuestion();
+    };
+
+    function loadQuestion() {
+        attempts = 0; timeLeft = 60;
+        const q = pool[current];
+        document.getElementById('feedback-box').style.display = 'none';
+        document.getElementById('action-btn').classList.add('hidden');
+        document.getElementById('q-num').innerText = current + 1;
+        document.getElementById('q-category').innerText = q.cat;
+        document.getElementById('q-text').innerText = q.q;
+        document.getElementById('timer-text').innerText = timeLeft + "s";
+        
+        const graphicArea = document.getElementById('custom-graphics-area');
+        graphicArea.innerHTML = "";
+
+        // Dynamic 3D Shape Display Generator
+        if (q.showCube) {
+            graphicArea.innerHTML = `
+                <div class="visual-display-box">
+                    <div class="isometric-cube-sketch">
+                        <span style="font-size:0.85rem; color:var(--primary); font-weight:bold;">Cube</span>
+                        <div style="position:absolute; bottom:-22px; font-size:0.8rem; font-weight:700; color:#7f8c8d;">Side = ${q.sideLength}</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        const area = document.getElementById('options-area');
+        area.innerHTML = "";
+
+        const correctText = q.opts[q.ans];
+        shuffleOptions(q.opts);
+        const newCorrectIdx = q.opts.indexOf(correctText);
+
+        q.opts.forEach((o, i) => {
+            const b = document.createElement('button');
+            b.className = 'opt-btn';
+            b.innerText = o;
+            b.onclick = () => check(i, newCorrectIdx, b);
+            area.appendChild(b);
+        });
+        startTimer(newCorrectIdx);
+    }
+
+    function startTimer(correctIdx) {
+        clearInterval(timer);
+        timer = setInterval(() => {
+            timeLeft--;
+            document.getElementById('timer-text').innerText = timeLeft + "s";
+            document.getElementById('timer-bar').style.width = (timeLeft / 60 * 100) + "%";
+            if(timeLeft <= 0) { 
+                clearInterval(timer); 
+                playAudio(wrongSound); 
+                endTurn(correctIdx); 
+            }
+        }, 1000);
+    }
+
+    function check(clickedIdx, correctIdx, b) {
+        if(clickedIdx === correctIdx) {
+            clearInterval(timer);
+            playAudio(correctSound);
+            b.classList.add('correct');
+            score++;
+            document.getElementById('score-val').innerText = score;
+            endTurn(correctIdx);
+        } else {
+            attempts++;
+            playAudio(wrongSound);
+            b.classList.add('wrong');
+            b.disabled = true;
+            if(attempts === 1) {
+                const f = document.getElementById('feedback-box');
+                f.className = 'feedback hint-box';
+                f.innerHTML = "<b>💡 Question Hint:</b> " + pool[current].hint;
+                f.style.display = 'block';
+            } else {
+                clearInterval(timer);
+                endTurn(correctIdx);
+            }
+        }
+    }
+
+    function endTurn(correctIdx) {
+        document.querySelectorAll('.opt-btn').forEach(btn => btn.disabled = true);
+        const f = document.getElementById('feedback-box');
+        f.className = 'feedback expl-box';
+        f.innerHTML = "<b>🔍 Core Explanation:</b> " + pool[current].expl;
+        f.style.display = 'block';
+        document.querySelectorAll('.opt-btn')[correctIdx].classList.add('correct');
+        document.getElementById('action-btn').classList.remove('hidden');
+    }
+
+    document.getElementById('action-btn').onclick = () => {
+        current++;
+        if(current < pool.length) loadQuestion();
+        else {
+            document.getElementById('quiz-view').classList.add('hidden');
+            document.getElementById('result-view').classList.remove('hidden');
+            document.getElementById('final-pts').innerText = score;
+
+            let finalAnalysis = "Review cubic unit multiplication and storage capacity conversion rules to secure these core skills.";
+            if(score === 6) {
+                finalAnalysis = "Perfect score! You completely understand 3D dimensions, liquid conversions, and capacity limits.";
+                playAudio(victorySound);
+            } else if(score >= 4) {
+                finalAnalysis = "Great work! You demonstrate strong competency in analyzing spatial storage capacities and conversions.";
+            }
+
+            document.getElementById('result-msg').innerHTML = `
+                <span style="font-weight:700; color:#2c3e50; display:block; margin-bottom:6px;">Performance Summary:</span>
+                ${finalAnalysis}
+            `;
+        }
+    };
+</script>
+</body>
+</html>
