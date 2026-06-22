@@ -23,7 +23,6 @@
 </head>
 <body class="min-h-screen flex flex-col justify-between selection:bg-indigo-100">
 
-  <!-- Splash Screen -->
   <div id="splash-screen" class="fixed inset-0 bg-white flex flex-col items-center justify-center z-50 screen-fade">
     <div class="text-center p-4">
       <img src="assets/logo.png" alt="Logo" class="h-28 w-auto object-contain mx-auto mb-6" onerror="this.style.display='none'; document.getElementById('splash-text-logo').style.display='block';">
@@ -37,12 +36,11 @@
     </div>
   </div>
 
-  <!-- Instruction Screen -->
   <div id="instruction-screen" class="fixed inset-0 bg-slate-50 flex items-center justify-center z-40 p-4 screen-fade hidden">
     <div class="bg-white p-8 md:p-10 rounded-2xl custom-shadow max-w-xl w-full border border-gray-100 text-center">
       <h2 class="text-3xl font-black text-slate-800 mb-6">Quiz Rules</h2>
       <ul class="text-left text-slate-600 space-y-4 mb-8 text-lg font-medium">
-        <li class="flex items-start"><span class="text-indigo-600 mr-3 text-xl">✔</span> There are 12 maths questions.</li>
+        <li class="flex items-start"><span class="text-indigo-600 mr-3 text-xl">✔</span> There are 20 randomly chosen maths questions.</li>
         <li class="flex items-start"><span class="text-indigo-600 mr-3 text-xl">✔</span> Try to answer each question within 60 seconds.</li>
         <li class="flex items-start"><span class="text-indigo-600 mr-3 text-xl">✔</span> You can have 2 tries for each question if needed.</li>
       </ul>
@@ -52,12 +50,11 @@
     </div>
   </div>
 
-  <!-- Top Header Navigation -->
   <header id="game-header" class="bg-white border-b border-gray-200 px-4 py-4 sticky top-0 z-30 hidden">
     <div class="max-w-2xl mx-auto flex items-center justify-between">
       <button id="mute-btn" class="p-2.5 rounded-xl border border-gray-200 hover:bg-gray-50 transition cursor-pointer" aria-label="Toggle Mute">
         <svg id="sound-on-icon" class="w-7 h-7 text-slate-700" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/></svg>
-        <svg id="sound-off-icon" class="w-7 h-7 text-slate-400 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 005.636 5.636m12.728 12.728L5.636 5.636"/></svg>
+        <svg id="sound-off-icon" class="w-7 h-7 text-slate-400 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 18.364A9 9 0 005.636 5.636m12.728 12.728A9 9 0 015.636 5.636m12.728 12.728L5.636 5.636"/></svg>
       </button>
       
       <div class="bg-slate-100 px-5 py-2 rounded-xl text-base font-bold text-slate-700 border border-slate-200">
@@ -66,10 +63,9 @@
     </div>
   </header>
 
-  <!-- Interactive Game Area -->
   <main id="game-body" class="flex-grow p-4 md:p-6 max-w-2xl w-full mx-auto flex flex-col justify-center hidden">
     <div class="flex justify-between items-center mb-5 text-base font-bold text-slate-500">
-      <div>Questions: <span id="current-q-num" class="text-slate-900">1</span>/12</div>
+      <div>Questions: <span id="current-q-num" class="text-slate-900">1</span>/<span id="total-questions-count">20</span></div>
       <div id="timer-badge" class="flex items-center space-x-1 text-orange-600 bg-orange-50 px-4 py-1.5 rounded-full border border-orange-100">
         <span id="timer-display" class="text-lg">60s</span>
       </div>
@@ -96,7 +92,6 @@
     </div>
   </main>
 
-  <!-- Simplified Score Dashboard -->
   <div id="results-screen" class="flex-grow p-4 md:p-6 max-w-2xl w-full mx-auto flex flex-col justify-center hidden">
     <div class="bg-white rounded-3xl p-8 md:p-12 custom-shadow border border-gray-100 text-center relative overflow-hidden">
       
@@ -112,7 +107,7 @@
       
       <div class="bg-slate-50 rounded-2xl p-6 border border-slate-100 max-w-xs mx-auto mb-8">
         <span class="block text-sm font-bold text-slate-400 uppercase tracking-widest mb-1">Your Total Score</span>
-        <span id="final-score-text" class="text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600">0 / 12</span>
+        <span id="final-score-text" class="text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600">0 / 20</span>
         <span id="final-percentage" class="block text-base text-slate-500 font-bold mt-2">0% Correct</span>
       </div>
 
@@ -125,8 +120,8 @@
   </div>
 
   <script>
-    // Grade 5 target concepts updated with Indian Rupees (₹) and British spelling patterns
-    const quizDatabase = [
+    // Expanded Pool: 25 Unique Grade 5 calibrated items using Rupee values and UK configurations
+    const masterDatabasePool = [
       { id: 1, context: "Riya went to the school shop. She bought a pencil for ₹12.50 and an eraser for ₹7.25.", question: "How much money did she spend altogether?", options: ["₹19.75", "₹18.75", "₹20.75", "₹17.75"], correctIndex: 0 },
       { id: 2, context: "Shop items are priced using decimals to manage paise balances easily.", question: "Why do we use decimal points in money values?", options: ["To skip counting simple coins", "To show the correct amount of paise", "To make numbers look longer", "To make multiplying easier"], correctIndex: 1 },
       { id: 3, context: "Riya bought a pencil for ₹12.50 and an eraser for ₹7.25. She handed over a ₹20.00 note.", question: "How can you find out how much change she should get back?", options: ["Multiply the two item values together", "Subtract the total bill from the ₹20 note", "Add the item costs together again", "Round up all the numbers to tens"], correctIndex: 1 },
@@ -138,8 +133,35 @@
       { id: 9, context: null, question: "Which statement about decimals is true?", options: ["Decimals show split parts of a whole value", "Decimals are only ever used for money values", "Decimals cannot be compared to each other", "Decimals are always much smaller than 1"], correctIndex: 0 },
       { id: 10, context: "Three friends measured how tall their plants grew: Aarav reached 1.6 m, Siya reached 1.45 m, and Kabir reached 1.5 m.", question: "Who grew the tallest plant?", options: ["Aarav", "Siya", "Kabir", "They are all equal tall"], correctIndex: 0 },
       { id: 11, context: "A sandwich costs ₹24.75, juice costs ₹18.50, and milk costs ₹12.25. Sam has a ₹50 note and wants to buy juice and milk.", question: "What should Sam calculate first to see if he has enough money?", options: ["Add the values of the juice and milk together", "Multiply the cost of the juice by the milk", "Round the numbers up to the nearest ten rupees", "Ignore the numbers after the decimal point"], correctIndex: 0 },
-      { id: 12, context: "Canteen items use decimals to keep balances accurate down to the exact paise value.", question: "Why are decimals important when paying for things?", options: ["To make the price feel more expensive", "To display rupees and paise accurately", "To stop us needing to do any arithmetic", "To make numbers longer to write down"], correctIndex: 1 }
+      { id: 12, context: "Canteen items use decimals to keep balances accurate down to the exact paise value.", question: "Why are decimals important when paying for things?", options: ["To make the price feel more expensive", "To display rupees and paise accurately", "To stop us needing to do any arithmetic", "To make numbers longer to write down"], correctIndex: 1 },
+      { id: 13, context: "A square kitchen garden wall has sides that measure exactly 4.5 metres each.", question: "What is the perimeter distance around the kitchen garden?", options: ["18.0 m", "16.5 m", "20.25 m", "9.0 m"], correctIndex: 0 },
+      { id: 14, context: "A rectangular tabletop measures 1.2 metres wide and 2.0 metres long.", question: "What is the total surface area of this tabletop?", options: ["2.4 square m", "6.4 square m", "3.2 square m", "4.8 square m"], correctIndex: 0 },
+      { id: 15, context: "Anu spent 2/5 of her pocket money allowance on a notebook and 1/5 on a ruler.", question: "What fraction of her pocket money did Anu spend in total?", options: ["3/5", "3/10", "4/5", "2/25"], correctIndex: 0 },
+      { id: 16, context: "Dev shared an entire chocolate bar. He handed 1/4 of it to Amit and 1/2 of it to Rohit.", question: "What fraction of the chocolate bar did Dev give away altogether?", options: ["3/4", "2/6", "1/4", "2/4"], correctIndex: 0 },
+      { id: 17, context: "A water jar is loaded with 3.75 litres of water. After pouring some out, 1.25 litres remain.", question: "How much water was poured out of the jar?", options: ["2.50 L", "2.25 L", "1.50 L", "4.00 L"], correctIndex: 0 },
+      { id: 18, context: "A fruit seller had 45.5 kg of apples. He sold 23.25 kg of apples during the morning shift.", question: "How many kilograms of apples does the seller have left?", options: ["22.25 kg", "22.50 kg", "23.25 kg", "21.75 kg"], correctIndex: 0 },
+      { id: 19, context: null, question: "Convert the fraction 3/4 into its correct decimal value format:", options: ["0.75", "0.34", "0.50", "0.60"], correctIndex: 0 },
+      { id: 20, context: null, question: "Which of the following values is equivalent to the decimal 0.2?", options: ["1/5", "1/2", "2/5", "1/20"], correctIndex: 0 },
+      { id: 21, context: "A packaging container holds 6 small items. A merchant wants to pack 144 items safely.", question: "How many packaging containers will the merchant require altogether?", options: ["24 boxes", "20 boxes", "14 boxes", "30 boxes"], correctIndex: 0 },
+      { id: 22, context: "A student buys 8 identical notebooks. The grand total comes to exactly ₹160.", question: "What is the individual cost of a single notebook?", options: ["₹20", "₹15", "₹25", "₹18"], correctIndex: 0 },
+      { id: 23, context: "A complete rope line measures 15.6 metres. It is cleanly sliced into 3 equal pieces.", question: "What is the length of each newly sliced piece of rope?", options: ["5.2 m", "5.1 m", "5.3 m", "4.9 m"], correctIndex: 0 },
+      { id: 24, context: "A collection group has 20 marbles. Out of these, 5 marbles are bright green.", question: "What fraction of the complete collection group is green?", options: ["1/4", "1/5", "1/2", "3/4"], correctIndex: 0 },
+      { id: 25, context: "Rahul needs to add 456,123 and 123,456 together carefully on his worksheet.", question: "What is the final combined total of these numbers?", options: ["579,579", "580,580", "579,123", "600,000"], correctIndex: 0 }
     ];
+
+    const GAME_SESSION_LENGTH = 20; // Locks game session strictly to 20 questions
+    let quizDatabase = []; // Holds the active shuffled batch
+
+    // Fisher-Yates array randomisation routine to shuffle questions pool randomly
+    function shuffleAndPreparePool() {
+      let shuffled = [...masterDatabasePool];
+      for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+      }
+      // Pick a random batch slice matching the required game session length
+      quizDatabase = shuffled.slice(0, GAME_SESSION_LENGTH);
+    }
 
     let isMuted = false;
     const sounds = {
@@ -167,10 +189,13 @@
     let countdownInterval = null;
     let attemptCounter = 0;
 
-    // Grace timer config to wait for calculations
     const timerConfig = {
       behaviorOnTimeout: "wait_with_reminder" 
     };
+
+    // Run randomiser engine at boot time
+    shuffleAndPreparePool();
+    document.getElementById('total-questions-count').textContent = GAME_SESSION_LENGTH;
 
     setTimeout(() => {
       splashScreen.style.opacity = '0';
@@ -315,8 +340,8 @@
       gameBody.classList.add('hidden');
       resultsScreen.classList.remove('hidden');
 
-      const percent = Math.round((finalScore / quizDatabase.length) * 100);
-      document.getElementById('final-score-text').textContent = `${finalScore} / ${quizDatabase.length}`;
+      const percent = Math.round((finalScore / GAME_SESSION_LENGTH) * 100);
+      document.getElementById('final-score-text').textContent = `${finalScore} / ${GAME_SESSION_LENGTH}`;
       document.getElementById('final-percentage').textContent = `${percent}% Correct`;
 
       const msg = document.getElementById('result-message');
