@@ -23,6 +23,7 @@
 </head>
 <body class="min-h-screen flex flex-col justify-between selection:bg-indigo-100">
 
+  <!-- Splash Screen -->
   <div id="splash-screen" class="fixed inset-0 bg-white flex flex-col items-center justify-center z-50 screen-fade">
     <div class="text-center p-4">
       <img src="assets/logo.png" alt="Logo" class="h-28 w-auto object-contain mx-auto mb-6" onerror="this.style.display='none'; document.getElementById('splash-text-logo').style.display='block';">
@@ -36,11 +37,12 @@
     </div>
   </div>
 
+  <!-- Instruction Screen -->
   <div id="instruction-screen" class="fixed inset-0 bg-slate-50 flex items-center justify-center z-40 p-4 screen-fade hidden">
     <div class="bg-white p-8 md:p-10 rounded-2xl custom-shadow max-w-xl w-full border border-gray-100 text-center">
       <h2 class="text-3xl font-black text-slate-800 mb-6">Quiz Rules</h2>
       <ul class="text-left text-slate-600 space-y-4 mb-8 text-lg font-medium">
-        <li class="flex items-start"><span class="text-indigo-600 mr-3 text-xl">✔</span> There are 20 randomly chosen maths questions.</li>
+        <li class="flex items-start"><span class="text-indigo-600 mr-3 text-xl">✔</span> There are 10 randomly chosen maths questions.</li>
         <li class="flex items-start"><span class="text-indigo-600 mr-3 text-xl">✔</span> Try to answer each question within 60 seconds.</li>
         <li class="flex items-start"><span class="text-indigo-600 mr-3 text-xl">✔</span> You can have 2 tries for each question if needed.</li>
       </ul>
@@ -50,6 +52,7 @@
     </div>
   </div>
 
+  <!-- Top Header Navigation -->
   <header id="game-header" class="bg-white border-b border-gray-200 px-4 py-4 sticky top-0 z-30 hidden">
     <div class="max-w-2xl mx-auto flex items-center justify-between">
       <button id="mute-btn" class="p-2.5 rounded-xl border border-gray-200 hover:bg-gray-50 transition cursor-pointer" aria-label="Toggle Mute">
@@ -63,9 +66,10 @@
     </div>
   </header>
 
+  <!-- Interactive Game Area -->
   <main id="game-body" class="flex-grow p-4 md:p-6 max-w-2xl w-full mx-auto flex flex-col justify-center hidden">
     <div class="flex justify-between items-center mb-5 text-base font-bold text-slate-500">
-      <div>Questions: <span id="current-q-num" class="text-slate-900">1</span>/<span id="total-questions-count">20</span></div>
+      <div>Questions: <span id="current-q-num" class="text-slate-900">1</span>/<span id="total-questions-count">10</span></div>
       <div id="timer-badge" class="flex items-center space-x-1 text-orange-600 bg-orange-50 px-4 py-1.5 rounded-full border border-orange-100">
         <span id="timer-display" class="text-lg">60s</span>
       </div>
@@ -92,6 +96,7 @@
     </div>
   </main>
 
+  <!-- Simplified Score Dashboard -->
   <div id="results-screen" class="flex-grow p-4 md:p-6 max-w-2xl w-full mx-auto flex flex-col justify-center hidden">
     <div class="bg-white rounded-3xl p-8 md:p-12 custom-shadow border border-gray-100 text-center relative overflow-hidden">
       
@@ -107,7 +112,7 @@
       
       <div class="bg-slate-50 rounded-2xl p-6 border border-slate-100 max-w-xs mx-auto mb-8">
         <span class="block text-sm font-bold text-slate-400 uppercase tracking-widest mb-1">Your Total Score</span>
-        <span id="final-score-text" class="text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600">0 / 20</span>
+        <span id="final-score-text" class="text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600">0 / 10</span>
         <span id="final-percentage" class="block text-base text-slate-500 font-bold mt-2">0% Correct</span>
       </div>
 
@@ -120,7 +125,7 @@
   </div>
 
   <script>
-    // Expanded Pool: 25 Unique Grade 5 calibrated items using Rupee values and UK configurations
+    // Master Question Pool (25 items)
     const masterDatabasePool = [
       { id: 1, context: "Riya went to the school shop. She bought a pencil for ₹12.50 and an eraser for ₹7.25.", question: "How much money did she spend altogether?", options: ["₹19.75", "₹18.75", "₹20.75", "₹17.75"], correctIndex: 0 },
       { id: 2, context: "Shop items are priced using decimals to manage paise balances easily.", question: "Why do we use decimal points in money values?", options: ["To skip counting simple coins", "To show the correct amount of paise", "To make numbers look longer", "To make multiplying easier"], correctIndex: 1 },
@@ -149,17 +154,16 @@
       { id: 25, context: "Rahul needs to add 456,123 and 123,456 together carefully on his worksheet.", question: "What is the final combined total of these numbers?", options: ["579,579", "580,580", "579,123", "600,000"], correctIndex: 0 }
     ];
 
-    const GAME_SESSION_LENGTH = 20; // Locks game session strictly to 20 questions
-    let quizDatabase = []; // Holds the active shuffled batch
+    const GAME_SESSION_LENGTH = 10; // strictly locks session down to 10 questions
+    let quizDatabase = []; 
 
-    // Fisher-Yates array randomisation routine to shuffle questions pool randomly
+    // Fisher-Yates array shuffling routine
     function shuffleAndPreparePool() {
       let shuffled = [...masterDatabasePool];
       for (let i = shuffled.length - 1; i > 0; i--) {
         const j = Math.floor(Math.random() * (i + 1));
         [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
       }
-      // Pick a random batch slice matching the required game session length
       quizDatabase = shuffled.slice(0, GAME_SESSION_LENGTH);
     }
 
@@ -193,7 +197,6 @@
       behaviorOnTimeout: "wait_with_reminder" 
     };
 
-    // Run randomiser engine at boot time
     shuffleAndPreparePool();
     document.getElementById('total-questions-count').textContent = GAME_SESSION_LENGTH;
 
