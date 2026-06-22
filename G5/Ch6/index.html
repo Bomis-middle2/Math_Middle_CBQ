@@ -154,28 +154,26 @@
     <div id="intro-view" class="hidden">
         <div class="quiz-padding">
             <h1 style="text-align:center; color:var(--primary); margin: 10px 0 5px 0; font-size: 26px;">Geometry Core Quiz</h1>
-            <p style="text-align:center; color:#7f8c8d; margin-top: 0; font-weight: 600; text-transform: uppercase; font-size: 12px; letter-spacing: 1px;">Case-Based Learning Evaluation</p>
+            <p style="text-align:center; color:#7f8c8d; margin-top: 0; font-weight: 600; text-transform: uppercase; font-size: 12px; letter-spacing: 1px;">Fun Geometry Challenge</p>
             
             <div class="instruction-box">
-                <strong>📋 Core Learning Outcomes Evaluated:</strong>
+                <strong>📋 Quiz Information:</strong>
                 <ul>
-                    <li>Collinear/non-collinear configurations & basic geometric terms.</li>
-                    <li>Structural attributes of open vs closed figures.</li>
-                    <li>Distinct constraints of lines, line segments, and rays.</li>
-                    <li>Classification and exact metrics of angles.</li>
-                    <li>Intersections, perpendiculars, parallel layouts, and concurrency.</li>
-                    <li><b>Rules:</b> 60 seconds per task. Choices shuffle each round!</li>
+                    <li>Answer questions about lines, shapes, angles, and pathways.</li>
+                    <li>You have 60 seconds to answer each question.</li>
+                    <li>The multiple-choice options will shuffle each round!</li>
+                    <li><b>Session Length:</b> Exactly 10 randomized questions.</li>
                 </ul>
             </div>
 
-            <button id="start-btn" style="width:100%; padding:18px; background:var(--primary); color:white; border:none; border-radius:14px; font-weight:bold; font-size:1.1rem; cursor:pointer; margin-top: 10px;">Begin Evaluation ⚡</button>
+            <button id="start-btn" style="width:100%; padding:18px; background:var(--primary); color:white; border:none; border-radius:14px; font-weight:bold; font-size:1.1rem; cursor:pointer; margin-top: 10px;">Begin Quiz ⚡</button>
         </div>
     </div>
 
     <div id="quiz-view" class="hidden">
         <div class="quiz-padding">
             <div class="hud-row">
-                <div class="hud-pill">Task <span id="q-num">1</span>/8</div>
+                <div class="hud-pill">Question <span id="q-num">1</span>/<span id="total-q-num">10</span></div>
                 <div class="hud-pill">Score: <span id="score-val">0</span></div>
                 <div class="hud-pill gold"><span id="timer-text">60s</span></div>
             </div>
@@ -189,15 +187,15 @@
             <div id="options-area" class="options-grid"></div>
             
             <div id="feedback-box" class="feedback"></div>
-            <button id="action-btn" class="hidden">Next Case →</button>
+            <button id="action-btn" class="hidden">Next Question →</button>
         </div>
     </div>
 
     <div id="result-view" class="hidden" style="text-align:center;">
         <div class="quiz-padding">
             <div style="font-size: 4rem; margin-bottom: 5px;">🏆</div>
-            <h2 style="font-size:1.6rem; margin: 5px 0;">Evaluation Completed!</h2>
-            <div style="font-size: 4rem; font-weight: 800; color: var(--primary); margin: 10px 0;"><span id="final-pts">0</span>/8</div>
+            <h2 style="font-size:1.6rem; margin: 5px 0;">Quiz Completed!</h2>
+            <div style="font-size: 4rem; font-weight: 800; color: var(--primary); margin: 10px 0;"><span id="final-pts">0</span>/<span id="final-total">10</span></div>
             <div id="result-msg" style="color:#5f6368; font-size: 0.95rem; line-height: 1.5; margin: 0 0 25px 0; text-align: left; background: #f8f9fa; border: 1px solid #e2e8f0; padding: 16px; border-radius: 16px;"></div>
             <button id="restart-btn" style="width:100%; padding:16px; background:var(--primary); color:white; border:none; border-radius:14px; font-weight:700; cursor:pointer; font-size: 1rem;">Start New Session</button>
         </div>
@@ -209,7 +207,7 @@
     function playAudioTrack(id) {
         const audioTrack = document.getElementById(id);
         if (audioTrack) {
-            audioTrack.currentTime = 0; // Rewind to start for responsive triggers
+            audioTrack.currentTime = 0; 
             audioTrack.play().catch(err => {
                 console.log("Audio play blocked until user interaction", err);
             });
@@ -228,89 +226,204 @@
         }, 5000);
     });
 
-    // 8 Core case-based questions mapped to the outcomes in the blueprints
-    const pool = [
+    // Question Pool (Calibrated to Grade 5 level, British English, and Rupees)
+    const masterPool = [
         { 
-            cat: "Collinear & Non-Collinear Points", 
-            q: "An urban surveyor marks four surveillance nodes on a city blueprint map. Nodes A, B, and C sit entirely along a single straight path, while Node D sits completely outside that boundary line.\n\nWhich of the following describes this structural relationship?", 
-            opts: ["A) Nodes A, B, and C are collinear points.", "B) Nodes A, B, C, and D are all mutually collinear.", "C) Node D is collinear with the path ABC.", "D) All four nodes are perfectly concurrent."], 
+            cat: "Points on a Line", 
+            q: "Anish draws three dots along the edge of his straight ruler. He labels them dot A, dot B, and dot C. \n\nWhat word describes dots that sit on the exact same straight line?", 
+            opts: ["Collinear points", "Non-collinear points", "Corner points", "Parallel points"], 
             ans: 0, 
-            hint: "Points are defined as collinear if and only if they lie along the exact same straight line route.", 
-            expl: "Since nodes A, B, and C share a single straight line route, they are collinear. Node D sits outside it, making the full collection non-collinear overall." 
+            hint: "Think about points that are in the same straight 'line'.", 
+            expl: "Points that lie on the exact same straight line are called collinear points. If a point sits off the line, they become non-collinear." 
         },
         { 
-            cat: "Open & Closed Figures", 
-            q: "A safety engineer is tracing an optical sensor path. The path starts at Point X, takes three sharp geometric turns to circumvent a hazard zone, and concludes exactly back at Point X.\n\nWhat category of figure does this sensor route constitute?", 
-            opts: ["A) An open figure", "B) A closed figure", "C) A non-collinear vector line", "D) A parallel line segment group"], 
-            ans: 1, 
-            hint: "If a structural track starts and finishes at the exact same spatial point, it completely encloses a region.", 
-            expl: "A closed figure forms a complete loop where the initial starting point matches the endpoint exactly, enclosing an inner zone." 
-        },
-        { 
-            cat: "Line, Line Segment & Ray", 
-            q: "A high-powered maritime laser projector radiates light away from a single, fixed lighthouse origin deck out into the deep sea horizon infinitely.\n\nWhich geometric element best models this laser beam path?", 
-            opts: ["A) A line segment", "B) A continuous line", "C) A geometric ray", "D) A non-collinear point set"], 
-            ans: 2, 
-            hint: "Think about an entity that has one static terminal origin point but progresses infinitely in a single direction.", 
-            expl: "A geometric ray possesses exactly one defined endpoint (its origin) and extends infinitely out along a single directional vector." 
-        },
-        { 
-            cat: "Parts & Types of Angles", 
-            q: "While studying a solar bracket adjustment schematic, an aerospace technician measures a structural turn angle that registers exactly at 135 degrees.\n\nHow is this specific angle classified?", 
-            opts: ["A) An acute angle", "B) A right angle", "C) An obtuse angle", "D) A straight angle"], 
-            ans: 2, 
-            hint: "An angle that measures strictly greater than 90 degrees but less than 180 degrees falls into this category.", 
-            expl: "Angles that measure between 90° and 180° are classified as obtuse angles. Acute angles are less than 90°, while right angles are exactly 90°." 
-        },
-        { 
-            cat: "Measuring with Protractor", 
-            q: "An engineering student places the midpoint baseline of a protractor squarely over the vertex of an angle. The initial ray aligns with the 0° mark, and the opening ray crosses the inner scale mark exactly halfway between 60 and 70.\n\nWhat is the measurement of this angle?", 
-            opts: ["A) 65 degrees", "B) 55 degrees", "C) 135 degrees", "D) 75 degrees"], 
+            cat: "Open & Closed Shapes", 
+            q: "Kiran uses a piece of string to outline a playground layout. The string starts at the main gate, goes around the swings, loops past the slides, and ties back exactly at the main gate.\n\nWhat kind of shape did Kiran make?", 
+            opts: ["A closed shape", "An open shape", "A straight line", "A ray shape"], 
             ans: 0, 
-            hint: "Identify the numeric midpoint directly between 60 and 70 on standard linear scaling indicators.", 
-            expl: "The numerical value exactly halfway between 60 and 70 is 65. Thus, the protractor reads a measurement of 65°." 
+            hint: "If you start and finish at the exact same spot, the path is completely sealed.", 
+            expl: "A closed shape starts and ends at the exact same point, creating a loop that traps a space inside it." 
         },
         { 
-            cat: "Parallel & Concurrent Lines", 
-            q: "A structural grid schematic displays four separate structural reinforcement wires. When drafted across the blueprint map, every single wire path passes directly through the exact same central anchor pin location.\n\nWhat term defines these intersecting lines?", 
-            opts: ["A) Parallel lines", "B) Concurrent lines", "C) Perpendicular line segments", "D) Collinear paths"], 
-            ans: 1, 
-            hint: "When three or more distinct lines cross each other at the exact same common point, they share a specific property.", 
-            expl: "Lines are concurrent when three or more individual paths intersect at a single shared point. (Lines that never meet are parallel)." 
+            cat: "Lines and Rays", 
+            q: "A powerful torch beam shoots light out from its bulb. The beam leaves the torch and travels straight out into the night sky forever.\n\nWhich geometric element best represents this beam of light?", 
+            opts: ["A ray", "A line segment", "A straight line", "A vertex"], 
+            ans: 0, 
+            hint: "Think about something that has one fixed starting point but goes on forever in just one direction.", 
+            expl: "A ray has exactly one fixed starting endpoint and continues forever in a single direction." 
         },
         { 
-            cat: "Intersecting & Perpendicular Lines", 
-            q: "A carpenter aligns a vertical framing stud path against a horizontal base track. To pass code, the intersection point of these two components must form an exact 90-degree corner profile.", 
+            cat: "Types of Angles", 
+            q: "While building a model solar panel helper, Meera measures a corner angle that turns exactly 135 degrees.\n\nHow should this angle be categorised?", 
+            opts: ["An obtuse angle", "An acute angle", "A right angle", "A straight angle"], 
+            ans: 0, 
+            hint: "This angle is wider than a square corner (90 degrees) but smaller than a flat straight line (180 degrees).", 
+            expl: "Angles that measure between 90 degrees and 180 degrees are called 'obtuse' angles." 
+        },
+        { 
+            cat: "Using a Protractor", 
+            q: "Rahul places the center point of his protractor cleanly over the corner of a shape. The baseline matches 0 degrees, and the other side points exactly halfway between the 60 and 70 marks.\n\nWhat is the size of this angle?", 
+            opts: ["65 degrees", "55 degrees", "135 degrees", "75 degrees"], 
+            ans: 0, 
+            hint: "Find the exact number that lives right in the middle of 60 and 70.", 
+            expl: "The exact number halfway between 60 and 70 is 65, meaning the angle measures 65 degrees." 
+        },
+        { 
+            cat: "Lines Meeting at a Point", 
+            q: "A map diagram shows four separate walking paths. If you follow any of the four paths, they all cross through the exact same central fountain circle.\n\nWhat do we call lines that cross through the exact same point?", 
+            opts: ["Concurrent lines", "Parallel lines", "Collinear paths", "Closed tracks"], 
+            ans: 0, 
+            hint: "When three or more separate lines meet at one single point, they are given this specific name.", 
+            expl: "Lines are concurrent when three or more individual paths cross each other at one shared point." 
+        },
+        { 
+            cat: "Perpendicular Lines", 
+            q: "A carpenter places a vertical wooden beam up against a flat floor. To look right, the corner where they meet must make a perfect square right angle of 90 degrees.", 
             hasArt: true,
-            graphic: "      | (Stud)\n      |\n------*------ (Track)\n      |",
-            opts: ["A) Intersecting but non-perpendicular", "B) Parallel line configuration", "C) Perpendicular lines", "D) Identical concurrent rays"], 
-            ans: 2, 
-            hint: "Look for the specific terminology used when two intersecting paths cross at a perfect right angle.", 
-            expl: "Perpendicular lines intersect precisely at a 90° angle (a right angle), forming square structural corners." 
+            graphic: "      | (Beam)\n      |\n------*------ (Floor)\n      |",
+            opts: ["Perpendicular lines", "Parallel lines", "Open layout lines", "Matching rays"], 
+            ans: 0, 
+            hint: "Think about the special word for lines that cross to form a clean 90-degree corner.", 
+            expl: "Perpendicular lines cross each other at a perfect 90-degree right angle, forming a clean T-shape or square corner." 
         },
         { 
-            cat: "Geometric Boundaries", 
-            q: "A logistics specialist is tracking a straight railway track segment that starts at Station A and stops entirely at Station B, possessing two distinct endpoints.\n\nWhat is this finite track path classified as?", 
-            opts: ["A) A line segment", "B) A geometric ray", "C) An open loop curve", "D) An infinite line"], 
+            cat: "Line Segments", 
+            q: "A straight railway track connects Station A directly to Station B. It starts at Station A and stops completely at Station B, so it has two fixed endpoints.\n\nWhat is this bounded piece of track called?", 
+            opts: ["A line segment", "A ray", "An open line", "An infinite line"], 
             ans: 0, 
-            hint: "A geometric element bounded by two distinct, measurable endpoints is called a...", 
-            expl: "A line segment is a bounded portion of a line that connects two distinct endpoints, making its total length measurable." 
+            hint: "It is a piece of a line with a clear start and a clear finish.", 
+            expl: "A line segment is a fixed piece of a line that connects two distinct endpoints, meaning you can measure its exact length." 
+        },
+        {
+            cat: "Acute Angles",
+            q: "Dev looks at an architectural sketch where a corner roof angle measures exactly 45 degrees.\n\nHow is this angle classified?",
+            opts: ["An acute angle", "An趋势 angle", "A right angle", "An惊喜 angle"],
+            ans: 0,
+            hint: "Angles that are sharp and measure less than a 90-degree square corner are called...",
+            expl: "An acute angle is strictly less than 90 degrees. Because 45 degrees is less than 90, it is an acute angle."
+        },
+        {
+            cat: "Open Shapes",
+            q: "A robot pen draws a path across a grid sheet. It starts at point A, turns towards point B, moves down to point C, and stops at point D. It does not go back to point A.\n\nWhat model does this represent?",
+            opts: ["An open shape", "A closed shape", "A collinear group", "A parallel loop"],
+            ans: 0,
+            hint: "Is the fence open or closed if the start point and the end point do not connect?",
+            expl: "Since the path ends at a completely different spot rather than returning to where it started, it forms an open shape."
+        },
+        {
+            cat: "Infinite Lines",
+            q: "Imagine a flat, straight road grid line that extends outwards in both directions forever and ever, with no ends at all.\n\nWhat is this geometry element called?",
+            opts: ["A line", "A line segment", "A ray", "A vertex segment"],
+            ans: 0,
+            hint: "This element has no endpoints on either side and goes on endlessly in both directions.",
+            expl: "In geometry, a plain 'line' extends boundlessly in both directions and has zero endpoints."
+        },
+        {
+            cat: "Parallel Lines",
+            q: "Two straight railway lines are built to run side-by-side across a field. They stay exactly 2 metres away from each other along the entire journey.\n\nWhere will these two lines eventually cross?",
+            opts: ["They will never cross", "At the 2-metre mark", "At the very end station", "At the center point"],
+            ans: 0,
+            hint: "Think about lines that run next to each other but stay the same distance apart.",
+            expl: "Parallel lines always maintain the exact same distance from one another and will never cross or meet."
+        },
+        {
+            cat: "Straight Angles",
+            q: "A folding wooden ruler is opened up until it forms a perfectly flat, straight line. The angle at the folding hinge measures exactly 180 degrees.\n\nWhat is this angle called?",
+            opts: ["A straight angle", "A right angle", "An acute angle", "A reflex angle"],
+            ans: 0,
+            hint: "The name tells you exactly what it looks like: a flat, flat line.",
+            expl: "An angle that measures exactly 180 degrees forms a flat line and is called a straight angle."
+        },
+        {
+            cat: "Points off a Line",
+            q: "An inspector checks three warning markers. She finds out that no single straight line can track through all three markers at the same time.\n\nWhat are these points called?",
+            opts: ["Non-collinear points", "Collinear points", "Concurrent markers", "Parallel vertices"],
+            ans: 0,
+            hint: "If they can fit on the same line, they are collinear. If they cannot, they are...",
+            expl: "Points that do not lie along a single straight line path are non-collinear points."
+        },
+        {
+            cat: "Right Angles",
+            q: "A rectangular tile has a corner where the bottom edge and side edge meet perfectly. A protractor test reads exactly 90 degrees.\n\nWhat kind of angle is this?",
+            opts: ["A right angle", "An acute angle", "An line angle", "A straight angle"],
+            ans: 0,
+            hint: "This angle makes a perfect square corner like the edge of a book or a wall.",
+            expl: "An angle of exactly 90 degrees is known as a right angle."
+        },
+        {
+            cat: "Reflex Angles",
+            q: "A garden gate swings wide open, rotating past a flat line to an angle of 210 degrees.\n\nWhat name is given to angles that are larger than 180 degrees but smaller than 360 degrees?",
+            opts: ["A reflex angle", "An obtuse angle", "A right angle", "An acute angle"],
+            ans: 0,
+            hint: "These large angles turn past a straight line but do not make a full circle loop.",
+            expl: "An angle that is greater than 180 degrees but less than 360 degrees is called a reflex angle."
+        },
+        {
+            cat: "Money Context Problems",
+            q: "A local shop sells patterned geometry tape. Straight tape borders cost ₹10 per centimetre, while corner joint pieces cost ₹40 each. \n\nIf Priya buys a fully closed triangle shape made of 3 tape pieces and 3 corner joints, how many corner joints did she pay for?",
+            opts: ["3 corner joints", "4 corner joints", "6 corner joints", "0 corner joints"],
+            ans: 0,
+            hint: "A triangle is a closed shape with three straight sides. Count how many corners a triangle has.",
+            expl: "A triangle has exactly 3 corners (vertices). Therefore, Priya needs to pay for 3 corner joint pieces to link up her closed shape."
+        },
+        {
+            cat: "Angles inside Shapes",
+            q: "Sanjay draws a regular four-sided square shape on his paper canvas. He uses his protractor to check each of the 4 inner corners.\n\nWhat measurement will he find at each square corner?",
+            opts: ["90 degrees", "45 degrees", "180 degrees", "60 degrees"],
+            ans: 0,
+            hint: "A square has four identical corners that form perfect vertical and horizontal alignments.",
+            expl: "Every corner inside a standard square is a right angle, measuring exactly 90 degrees."
+        },
+        {
+            cat: "Angles in Everyday Items",
+            q: "Look at a wall clock when the time is exactly 3 o'clock. The long minute hand points straight up at 12, and the short hour hand points straight out at 3.\n\nWhat angle is made by the two clock hands?",
+            opts: ["A right angle", "An acute angle", "An obtuse angle", "A straight angle"],
+            ans: 0,
+            hint: "The hands form a perfect L-shape corner profile at 3 o'clock.",
+            expl: "An L-shape configuration forms a 90-degree corner, which is called a right angle."
+        },
+        {
+            cat: "Parts of an Angle",
+            q: "Two straight lines meet up at a single point to form an angle corner. \n\nWhat is the geometric name given to the two straight lines that form the sides of the angle?",
+            opts: ["The arms of the angle", "The joints of the angle", "The loops of the angle", "The vertices of the angle"],
+            ans: 0,
+            hint: "The pointy corner point is the vertex, while the two lines reaching out are called...",
+            expl: "The two straight rays or line segments that branch out from a vertex to form an angle are called its arms."
         }
     ];
 
-    let current = 0, score = 0, attempts = 0, timer, timeLeft = 60;
+    const GAME_SESSION_LENGTH = 10; // Set to exactly 10 questions per game
+    let pool = []; 
 
-    function shufflePool(arr) {
-        for (let i = arr.length - 1; i > 0; i--) {
+    // Fisher-Yates shuffle engine to randomise question order and choices
+    function prepareAndShuffleSession() {
+        let shuffledPool = JSON.parse(JSON.stringify(masterPool));
+        
+        for (let i = shuffledPool.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
-            [arr[i], arr[j]] = [arr[j], arr[i]];
+            [shuffledPool[i], shuffledPool[j]] = [shuffledPool[j], shuffledPool[i]];
         }
+        
+        pool = shuffledPool.slice(0, GAME_SESSION_LENGTH);
+
+        pool.forEach(item => {
+            const correctOptionText = item.opts[item.ans];
+            
+            for (let x = item.opts.length - 1; x > 0; x--) {
+                const y = Math.floor(Math.random() * (x + 1));
+                [item.opts[x], item.opts[y]] = [item.opts[y], item.opts[x]];
+            }
+            
+            item.ans = item.opts.indexOf(correctOptionText);
+        });
     }
+
+    let current = 0, score = 0, attempts = 0, timer, timeLeft = 60;
 
     document.getElementById('start-btn').onclick = () => {
         document.getElementById('intro-view').classList.add('hidden');
         document.getElementById('quiz-view').classList.remove('hidden');
-        shufflePool(pool); 
+        prepareAndShuffleSession(); 
         loadQuestion();
     };
 
@@ -320,9 +433,11 @@
         document.getElementById('feedback-box').style.display = 'none';
         document.getElementById('action-btn').classList.add('hidden');
         document.getElementById('q-num').innerText = current + 1;
+        document.getElementById('total-q-num').innerText = GAME_SESSION_LENGTH;
         document.getElementById('q-category').innerText = q.cat;
         document.getElementById('q-text').innerText = q.q;
         document.getElementById('timer-text').innerText = timeLeft + "s";
+        document.getElementById('timer-bar').style.width = "100%";
         
         const graphicArea = document.getElementById('custom-graphics-area');
         if (q.hasArt) {
@@ -402,16 +517,19 @@
             document.getElementById('quiz-view').classList.add('hidden');
             document.getElementById('result-view').classList.remove('hidden');
             document.getElementById('final-pts').innerText = score;
+            document.getElementById('final-total').innerText = GAME_SESSION_LENGTH;
 
-            let statusMessage = "Review your lines, angles, and intersection definitions to reinforce your core geometric skill set.";
-            if(score === 8) {
-                statusMessage = "Excellent work! Perfect score on your foundational geometry principles.";
-            } else if(score >= 5) {
-                statusMessage = "Solid job! You have a firm grasp of lines, angles, and spatial connections.";
+            let statusMessage = "Great effort! Keep practicing to learn more about lines, points, and cool shapes.";
+            const scorePercentage = (score / GAME_SESSION_LENGTH) * 100;
+            
+            if(scorePercentage === 100) {
+                statusMessage = "Brilliant job! You got a perfect score on the geometry challenge.";
+            } else if(scorePercentage >= 70) {
+                statusMessage = "Wonderful work! You really know your lines and angles well.";
             }
 
             document.getElementById('result-msg').innerHTML = `
-                <span style="font-weight:700; color:#2c3e50; display:block; margin-bottom:6px;">Performance Summary:</span>
+                <span style="font-weight:700; color:#2c3e50; display:block; margin-bottom:6px;">Result Summary:</span>
                 ${statusMessage}
             `;
         }
