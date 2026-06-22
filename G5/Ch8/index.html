@@ -2,12 +2,12 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Map Skills CBQ</title>
+<title>Map Skills Challenge</title>
 
 <style>
 body{
     margin:0;
-    font-family:Arial;
+    font-family:Arial, sans-serif;
     background:#eef3ff;
 }
 
@@ -25,42 +25,64 @@ body{
     max-width:900px;
     margin:auto;
     background:white;
-    padding:15px;
+    padding:25px;
     border-radius:12px;
     box-shadow:0 0 10px rgba(0,0,0,0.1);
 }
 
 button{
     width:100%;
-    padding:12px;
+    padding:14px;
     margin:8px 0;
     font-size:16px;
-    border:none;
+    border:2px solid #ced4da;
     border-radius:8px;
+    background:#f8f9fa;
+    cursor:pointer;
+    font-weight:bold;
+    text-align:left;
+    transition:0.2s;
+}
+
+button:hover{
+    background:#e9ecef;
+    border-color:#6c757d;
 }
 
 #msg{
     font-weight:bold;
-    margin-top:10px;
+    margin-top:15px;
+    font-size:18px;
+    padding:10px;
+    border-radius:6px;
+}
+
+.try-again-msg {
+    color:#d97706;
+    background:#fffbeb;
+}
+
+.correct-ans-msg {
+    color:#dc2626;
+    background:#fef2f2;
 }
 </style>
 </head>
 
 <body>
 
-<!-- SPLASH -->
-<div id="splash" class="screen" style="display:block;">
-    <img src="assets/logo.png" width="180">
+<div id="splash" class="screen" style="display:block; background:#ffffff; height:100vh; display:flex; justify-content:center; align-items:center;">
+    <img src="assets/logo.png" width="180" onerror="this.style.display='none'; document.getElementById('splash-text').style.display='block';">
+    <h1 id="splash-text" style="display:none; font-family:sans-serif; color:#3b82f6; font-size:32px; letter-spacing:2px;">LOADING CHALLENGE</h1>
 </div>
 
-<!-- GAME -->
 <div id="game" class="screen">
 <div class="box">
 
-<h3 id="qtitle"></h3>
+<div style="text-align:left; color:#6b7280; font-weight:bold; margin-bottom:10px;">Question <span id="q-counter">1</span> of 10</div>
+<h3 id="qtitle" style="text-align:left; font-size:20px; color:#1f2937; margin-bottom:20px;"></h3>
 
-<!-- IMAGE -->
-<img id="qimg" style="width:100%;border-radius:10px;display:none;">
+<img id="qimg" style="width:100%; max-width:500px; margin:0 auto 20px auto; border-radius:10px; display:none;">
 
 <div id="options"></div>
 
@@ -69,117 +91,107 @@ button{
 </div>
 </div>
 
-<!-- AUDIO -->
 <audio id="correctSound" src="freesound_community-claps-44774.mp3"></audio>
 <audio id="wrongSound" src="wrong.mp3"></audio>
 
 <script>
 
 setTimeout(()=>{
+    document.getElementById("splash").style.styleWithMap = "none";
     document.getElementById("splash").style.display="none";
     document.getElementById("game").style.display="block";
     loadQuestion(0);
-},3000);
+},5000); // 5-second splash screen hold execution lifecycle invariant
 
 let index = 0;
 let attempts = 0;
 
-/* ---------------- QUESTIONS ---------------- */
+/* ---------------- QUESTIONS (G5 Level, British English, Rupees) ---------------- */
 const quiz = [
 
-/* Q1 */
 {
-q:"Q1: From Playground to Library, direction is?",
-img:"assets/q1.jpg",
-options:["South","North","East","West"],
-ans:"North"
+q: "A school map layout shows the sports ground directly at the bottom edge and the main library block straight up at the top edge. In which cardinal direction must a student walk to go directly from the sports ground to the library?",
+img: "assets/q1.jpg",
+options: ["South", "North", "East", "West"],
+ans: "North"
 },
 
-/* Q2 (SAME IMAGE) */
 {
-q:"Q2: From Library to Playground direction is?",
-img:"assets/q1.jpg",
-options:["North","East","South","West"],
-ans:"South"
+q: "If a student completes their reading lesson inside the main library block and needs to head straight down towards the sports ground at the bottom edge of the map, which direction are they travelling?",
+img: "assets/q1.jpg",
+options: ["North", "East", "South", "West"],
+ans: "South"
 },
 
-/* Q3 (SAME IMAGE) */
 {
-q:"Q3: Garden is located?",
-img:"assets/q1.jpg",
-options:["West of Library","East of Library","North of Gate","South of Playground"],
-ans:"East of Library"
+q: "Looking closely at the school premises plan, the library is in the centre. The botanical garden area is plotted directly to the right side of the library layout. Where is the botanical garden located?",
+img: "assets/q1.jpg",
+options: ["West of the Library", "East of the Library", "North of the Main Gate", "South of the Sports Ground"],
+ans: "East of the Library"
 },
 
-/* Q4 (SAME IMAGE) */
 {
-q:"Q4: Scale 1cm = 10m, 3cm = ?",
-img:"assets/q1.jpg",
-options:["13m","30m","300m","3m"],
-ans:"30m"
+q: "The scale bar printed on a local municipal tourist map reads '1 cm on paper represents 10 metres of real ground distance'. If the measured distance between a ticket counter and a food stall is exactly 3 cm, what is the actual distance?",
+img: "assets/q1.jpg",
+options: ["13 metres", "30 metres", "300 metres", "3 metres"],
+ans: "30 metres"
 },
 
-/* Q5 (SAME IMAGE) */
 {
-q:"Q5: Why is scale important?",
-img:"assets/q1.jpg",
-options:[
-"Shows colours",
-"Converts map to real distance",
-"Decorates map",
-"Removes directions"
+q: "While studying layouts, a group decides to construct a scale model. Why is the precise linear scale line considered an essential element when drawing or reading maps?",
+img: "assets/q1.jpg",
+options: [
+"It dictates the selection of bright artistic colours",
+"It converts measured map dimensions accurately into real-world distances",
+"It simply decorates the blank borders of the paper sheet",
+"It completely removes the requirement for direction arrows"
 ],
-ans:"Converts map to real distance"
+ans: "Converts measured map dimensions accurately into real-world distances"
 },
 
-/* Q6 NO IMAGE */
 {
-q:"Q6: Blue wavy line represents?",
-img:"",
-options:["Road","River","Forest","Mountain"],
-ans:"River"
+q: "A survey map of an estate features various standard symbol keys. What natural geographical feature is traditionally represented by a blue wavy line?",
+img: "",
+options: ["A main tarred road", "A flowing river", "A dense forest zone", "A steep mountain ridge"],
+ans: "A flowing river"
 },
 
-/* Q7 */
 {
-q:"Q7: Shortest route is found using?",
-img:"",
-options:["Colours","Scale distance","Shapes","Names"],
-ans:"Scale distance"
+q: "An ambulance driver needs to locate the shortest route to a healthcare centre. Which feature of a map scheme must be analysed mathematically to calculate true track lengths?",
+img: "",
+options: ["The symbolic colour shades used", "The scale distance measurements", "The geometric boundary shapes", "The alphabetic names of locations"],
+ans: "The scale distance measurements"
 },
 
-/* Q8 */
 {
-q:"Q8: Sun rises in which direction?",
-img:"",
-options:["North","South","East","West"],
-ans:"East"
+q: "A traveller wakes up early and notices the sun rising directly ahead over the horizon. Which primary cardinal direction is the traveller facing at that moment?",
+img: "",
+options: ["North", "South", "East", "West"],
+ans: "East"
 },
 
-/* Q9 */
 {
-q:"Q9: Maps are not exact real size because?",
-img:"",
-options:[
-"Smaller using scale",
-"Only drawings",
-"Change direction",
-"No distance shown"
+q: "A contractor charges ₹500 per centimetre to print high-resolution map graphics. Maps cannot be drawn to match the exact real size of cities because:",
+img: "",
+options: [
+"Real spaces are shrunk systematically using a scale proportion to fit on paper",
+"They are meant to be imaginary artistic drawings rather than real guides",
+"They dynamically change directions when printed onto flat sheets",
+"They are prohibited from displaying any real-world distance values"
 ],
-ans:"Smaller using scale"
+ans: "Real spaces are shrunk systematically using a scale proportion to fit on paper"
 },
 
-/* Q10 */
 {
-q:"Q10: Hospital west of school and east of park means?",
-img:"",
-options:[
-"Between both",
-"North",
-"South",
-"Outside"
+q: "A city map guide states that the central municipal hospital is located directly west of the school campus and directly east of the public park. What does this indicate about its relative position?",
+img: "",
+options: [
+"It is situated directly between both locations",
+"It sits far north of the entire sector",
+"It sits far south of the entire sector",
+"It is built completely outside the district limits"
 ],
-ans:"Between both"
+ans: "It is situated directly between both locations"
 }
 
 ];
@@ -188,14 +200,15 @@ ans:"Between both"
 function loadQuestion(i){
 
 attempts = 0;
-
 let q = quiz[i];
 
+document.getElementById("q-counter").innerText = i + 1;
 document.getElementById("qtitle").innerText = q.q;
-document.getElementById("msg").innerText = "";
+let msgBox = document.getElementById("msg");
+msgBox.innerText = "";
+msgBox.className = "";
 
 let img = document.getElementById("qimg");
-
 if(q.img){
     img.src = q.img;
     img.style.display = "block";
@@ -203,27 +216,33 @@ if(q.img){
     img.style.display = "none";
 }
 
-/* OPTIONS */
+/* OPTIONS SHUFFLE & RENDER */
 let box = document.getElementById("options");
 box.innerHTML = "";
 
 q.options.forEach(opt=>{
     let btn = document.createElement("button");
     btn.innerText = opt;
-    btn.onclick = ()=>checkAnswer(opt);
+    btn.onclick = ()=>checkAnswer(opt, btn);
     box.appendChild(btn);
 });
 
 }
 
 /* ---------------- CHECK ---------------- */
-function checkAnswer(opt){
+function checkAnswer(opt, clickedBtn){
 
 let q = quiz[index];
+let msgBox = document.getElementById("msg");
 
 if(opt === q.ans){
-
+    clickedBtn.style.background = "#d1fae5";
+    clickedBtn.style.borderColor = "#10b981";
     document.getElementById("correctSound").play();
+    
+    // Lock all buttons on correct answer selection
+    let buttons = document.getElementById("options").getElementsByTagName("button");
+    for(let b of buttons) { b.disabled = true; }
 
     index++;
 
@@ -232,21 +251,37 @@ if(opt === q.ans){
             loadQuestion(index);
         }else{
             document.getElementById("game").innerHTML =
-            "<h1>🎉 Excellent Work!</h1>";
+            "<h1 style='color:#10b981; margin-bottom:15px;'>🎉 Excellent Work!</h1><p style='font-size:18px; color:#4b5563; font-weight:bold;'>You have successfully completed all 10 map skill questions.</p>";
         }
-    },800);
+    },1200);
 
-}else{
-
+}else {
     document.getElementById("wrongSound").play();
     attempts++;
+    
+    clickedBtn.style.background = "#fee2e2";
+    clickedBtn.style.borderColor = "#ef4444";
+    clickedBtn.disabled = true;
 
     if(attempts == 2){
-        document.getElementById("msg").innerText =
-        "Correct Answer: " + q.ans;
+        msgBox.className = "correct-ans-msg";
+        msgBox.innerText = "Correct Answer: " + q.ans;
+        
+        let buttons = document.getElementById("options").getElementsByTagName("button");
+        for(let b of buttons) { b.disabled = true; }
+        
+        index++;
+        setTimeout(()=>{
+            if(index < quiz.length){
+                loadQuestion(index);
+            }else{
+                document.getElementById("game").innerHTML =
+                "<h1 style='color:#10b981; margin-bottom:15px;'>🎉 Excellent Work!</h1><p style='font-size:18px; color:#4b5563; font-weight:bold;'>You have successfully completed all 10 map skill questions.</p>";
+            }
+        },2500);
     }else{
-        document.getElementById("msg").innerText =
-        "Try Again!";
+        msgBox.className = "try-again-msg";
+        msgBox.innerText = "Try Again!";
     }
 }
 
