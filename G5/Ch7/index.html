@@ -110,23 +110,24 @@
 
       <div id="result-message" class="text-base font-bold max-w-xs mx-auto p-3.5 rounded-xl border mb-8"></div>
 
-      <button onclick="window.location.reload();" class="w-full sm:w-auto bg-slate-900 hover:bg-slate-800 text-white font-bold px-8 py-4 rounded-xl shadow-md transform active:scale-95 transition cursor-pointer text-base">
+      <button onclick="window.location.reload();" class="w-full sm:w-auto bg-slate-900 hover:bg-slate-800 text-white font-bold px-8 py-4 rounded-xl shadow-md transform active:scale-[0.95] transition cursor-pointer text-base">
         Try Challenge Again
       </button>
     </div>
   </div>
   <script>
+    // Database adjusted for exactly 10 compulsory questions, G5 difficulty, British English, and Rupees currency where valued.
     const quizDatabase = [
-      { id: 1, context: "Students are decorating their classroom using sticks, ribbons, and charts. They observe lines, rays, angles, and shapes around them.", question: "Two students stretch a thread tightly between two pins on a board. What does the stretched thread represent?", options: ["Point", "Line segment", "Ray", "Curve"], correctIndex: 1 },
-      { id: 2, context: "Students are decorating their classroom using sticks, ribbons, and charts. They observe lines, rays, angles, and shapes around them.", question: "A torchlight switched ON in a dark room shows light moving in one direction. This best represents:", options: ["Line", "Ray", "Line segment", "Angle"], correctIndex: 1 },
-      { id: 3, context: "Students are decorating their classroom using sticks, ribbons, and charts.", question: "When two sticks are joined at one end to make an opening, what is formed?", options: ["Line", "Curve", "Angle", "Circle"], correctIndex: 2 },
-      { id: 4, context: "Students are decorating their classroom using sticks, ribbons, and charts.", question: "An open book placed on a table forms an angle less than a square corner. Which angle is this?", options: ["Right angle", "Acute angle", "Obtuse angle", "Straight angle"], correctIndex: 1 },
-      { id: 5, context: null, question: "A door opened exactly halfway forms a perfect corner shape. Why is it called a right angle?", options: ["It looks straight", "It measures 180°", "It measures 90°", "It changes shape"], correctIndex: 2 },
-      { id: 6, context: "Two angles are made using pencils: Angle A opens wider than a right angle but less than a straight line.", question: "What type of angle is Angle A?", options: ["Acute angle", "Right angle", "Obtuse angle", "Reflex angle"], correctIndex: 2 },
-      { id: 7, context: "Students stand in one straight line during assembly.", question: "Which angle idea matches this situation?", options: ["Acute angle", "Straight angle", "Right angle", "Complete angle"], correctIndex: 1 },
-      { id: 8, context: null, question: "Why do we use a protractor?", options: ["To draw circles", "To measure angle opening", "To draw straight lines", "To compare lengths"], correctIndex: 1 },
-      { id: 9, context: "A student says: “Any angle bigger than 90° is a straight angle.”", question: "What is correct reasoning to fix this statement?", options: ["All big angles are straight", "Only 180° forms a straight angle", "Angle size does not matter", "Straight angles are the smallest"], correctIndex: 1 },
-      { id: 10, context: "A clock shows exactly 3:00.", question: "The angle formed between the hour and minute hands is:", options: ["Acute angle", "Right angle", "Obtuse angle", "Straight angle"], correctIndex: 1 }
+      { id: 1, context: "Students are decorating their classroom using sticks, ribbons, and charts. They notice lines, rays, angles, and shapes around them.", question: "Two students stretch a piece of colourful ribbon tightly between two pins on a display board. What geometric model does this tightly stretched ribbon best represent?", options: ["A point", "A line segment", "A ray", "A curved line"], correctIndex: 1 },
+      { id: 2, context: "Students are decorating their classroom using sticks, ribbons, and charts. They notice lines, rays, angles, and shapes around them.", question: "A high-power torch is switched ON inside a dark auditorium, shooting a bright beam of light straight out into the distance. This best represents:", options: ["A line", "A ray", "A line segment", "An angle"], correctIndex: 1 },
+      { id: 3, context: "Students are decorating their classroom using sticks, ribbons, and charts.", question: "When two straight wooden sticks are joined together perfectly at one end to form a corner opening, what geometry structure is created?", options: ["A line", "A curve", "An angle", "A circle"], correctIndex: 2 },
+      { id: 4, context: "Students are decorating their classroom using sticks, ribbons, and charts.", question: "An open reading book placed flat on a table forms an angle that is smaller than a perfect square corner. How should this angle be categorised?", options: ["Right angle", "Acute angle", "Obtuse angle", "Straight angle"], correctIndex: 1 },
+      { id: 5, context: "A classroom door is opened exactly halfway to form a perfect square corner profile with the wall.", question: "Why is this specific corner configuration classified as a right angle?", options: ["It looks completely straight", "It measures exactly 180°", "It measures exactly 90°", "It continually changes its shape"], correctIndex: 2 },
+      { id: 6, context: "Two angles are made using long drawing pencils: Angle A opens up significantly wider than a standard right angle but stays narrower than a flat straight line.", question: "What type of angle is Angle A?", options: ["Acute angle", "Right angle", "Obtuse angle", "Reflex angle"], correctIndex: 2 },
+      { id: 7, context: "Students stand in one perfectly straight line during morning assembly drill patterns.", question: "Which geometric angle description matches this flat, linear physical layout?", options: ["Acute angle", "Straight angle", "Right angle", "Complete angle"], correctIndex: 1 },
+      { id: 8, context: "A teacher buys a packet of protractors costing ₹50 each for a math practical experiment.", question: "What is the primary function of using a protractor tool in geometry?", options: ["To draw perfect circle lines", "To measure the exact size of an angle opening", "To measure long straight margins", "To compare the weight of shapes"], correctIndex: 1 },
+      { id: 9, context: "A student makes a statement: “Any angle that is measured to be larger than 90° must be a straight angle.”", question: "Which reasoning correctly corrects this false statement?", options: ["All large angles are considered straight", "Only an angle of exactly 180° forms a straight angle", "The size of an angle doesn't matter", "Straight angles are always the smallest"], correctIndex: 1 },
+      { id: 10, context: "A clock hanging on the wall displays a time of exactly 3:00.", question: "What angle is formed between the vertical minute hand and the horizontal hour hand?", options: ["Acute angle", "Right angle", "Obtuse angle", "Straight angle"], correctIndex: 1 }
     ];
 
     let isMuted = false;
