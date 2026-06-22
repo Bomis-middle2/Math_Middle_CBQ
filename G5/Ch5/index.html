@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en-GB">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Assessment Challenge</title>
+  <title>Maths Challenge</title>
   <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   <style>
@@ -25,8 +25,8 @@
 
   <div id="splash-screen" class="fixed inset-0 bg-white flex flex-col items-center justify-center z-50 screen-fade">
     <div class="text-center p-4">
-      <img src="assets/logo.png" alt="Innovine Logo" class="h-28 w-auto object-contain mx-auto mb-6" onerror="this.style.display='none'; document.getElementById('splash-text-logo').style.display='block';">
-      <h1 id="splash-text-logo" class="hidden text-slate-900 font-black text-4xl tracking-widest">INNOVINE</h1>
+      <img src="assets/logo.png" alt="Logo" class="h-28 w-auto object-contain mx-auto mb-6" onerror="this.style.display='none'; document.getElementById('splash-text-logo').style.display='block';">
+      <h1 id="splash-text-logo" class="hidden text-slate-900 font-black text-4xl tracking-widest">MINDS</h1>
       
       <div class="flex justify-center items-center space-x-2">
         <div class="w-2.5 h-2.5 bg-slate-300 rounded-full animate-bounce"></div>
@@ -38,14 +38,14 @@
 
   <div id="instruction-screen" class="fixed inset-0 bg-slate-50 flex items-center justify-center z-40 p-4 screen-fade hidden">
     <div class="bg-white p-8 md:p-10 rounded-2xl custom-shadow max-w-xl w-full border border-gray-100 text-center">
-      <h2 class="text-3xl font-black text-slate-800 mb-6">Challenge Rules</h2>
+      <h2 class="text-3xl font-black text-slate-800 mb-6">Quiz Rules</h2>
       <ul class="text-left text-slate-600 space-y-4 mb-8 text-lg font-medium">
-        <li class="flex items-start"><span class="text-indigo-600 mr-3 text-xl">✔</span> Total of 12 multi-choice questions.</li>
-        <li class="flex items-start"><span class="text-indigo-600 mr-3 text-xl">✔</span> You have exactly 60 seconds per question.</li>
-        <li class="flex items-start"><span class="text-indigo-600 mr-3 text-xl">✔</span> Max 2 attempts per question to find the right answer.</li>
+        <li class="flex items-start"><span class="text-indigo-600 mr-3 text-xl">✔</span> There are 12 maths questions.</li>
+        <li class="flex items-start"><span class="text-indigo-600 mr-3 text-xl">✔</span> Try to answer each question within 60 seconds.</li>
+        <li class="flex items-start"><span class="text-indigo-600 mr-3 text-xl">✔</span> You can have 2 tries for each question if needed.</li>
       </ul>
       <button id="start-challenge-btn" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-bold py-4 px-6 rounded-xl shadow-md transform active:scale-98 transition text-xl cursor-pointer">
-        Start Challenge
+        Start Quiz
       </button>
     </div>
   </div>
@@ -65,24 +65,27 @@
 
   <main id="game-body" class="flex-grow p-4 md:p-6 max-w-2xl w-full mx-auto flex flex-col justify-center hidden">
     <div class="flex justify-between items-center mb-5 text-base font-bold text-slate-500">
-      <div>Progress: <span id="current-q-num" class="text-slate-900">1</span>/12</div>
-      <div class="flex items-center space-x-1 text-orange-600 bg-orange-50 px-4 py-1.5 rounded-full border border-orange-100">
+      <div>Questions: <span id="current-q-num" class="text-slate-900">1</span>/12</div>
+      <div id="timer-badge" class="flex items-center space-x-1 text-orange-600 bg-orange-50 px-4 py-1.5 rounded-full border border-orange-100">
         <span id="timer-display" class="text-lg">60s</span>
       </div>
     </div>
 
     <div class="bg-white rounded-2xl p-6 md:p-8 custom-shadow border border-gray-100">
-      <div id="context-panel" class="mb-6 bg-indigo-50/60 border-l-4 border-indigo-500 p-5 rounded-r-xl hidden text-base text-slate-700 leading-relaxed font-medium">
+      <div id="context-panel" class="mb-6 bg-slate-50 border-l-4 border-slate-400 p-5 rounded-r-xl hidden text-base text-slate-700 leading-relaxed font-medium">
         <p id="context-text"></p>
       </div>
 
       <h2 id="question-text" class="text-xl md:text-2xl font-black text-slate-900 mb-6 leading-snug"></h2>
 
       <div id="retry-prompt" class="mb-5 bg-amber-50 text-amber-800 text-base font-bold p-4 rounded-xl border border-amber-200 hidden">
-        ⚠️ First attempt incorrect. You have 1 final chance remaining!
+        ⚠️ That is not quite right. Have another try!
+      </div>
+      <div id="reminder-prompt" class="mb-5 bg-indigo-50 text-indigo-800 text-base font-bold p-4 rounded-xl border border-indigo-200 hidden">
+        ⏰ Take your time! Finish working out your answer and select a choice when you are ready.
       </div>
       <div id="reveal-prompt" class="mb-5 bg-rose-50 text-rose-800 text-base font-bold p-4 rounded-xl border border-rose-200 hidden">
-        ❌ Out of choices! Correct answer is highlighted in green below.
+        ❌ Let's look at the correct answer highlighted in green below.
       </div>
 
       <div id="options-container" class="space-y-4"></div>
@@ -96,39 +99,41 @@
       <div class="absolute -bottom-10 -right-10 w-32 h-32 bg-purple-100 rounded-full blur-2xl opacity-50"></div>
 
       <div class="w-24 h-24 bg-gradient-to-tr from-indigo-500 to-purple-500 text-white rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg shadow-indigo-200">
-        <svg class="w-12 h-12 animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
+        <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/></svg>
       </div>
 
-      <h2 class="text-3xl md:text-4xl font-black tracking-tight text-slate-900 mb-2">Spectacular Finish!</h2>
-      <p class="text-slate-500 font-medium text-xl mb-8 max-w-md mx-auto">Congratulations on completing the entire challenge successfully.</p>
+      <h2 class="text-3xl md:text-4xl font-black tracking-tight text-slate-900 mb-2">Well Done!</h2>
+      <p class="text-slate-500 font-medium text-xl mb-8 max-w-md mx-auto">You have completed all the quiz questions.</p>
       
       <div class="bg-slate-50 rounded-2xl p-6 border border-slate-100 max-w-xs mx-auto mb-8">
-        <span class="block text-sm font-bold text-slate-400 uppercase tracking-widest mb-1">Performance Matrix</span>
+        <span class="block text-sm font-bold text-slate-400 uppercase tracking-widest mb-1">Your Total Score</span>
         <span id="final-score-text" class="text-6xl font-black text-transparent bg-clip-text bg-gradient-to-r from-indigo-600 to-purple-600">0 / 12</span>
-        <span id="final-percentage" class="block text-base text-slate-500 font-bold mt-2">0% Score</span>
+        <span id="final-percentage" class="block text-base text-slate-500 font-bold mt-2">0% Correct</span>
       </div>
 
       <div id="result-message" class="text-lg font-bold max-w-xs mx-auto p-4 rounded-xl border mb-8"></div>
 
       <button onclick="window.location.reload();" class="w-full sm:w-auto bg-slate-900 hover:bg-slate-800 text-white font-bold px-8 py-4 rounded-xl shadow-md transform active:scale-95 transition cursor-pointer text-lg">
-        Try Challenge Again
+        Play Again
       </button>
     </div>
   </div>
+
   <script>
+    // Simplified database language tailored specifically to typical Grade 4 UK primary school students
     const quizDatabase = [
-      { id: 1, context: "Students visited a school stationery shop where prices were written using decimals. They learned how decimals help in measuring money, length, and weight accurately. Riya buys a Pencil = ₹12.50 and an Eraser = ₹7.25.", question: "Which value represents the total money spent?", options: ["₹19.75", "₹18.75", "₹20.75", "₹17.75"], correctIndex: 0 },
-      { id: 2, context: "Students visited a school stationery shop where prices were written using decimals. They learned how decimals help in measuring money, length, and weight accurately.", question: "Why are decimals used in money?", options: ["To avoid counting coins", "To show parts of a rupee accurately", "To make numbers longer", "To simplify multiplication"], correctIndex: 1 },
-      { id: 3, context: "Riya buys a Pencil = ₹12.50 and an Eraser = ₹7.25. She pays ₹20.00.", question: "Which reasoning helps find the change?", options: ["Multiply prices", "Subtract total cost from amount paid", "Add prices again", "Round all numbers"], correctIndex: 1 },
-      { id: 4, context: "A race distance is 2.5 km. A student runs 1.8 km before stopping.", question: "How much distance is left?", options: ["0.7 km", "1.3 km", "0.3 km", "1.7 km"], correctIndex: 0 },
-      { id: 5, context: "A race distance is 2.5 km. A student runs 1.8 km before stopping.", question: "Why is decimal measurement useful here?", options: ["Distances are always whole numbers", "It allows accurate measurement between whole numbers", "It replaces fractions completely", "It avoids calculation"], correctIndex: 1 },
-      { id: 6, context: null, question: "Which decimal is greater?", options: ["2.05", "2.5", "Both equal", "Cannot compare"], correctIndex: 1 },
-      { id: 7, context: "A milk packet contains 1.0 litre milk. Mother uses 0.35 L in morning and 0.40 L in evening.", question: "Total milk used is:", options: ["0.75 L", "0.65 L", "1.75 L", "0.45 L"], correctIndex: 0 },
-      { id: 8, context: "A milk packet contains 1.0 litre milk. Mother uses 0.35 L in morning and 0.40 L in evening.", question: "Milk remaining in packet:", options: ["0.25 L", "0.35 L", "0.75 L", "0.15 L"], correctIndex: 1 },
-      { id: 9, context: null, question: "Which statement shows correct understanding?", options: ["Decimals represent parts of a whole quantity", "Decimals only represent money", "Decimals cannot be compared", "Decimals are always smaller than 1"], correctIndex: 0 },
-      { id: 10, context: "Three students measured plant growth: Aarav → 1.6 m, Siya → 1.45 m, Kabir → 1.5 m.", question: "Who recorded the tallest plant?", options: ["Aarav", "Siya", "Kabir", "All equal"], correctIndex: 0 },
-      { id: 11, context: "Prices in the school canteen are written using decimals. Juice = ₹18.50, Sandwich = ₹24.75, Milk = ₹12.25. A student has ₹50 and wants to buy juice and milk.", question: "What should the student think first?", options: ["Add prices using decimals", "Multiply prices", "Round numbers only", "Ignore paise values"], correctIndex: 0 },
-      { id: 12, context: "Prices in the school canteen are written using decimals. Juice = ₹18.50, Sandwich = ₹24.75, Milk = ₹12.25.", question: "Why are decimal numbers important in money transactions?", options: ["To increase price value", "To represent rupees and paise accurately", "To avoid calculations", "To make numbers longer"], correctIndex: 1 }
+      { id: 1, context: "Riya went to the school shop. She bought a pencil for £12.50 and an eraser for £7.25.", question: "How much money did she spend altogether?", options: ["£19.75", "£18.75", "£20.75", "£17.75"], correctIndex: 0 },
+      { id: 2, context: "Shop items are priced using decimals to manage pence balances easily.", question: "Why do we use decimal points in money values?", options: ["To skip counting simple coins", "To show the correct amount of pence", "To make numbers look longer", "To make multiplying easier"], correctIndex: 1 },
+      { id: 3, context: "Riya bought a pencil for £12.50 and an eraser for £7.25. She handed over a £20.00 note.", question: "How can you find out how much change she should get back?", options: ["Multiply the two item values together", "Subtract the total bill from the £20 note", "Add the item costs together again", "Round up all the numbers to tens"], correctIndex: 1 },
+      { id: 4, context: "A school running race is 2.5 km long. Toby runs 1.8 km and then stops.", question: "How much further does Toby need to run to finish?", options: ["0.7 km", "1.3 km", "0.3 km", "1.7 km"], correctIndex: 0 },
+      { id: 5, context: "A school running race track measures exactly 2.5 km.", question: "Why is a decimal number helpful for measuring this distance?", options: ["Track distances must always be whole units", "It lets us measure parts between whole kilometres", "It removes the need for any fractions", "It solves calculations automatically"], correctIndex: 1 },
+      { id: 6, context: null, question: "Which of these decimal values is the largest?", options: ["2.05", "2.5", "They are exactly the same", "You cannot compare them"], correctIndex: 1 },
+      { id: 7, context: "A milk bottle holds 1.0 litre. Mum uses 0.35 L in the morning and 0.40 L in the evening.", question: "How much milk did Mum use in total?", options: ["0.75 L", "0.65 L", "1.75 L", "0.45 L"], correctIndex: 0 },
+      { id: 8, context: "A milk bottle holds 1.0 litre. Mum uses 0.35 L in the morning and 0.40 L in the evening.", question: "How much milk is left inside the bottle?", options: ["0.25 L", "0.35 L", "0.75 L", "0.15 L"], correctIndex: 1 },
+      { id: 9, context: null, question: "Which statement about decimals is true?", options: ["Decimals show split parts of a whole value", "Decimals are only ever used for money values", "Decimals cannot be compared to each other", "Decimals are always much smaller than 1"], correctIndex: 0 },
+      { id: 10, context: "Three friends measured how tall their plants grew: Aarav reached 1.6 m, Siya reached 1.45 m, and Kabir reached 1.5 m.", question: "Who grew the tallest plant?", options: ["Aarav", "Siya", "Kabir", "They are all equal tall"], correctIndex: 0 },
+      { id: 11, context: "A sandwich costs £24.75, juice costs £18.50, and milk costs £12.25. Sam has a £50 note and wants to buy juice and milk.", question: "What should Sam calculate first to see if he has enough money?", options: ["Add the values of the juice and milk together", "Multiply the cost of the juice by the milk", "Round the numbers up to the nearest ten pounds", "Ignore the numbers after the decimal point"], correctIndex: 0 },
+      { id: 12, context: "Canteen items use decimals to keep balances accurate down to the exact penny value.", question: "Why are decimals important when paying for things?", options: ["To make the price feel more expensive", "To display pounds and pence accurately", "To stop us needing to do any arithmetic", "To make numbers longer to write down"], correctIndex: 1 }
     ];
 
     let isMuted = false;
@@ -157,6 +162,11 @@
     let countdownInterval = null;
     let attemptCounter = 0;
 
+    // Custom configuration parameters added to handle complex arithmetic grace time
+    const timerConfig = {
+      behaviorOnTimeout: "wait_with_reminder" 
+    };
+
     setTimeout(() => {
       splashScreen.style.opacity = '0';
       splashScreen.style.visibility = 'hidden';
@@ -180,14 +190,26 @@
       clearInterval(countdownInterval);
       timerValue = 60;
       document.getElementById('timer-display').textContent = `${timerValue}s`;
+      document.getElementById('timer-badge').className = "flex items-center space-x-1 text-orange-600 bg-orange-50 px-4 py-1.5 rounded-full border border-orange-100";
+      document.getElementById('reminder-prompt').classList.add('hidden');
       
       countdownInterval = setInterval(() => {
         timerValue--;
         document.getElementById('timer-display').textContent = `${timerValue}s`;
+        
         if (timerValue <= 0) {
           clearInterval(countdownInterval);
-          playSound('wrong');
-          autoRevealAndNext();
+          
+          if (timerConfig.behaviorOnTimeout === "wait_with_reminder") {
+            // Pause timer countdown view, change badge context colour, and show gentle visual prompt
+            document.getElementById('timer-display').textContent = "Time's up!";
+            document.getElementById('timer-badge').className = "flex items-center space-x-1 text-indigo-600 bg-indigo-50 px-4 py-1.5 rounded-full border border-indigo-100 animate-pulse";
+            document.getElementById('retry-prompt').classList.add('hidden');
+            document.getElementById('reminder-prompt').classList.remove('hidden');
+          } else {
+            playSound('wrong');
+            autoRevealAndNext();
+          }
         }
       }, 1000);
     }
@@ -200,6 +222,7 @@
 
       attemptCounter = 0;
       document.getElementById('retry-prompt').classList.add('hidden');
+      document.getElementById('reminder-prompt').classList.add('hidden');
       document.getElementById('reveal-prompt').classList.add('hidden');
       document.getElementById('current-q-num').textContent = currentIndex + 1;
       startTimer();
@@ -219,7 +242,6 @@
 
       item.options.forEach((opt, idx) => {
         const btn = document.createElement('button');
-        // Increased font label to text-lg, added more horizontal/vertical padding
         btn.className = "w-full text-left font-bold text-slate-800 bg-slate-50 border-2 border-slate-200 px-6 py-4.5 rounded-xl text-lg transition-all duration-150 cursor-pointer active:scale-[0.99] focus:outline-none block shadow-sm hover:bg-slate-100/70";
         btn.innerHTML = `<span class="inline-block bg-white text-slate-500 border border-slate-200 w-8 h-8 rounded-md text-center text-sm leading-8 font-extrabold mr-3">${String.fromCharCode(65 + idx)}</span> ${opt}`;
         btn.addEventListener('click', () => handleSelection(idx, btn));
@@ -230,6 +252,9 @@
     function handleSelection(selectedIdx, btnElement) {
       const item = quizDatabase[currentIndex];
       attemptCounter++;
+      
+      // Hide active reminder prompt banner once an action occurs
+      document.getElementById('reminder-prompt').classList.add('hidden');
 
       if (selectedIdx === item.correctIndex) {
         clearInterval(countdownInterval);
@@ -289,11 +314,11 @@
 
       const percent = Math.round((finalScore / quizDatabase.length) * 100);
       document.getElementById('final-score-text').textContent = `${finalScore} / ${quizDatabase.length}`;
-      document.getElementById('final-percentage').textContent = `${percent}% Score`;
+      document.getElementById('final-percentage').textContent = `${percent}% Correct`;
 
       const msg = document.getElementById('result-message');
       if (percent >= 75) {
-        msg.textContent = "Good job";
+        msg.textContent = "Great job!";
         msg.className = "text-lg font-bold max-w-xs mx-auto p-4 rounded-xl border mb-8 bg-emerald-50 text-emerald-800 border-emerald-100";
         playSound('cheers');
         let end = Date.now() + (2 * 1000);
@@ -303,10 +328,10 @@
           if (Date.now() < end) requestAnimationFrame(frame);
         }());
       } else if (percent >= 40) {
-        msg.textContent = "Review this chapter and try again";
+        msg.textContent = "Take another look and try again";
         msg.className = "text-lg font-bold max-w-xs mx-auto p-4 rounded-xl border mb-8 bg-amber-50 text-amber-800 border-amber-100";
       } else {
-        msg.textContent = "Let’s practise more";
+        msg.textContent = "Let's practise some more together";
         msg.className = "text-lg font-bold max-w-xs mx-auto p-4 rounded-xl border mb-8 bg-rose-50 text-rose-800 border-rose-100";
       }
     }
