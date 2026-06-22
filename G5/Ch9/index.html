@@ -159,7 +159,6 @@
 <div id="app-container">
 
     <div id="splash-screen">
-        <!-- Integrated Logo with a generic text fallback if it loads slowly -->
         <img class="splash-logo-img" src="assets/logo.png" alt="Spatial Challenge Logo" onerror="this.style.display='none'; document.getElementById('splash-fallback').style.display='block';">
         <h2 id="splash-fallback" style="display:none; color:var(--primary); font-weight:800; letter-spacing:1px;">SPATIAL MASTERY</h2>
     </div>
@@ -170,15 +169,14 @@
             <p style="text-align:center; color:#7f8c8d; margin-top: 0; font-weight: 600; text-transform: uppercase; font-size: 12px; letter-spacing: 1px;">Spatial Mastery Evaluation</p>
             
             <div class="instruction-box">
-                <strong>📋 Core Curricular Benchmarks:</strong>
+                <strong>📋 Rules and Guidelines:</strong>
                 <ul>
-                    <li>Identify and map multi-axial lines of symmetry.</li>
-                    <li>Construct exact reflection paths across specified mirror planes.</li>
-                    <li>Process symmetrical translation metrics and periodic tessellation patterns.</li>
-                    <li>Analyze rotational steps, transformation parameters, and turned patterns.</li>
-                    <li>Deconstruct folded 2D nets into target 3D cubes and cuboids.</li>
-                    <li>Evaluate isometric projections of geometric prisms.</li>
-                    <li><b>Rules:</b> 60 seconds per task. Randomized configuration!</li>
+                    <li>Identify matching shapes and lines of symmetry.</li>
+                    <li>Complete reflection patterns across grid mirror lines.</li>
+                    <li>Recognise shifts, turns, and movements of objects.</li>
+                    <li>Visualise flat folded patterns that build solid shapes.</li>
+                    <li>Identify how simple blocks look from different views.</li>
+                    <li><b>Time Limit:</b> 60 seconds per task. Clean responses add points!</li>
                 </ul>
             </div>
 
@@ -219,17 +217,14 @@
 </div>
 
 <script>
-    // Instantiate asset audio files
     const correctSound = new Audio('assets/correct.mp3');
     const wrongSound = new Audio('assets/wrong.mp3');
 
-    // Safe sound triggering wrapper to handle browser autoplay policies
     function playAudio(sound) {
         sound.currentTime = 0;
-        sound.play().catch(err => console.log("Audio playback blocked until user interacts with the document.", err));
+        sound.play().catch(err => console.log("Audio playback waiting for interaction.", err));
     }
 
-    // Handle splash screen exit lifecycle at exactly 5.0 seconds
     window.addEventListener('DOMContentLoaded', () => {
         setTimeout(() => {
             const splash = document.getElementById('splash-screen');
@@ -241,95 +236,94 @@
         }, 5000);
     });
 
-    // Curated case-based questions mapped to the targeted competencies
+    // 10 Compulsory questions, G5 calibrated, British English, and Rupees integrated
     const pool = [
         { 
             cat: "Lines of Symmetry", 
-            q: "An architectural designer is rendering a standard regular octagon layout for a courtyard fountain mosaic.\n\nHow many total distinct lines of symmetry can be drawn through this regular polygon shape?", 
-            opts: ["A) Four lines", "B) Six lines", "C) Eight lines", "D) Unlimited continuous paths"], 
+            q: "A designer is tracing out a tile shape shaped like a regular octagon for a garden floor mosaic.\n\nHow many distinct lines of symmetry can be drawn through this regular eight-sided polygon shape?", 
+            opts: ["A) Four lines", "B) Six lines", "C) Eight lines", "D) Ten lines"], 
             ans: 2, 
-            hint: "For any perfectly regular polygon, the number of distinct lines of symmetry matches its total count of side-segments exactly.", 
-            expl: "A regular octagon contains exactly 8 lines of symmetry: 4 passing through opposite pairs of vertices, and 4 cutting perpendicularly through opposite mid-side paths." 
+            hint: "For any perfectly regular polygon, the number of lines of symmetry matches its total count of straight side-segments.", 
+            expl: "A regular octagon contains exactly 8 lines of symmetry: 4 passing through opposite corners, and 4 cutting straight through the middle of opposite sides." 
         },
         { 
             cat: "Object Reflection Mapping", 
-            q: "A designer places an asymmetrical 'L-shaped' bracket terminal inside the coordinate matrix shown below. The dark vertical line represents a vertical mirror plane:", 
+            q: "An L-shaped bracket is placed on a drawing board next to a vertical mirror line. \n\nIf the original bracket points to the left, what will its reflected image look like across the vertical mirror line?", 
             hasGrid: true,
-            opts: ["A) The reflected shape will face backwards horizontally, mirrored across the dark central line.", "B) The shape remains pointing in the identical orientation shifted 4 spaces right.", "C) The shape gets inverted vertically upside down.", "D) The shape rotates 90 degrees clockwise."], 
+            opts: ["A) It faces backwards to the right, mirrored across the line.", "B) It stays pointing to the left, moved 4 spaces over.", "C) It gets turned completely upside down.", "D) It rotates a quarter-turn clockwise."], 
             ans: 0, 
-            hint: "Reflection flips an image horizontally across a vertical line, reversing the direction it faces while keeping the vertical orientation identical.", 
-            expl: "A vertical reflection line acts as a mirror plane. The horizontal orientation is inverted, making the target shape look flipped, while maintaining its vertical height profile." 
+            hint: "A vertical mirror line flips things from side to side, reversing the direction they point while keeping their height the same.", 
+            expl: "A vertical mirror reflects the horizontal direction. The left-pointing bracket faces right in the reflection, but its vertical shape remains right-side up." 
         },
         { 
-            cat: "Mirror Image Metrics", 
-            q: "An engineer drafts a component trace where an initial point sits exactly at coordinates (x: 3, y: 5). The drafting layout applies a pure transformation across a mirror plane along the vertical y-axis.\n\nWhat are the new coordinates of the resulting mirror image node?", 
-            opts: ["A) (x: 3, y: -5)", "B) (x: -3, y: -5)", "C) (x: -3, y: 5)", "D) (x: 5, y: 3)"], 
+            cat: "Mirror Image Position", 
+            q: "A point sits exactly 3 units to the right of a vertical mirror line and 5 units above the baseline.\n\nIf you reflect this point across the vertical mirror line, where will the new image point be located?", 
+            opts: ["A) 3 units to the right and 5 units below baseline", "B) 3 units to the left and 5 units below baseline", "C) 3 units to the left and 5 units above baseline", "D) 5 units to the right and 3 units above baseline"], 
             ans: 2, 
-            hint: "Reflecting across the vertical y-axis changes the sign of the horizontal coordinate while leaving the vertical value completely unchanged.", 
-            expl: "When a point undergoes a reflection across the y-axis, its horizontal component is negated while the vertical component remains constant. Thus, (3, 5) translates directly to (-3, 5)." 
+            hint: "Reflecting across a vertical line flips the item to the opposite side horizontally while keeping its height exactly the same.", 
+            expl: "Since the original point is 3 units to the right of the line, its mirror image will pop out 3 units to the left. The height stays at 5 units above the baseline." 
         },
         { 
-            cat: "Symmetrical Translation", 
-            q: "A textile manufacturer creates a wallpaper border using symmetrical translation. The basic motif stamp is shifted exactly 5 centimeters horizontally to the right, repeated sequentially across the strip.\n\nWhich parameter stays identical for every single translated stamp iteration?", 
-            opts: ["A) Both its original orientation and its scale properties", "B) Only its relative center point coordinates", "C) The absolute distance value from the zero point origin", "D) Its horizontal coordinate positioning profile"], 
+            cat: "Symmetrical Shifts", 
+            q: "A border pattern on a strip of paper is made by repeatedly shifting a single flower drawing exactly 5 centimetres horizontally to the right.\n\nWhich feature stays exactly the same for every single shifted copy of the flower?", 
+            opts: ["A) Its size, shape, and pointing direction", "B) Its distance from the starting edge", "C) Its position coordinates along the bottom track", "D) Its relative distance from the center line"], 
             ans: 0, 
-            hint: "Pure translation shifts a figure without twisting, flipping, expanding, or distorting its shape.", 
-            expl: "A geometric translation is a rigid transformation. It slides the shape across a vector line without altering its scale, sizing bounds, or angular orientation." 
+            hint: "Sliding a shape along a straight line does not turn, flip, resize, or distort its look.", 
+            expl: "Sliding a shape is a pure translation move. It shifts its position on the page but keeps its size, shape profile, and orientation identical." 
         },
         { 
             cat: "Rotational Turn Patterns", 
-            q: "A graphic artist takes a square tile piece and continually turns it exactly 90 degrees clockwise around its center point to build a recurring floor pattern.\n\nHow many distinct turns are required to complete one full, original rotation pattern?", 
+            q: "A artist turns a square pattern tile around its centre point by a quarter-turn (90 degrees) clockwise each time to fill up a floor pattern.\n\nHow many quarter-turns are needed to make the tile complete one full round back to its initial position?", 
             opts: ["A) Two turns", "B) Three turns", "C) Four turns", "D) Eight turns"], 
             ans: 2, 
-            hint: "A complete rotation covers 360 degrees. Divide that full circle by the degree step of each individual turn.", 
-            expl: "Since a full rotation measures 360°, turning a shape by 90° per step means it requires exactly 4 distinct structural movements to return to its initial orientation." 
+            hint: "A full circle rotation is made of 360 degrees total. Think about how many 90-degree moves fit inside a full circle.", 
+            expl: "A full turn is 360°. Since a quarter-turn is 90°, it takes exactly 4 turns (90° + 90° + 90° + 90° = 360°) to make one complete circle loop." 
         },
         { 
             cat: "Cube Nets", 
-            q: "Examine the three flattened 2D nets constructed from square faces below:", 
+            q: "Look at the three flat patterns made of square panels below:", 
             hasNets: true,
-            opts: ["A) Configuration 1 and Configuration 2 fold into cubes, but Configuration 3 does not.", "B) Only Configuration 2 forms a valid cube net without overlapping faces.", "C) All three configurations are valid folding nets of a standard cube.", "D) None of these configurations can form a structural cube."], 
+            opts: ["A) Pattern 1 and Pattern 2 fold into cubes, but Pattern 3 does not.", "B) Only Pattern 2 forms a valid cube without any overlapping panels.", "C) All three flat patterns fold up into a standard solid cube.", "D) None of these flat patterns can build a closed cube shape."], 
             ans: 2, 
-            hint: "Check if each pattern contains exactly 6 square faces arranged so that they can fold together cleanly without any overlapping surfaces.", 
-            expl: "All three configurations are valid cube nets. Configuration 1 shows a 1-4-1 layout, Configuration 2 is a 2-3-1 layout, and Configuration 3 forms a staircase pattern, each folding perfectly into a 6-faced cube." 
+            hint: "Check if each net has exactly 6 square panels and can wrap around fully to form a box without any faces doubling up.", 
+            expl: "All three options are valid cube nets. Pattern 1 is the classic cross net, Pattern 2 is a standard stepped arrangement, and Pattern 3 is a zigzag layout; all fold into proper 6-sided cubes." 
         },
         { 
             cat: "Cuboid Characteristics", 
-            q: "A packaging designer works with a flattened card pattern meant to fold into a standard rectangular shipping cuboid box.\n\nHow many rectangular face units must the valid net contain to wrap the box completely without gaps?", 
+            q: "A workshop charges ₹20 per square metre to make boxes. A packaging designer lays out a flat cardboard template that folds into a closed rectangular shoe box.\n\nHow many rectangular faces must this flat layout template contain to wrap the box fully without any gaps?", 
             opts: ["A) 4 faces", "B) 6 faces", "C) 8 faces", "D) 12 faces"], 
             ans: 1, 
-            hint: "A cuboid features three pairs of matching parallel rectangular faces, requiring the same total number of faces as a standard cube.", 
-            expl: "A cuboid consists of 6 distinct faces, arranged in 3 opposite matching pairs. Its flat layout net must contain exactly 6 rectangular units." 
+            hint: "A box has a top, a bottom, and four upright side faces. Count them up altogether.", 
+            expl: "A rectangular cuboid box always has 6 faces (three matching opposite pairs). Its flat layout pattern must have exactly 6 rectangles to cover all sides." 
         },
         { 
-            cat: "Isometric Projections", 
-            q: "A draftsman is drawing a solid cuboid structure onto a sheet of isometric grid paper.\n\nWhat type of line networks are utilized on isometric sheets to maintain scale perspective across the 3D drawing axis?", 
-            opts: ["A) A series of dots forming small equilateral triangle meshes intersecting at 60-degree angles.", "B) Standard squares crossing at perpendicular 90-degree lines.", "C) Concentric circular ring arrays with outward radiating spokes.", "D) Parallel vertical lines crossed exclusively by horizontal lines."], 
+            cat: "Drawing Grids", 
+            q: "A student wants to draw a 3D block onto a special geometric grid paper sheet without hiding any dimensions.\n\nWhat kind of line network is used on isometric paper sheets to help keep the three dimensions looking accurate?", 
+            opts: ["A) Lines forming small equilateral triangles intersecting at 60 degrees", "B) Standard grid boxes crossing at square 90-degree corners", "C) Circular rings radiating outwards from the center", "D) Vertical lines crossed only by flat horizontal lines"], 
             ans: 0, 
-            hint: "Isometric paper avoids perspective distortions by aligning grid paths at 60-degree increments, creating triangle networks.", 
-            expl: "Isometric sheets use dot or line configurations spaced at 60-degree intervals to form equilateral triangles. This setup allows designers to map 3D width, height, and depth dimensions accurately." 
+            hint: "Isometric paper lines lean at an angle to create uniform triangle patterns instead of squares.", 
+            expl: "Isometric grid sheets use lines spaced at 60-degree angles to form clusters of equilateral triangles. This lets you draw width, height, and depth evenly." 
         },
         { 
-            cat: "Net Mapping Rules", 
-            q: "While verifying a pattern net for a custom die-cast block, a quality inspector notes that two opposing face segments are attached directly next to each other along the same baseline row of a 1-4-1 net layout.\n\nWhat structural defect occurs when attempting to fold this invalid configuration?", 
-            opts: ["A) One side of the cuboid remains open while another section overlaps two layers thick.", "B) The resulting folded object shifts into a triangular prism.", "C) The box folds perfectly but exhibits a twisted, non-parallel axis.", "D) The surface area increases dynamically beyond its bounds."], 
+            cat: "Net Assembly Errors", 
+            q: "A flat paper model template for a cube box has a mistake. Two of its square flaps are attached right next to each other on the same edge.\n\nWhat will happen when you try to fold this incorrect template into a box?", 
+            opts: ["A) One side of the box stays open and another side has two overlapping layers.", "B) The folded shape turns into a sharp triangular prism.", "C) The box folds up normally but stands slanted.", "D) The total size of the shape grows larger automatically."], 
             ans: 0, 
-            hint: "If two tabs fold onto the exact same position, they will overlap, leaving an empty, open gap elsewhere on the 3D shape.", 
-            expl: "If face attachments are placed incorrectly on a net layout, folding causes two adjacent card segments to overlap on the same side. This creates an incomplete wrap with an open gap." 
+            hint: "If two flaps fold onto the exact same spot, they cover the same face, leaving a gap somewhere else.", 
+            expl: "When flaps are attached to the wrong edges, folding causes two pieces to overlap on one side of the box. This leaves another side completely open and empty." 
         },
         { 
-            cat: "Transformation Coding", 
-            q: "A CNC pattern carver executes a sequence where an asymmetric decorative line motif is flipped across a horizontal baseline, shifted 10 units left, and then rotated 180 degrees.\n\nWhat term describes this sequence of operations?", 
-            opts: ["A) A series of combined geometric transformations.", "B) A single pure non-symmetrical translation vector.", "C) An isometric projection scaling transformation.", "D) A simple single-axis linear reflection mapping."], 
+            cat: "Combined Movements", 
+            q: "A custom pattern maker creates a border by taking a shape, flipping it across a baseline, sliding it 10 centimetres left, and then rotating it by a half-turn.\n\nWhat is the best description for this sequence of actions?", 
+            opts: ["A) A set of combined geometric movements", "B) A single straight horizontal slide path", "C) A scale adjustment layout change", "D) A simple single-line mirror reflection"], 
             ans: 0, 
-            hint: "Consider that the carver is combining three distinct movements: a flip (reflection), a shift (translation), and a turn (rotation).", 
-            expl: "Combining distinct operations like reflection, translation, and rotation forms a sequence of geometric transformations, often used to create complex decorative patterns." 
+            hint: "The maker is combining three separate movements: a flip, a slide, and a turn.", 
+            expl: "Performing a reflection (flip), a translation (slide), and a rotation (turn) one after another forms a combination of geometric transformations." 
         }
     ];
 
     let current = 0, score = 0, attempts = 0, timer, timeLeft = 60;
 
-    // Fisher-Yates Shuffling Core Engine
     function shufflePool(arr) {
         for (let i = arr.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
@@ -468,11 +462,11 @@
             document.getElementById('result-view').classList.remove('hidden');
             document.getElementById('final-pts').innerText = score;
 
-            let statusMessage = "Review your 2D symmetry reflections and 3D geometric nets to master this unit.";
+            let statusMessage = "Review your lines of symmetry, reflection flips, and shape nets to master this topic.";
             if(score === 10) {
-                statusMessage = "Perfect score! You've demonstrated excellent spatial visualization skills.";
+                statusMessage = "Perfect score! You have demonstrated excellent spatial visualisation skills.";
             } else if(score >= 7) {
-                statusMessage = "Great job! You have a solid grasp of geometric reflections, patterns, and nets.";
+                statusMessage = "Great job! You have a solid grasp of reflections, shape turns, and flat nets.";
             }
 
             document.getElementById('result-msg').innerHTML = `
