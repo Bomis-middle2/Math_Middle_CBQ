@@ -2,291 +2,418 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Map Skills Challenge</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Geometry Map Skills Challenge</title>
 
 <style>
-body{
-    margin:0;
-    font-family:Arial, sans-serif;
-    background:#eef3ff;
+body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #0f172a; /* Deep space slate */
+    color: #f8fafc;
+    overflow-x: hidden;
 }
 
-.screen{
-    display:none;
-    text-align:center;
-    padding:20px;
+/* Geometric Background Grid Accent */
+body::before {
+    content: "";
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background-image: 
+        linear-gradient(rgba(51, 65, 85, 0.15) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(51, 65, 85, 0.15) 1px, transparent 1px);
+    background-size: 40px 40px;
+    z-index: -1;
 }
 
-#game{
-    display:none;
+.screen {
+    display: none;
+    text-align: center;
+    padding: 20px;
+    box-sizing: border-box;
 }
 
-.box{
-    max-width:900px;
-    margin:auto;
-    background:white;
-    padding:25px;
-    border-radius:12px;
-    box-shadow:0 0 10px rgba(0,0,0,0.1);
+#game {
+    display: none;
 }
 
-button{
-    width:100%;
-    padding:14px;
-    margin:8px 0;
-    font-size:16px;
-    border:2px solid #ced4da;
-    border-radius:8px;
-    background:#f8f9fa;
-    cursor:pointer;
-    font-weight:bold;
-    text-align:left;
-    transition:0.2s;
+.box {
+    max-width: 750px;
+    margin: 40px auto;
+    background: #1e293b; /* Dark card container */
+    padding: 30px;
+    border-radius: 16px;
+    border: 2px solid #38bdf8; /* Neon Cyan Border */
+    box-shadow: 0 0 25px rgba(56, 189, 248, 0.2);
+    position: relative;
 }
 
-button:hover{
-    background:#e9ecef;
-    border-color:#6c757d;
+/* Subtle accent corners to feel like a geometric drafting interface */
+.box::before, .box::after {
+    content: "";
+    position: absolute;
+    width: 12px;
+    height: 12px;
+    border: 2px solid #f43f5e; /* Hot pink corners */
+}
+.box::before { top: -2px; left: -2px; border-right: none; border-bottom: none; border-top-left-radius: 16px; }
+.box::after { bottom: -2px; right: -2px; border-left: none; border-top: none; border-bottom-right-radius: 16px; }
+
+h3 {
+    text-align: left;
+    font-size: 20px;
+    color: #f1f5f9;
+    line-height: 1.5;
+    margin-bottom: 25px;
 }
 
-#msg{
-    font-weight:bold;
-    margin-top:15px;
-    font-size:18px;
-    padding:10px;
-    border-radius:6px;
+.hud-panel {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #38bdf8;
+    font-weight: bold;
+    letter-spacing: 1.5px;
+    font-size: 13px;
+    margin-bottom: 15px;
+    border-bottom: 1px dashed #334155;
+    padding-bottom: 10px;
+}
+
+button {
+    width: 100%;
+    padding: 16px 20px;
+    margin: 10px 0;
+    font-size: 15px;
+    color: #cbd5e1;
+    border: 1px solid #475569;
+    border-radius: 8px;
+    background: #0f172a;
+    cursor: pointer;
+    font-weight: 600;
+    text-align: left;
+    transition: all 0.2s ease;
+}
+
+button:hover:not(:disabled) {
+    background: #1e293b;
+    color: #38bdf8;
+    border-color: #38bdf8;
+    box-shadow: 0 0 10px rgba(56, 189, 248, 0.15);
+    transform: translateX(4px);
+}
+
+button:disabled {
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+#msg {
+    font-weight: bold;
+    margin-top: 20px;
+    font-size: 16px;
+    padding: 12px;
+    border-radius: 8px;
+    text-align: center;
+    letter-spacing: 0.5px;
 }
 
 .try-again-msg {
-    color:#d97706;
-    background:#fffbeb;
+    color: #f59e0b;
+    background: rgba(245, 158, 11, 0.1);
+    border: 1px solid rgba(245, 158, 11, 0.3);
 }
 
 .correct-ans-msg {
-    color:#dc2626;
-    background:#fef2f2;
+    color: #ef4444;
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+#qimg {
+    width: 100%;
+    max-width: 450px;
+    margin: 0 auto 20px auto;
+    border-radius: 8px;
+    border: 1px solid #334155;
+    display: none;
+}
+
+/* Interactive Splash Screen */
+#splash {
+    background: #0f172a;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.geo-shape-container {
+    position: relative;
+    width: 80px;
+    height: 80px;
+    margin-bottom: 20px;
+}
+
+/* Spinning neon wireframe shape for splash */
+.geo-shape {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    border: 3px solid #38bdf8;
+    border-radius: 6px;
+    animation: rotateShape 4s linear infinite;
+}
+
+.geo-shape-inner {
+    position: absolute;
+    top: 15%; left: 15%; width: 70%; height: 70%;
+    border: 3px solid #f43f5e;
+    transform: rotate(45deg);
+    animation: rotateShapeInner 3s linear infinite;
+}
+
+@keyframes rotateShape {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+@keyframes rotateShapeInner {
+    0% { transform: rotate(45deg); }
+    100% { transform: rotate(-315deg); }
+}
+
+.loader-text {
+    font-size: 20px;
+    font-weight: 800;
+    color: #38bdf8;
+    letter-spacing: 4px;
 }
 </style>
 </head>
 
 <body>
 
-<div id="splash" class="screen" style="display:block; background:#ffffff; height:100vh; display:flex; justify-content:center; align-items:center;">
-    <img src="assets/logo.png" width="180" onerror="this.style.display='none'; document.getElementById('splash-text').style.display='block';">
-    <h1 id="splash-text" style="display:none; font-family:sans-serif; color:#3b82f6; font-size:32px; letter-spacing:2px;">LOADING CHALLENGE</h1>
+<!-- SPLASH SCREEN -->
+<div id="splash" class="screen" style="display:flex;">
+    <div class="geo-shape-container">
+        <div class="geo-shape"></div>
+        <div class="geo-shape-inner"></div>
+    </div>
+    <div class="loader-text">INITIALISING GRID</div>
 </div>
 
+<!-- GAME INTERFACE -->
 <div id="game" class="screen">
 <div class="box">
 
-<div style="text-align:left; color:#6b7280; font-weight:bold; margin-bottom:10px;">Question <span id="q-counter">1</span> of 10</div>
-<h3 id="qtitle" style="text-align:left; font-size:20px; color:#1f2937; margin-bottom:20px;"></h3>
+    <!-- HUD Tracking Panel -->
+    <div class="hud-panel">
+        <div>MODULE: MAP MATRIX</div>
+        <div>VECTOR <span id="q-counter">1</span> / 10</div>
+    </div>
 
-<img id="qimg" style="width:100%; max-width:500px; margin:0 auto 20px auto; border-radius:10px; display:none;">
+    <h3 id="qtitle"></h3>
 
-<div id="options"></div>
+    <!-- MAP GRAPHIC -->
+    <img id="qimg" alt="Map graphic coordinate plane">
 
-<div id="msg"></div>
+    <!-- MULTIPLE CHOICE TARGETS -->
+    <div id="options"></div>
+
+    <!-- FEEDBACK ALERT -->
+    <div id="msg"></div>
 
 </div>
 </div>
 
+<!-- AUDIO SYSTEMS -->
 <audio id="correctSound" src="freesound_community-claps-44774.mp3"></audio>
 <audio id="wrongSound" src="wrong.mp3"></audio>
 
 <script>
 
+// 5-second dynamic loading configuration
 setTimeout(()=>{
-    document.getElementById("splash").style.styleWithMap = "none";
-    document.getElementById("splash").style.display="none";
-    document.getElementById("game").style.display="block";
+    document.getElementById("splash").style.display = "none";
+    document.getElementById("game").style.display = "block";
     loadQuestion(0);
-},5000); // 5-second splash screen hold execution lifecycle invariant
+}, 5000);
 
 let index = 0;
 let attempts = 0;
 
-/* ---------------- QUESTIONS (G5 Level, British English, Rupees) ---------------- */
+/* ---------------- GEOMETRIC THEMED QUESTION BANK ---------------- */
 const quiz = [
-
 {
-q: "A school map layout shows the sports ground directly at the bottom edge and the main library block straight up at the top edge. In which cardinal direction must a student walk to go directly from the sports ground to the library?",
-img: "assets/q1.jpg",
-options: ["South", "North", "East", "West"],
-ans: "North"
+    q: "A structural grid layout positions a sports pavilion at the base vertex and the central library at the top apex. To trace a linear path directly from the sports pavilion up to the library, which cardinal coordinate vector direction must be taken?",
+    img: "assets/q1.jpg",
+    options: ["South Direction", "North Direction", "East Direction", "West Direction"],
+    ans: "North Direction"
 },
-
 {
-q: "If a student completes their reading lesson inside the main library block and needs to head straight down towards the sports ground at the bottom edge of the map, which direction are they travelling?",
-img: "assets/q1.jpg",
-options: ["North", "East", "South", "West"],
-ans: "South"
+    q: "If an agent exits the upper library block coordinates and sets a linear course straight down towards the sports pavilion baseline at the bottom edge, what vector heading are they tracking?",
+    img: "assets/q1.jpg",
+    options: ["North Heading", "East Heading", "South Heading", "West Heading"],
+    ans: "South Heading"
 },
-
 {
-q: "Looking closely at the school premises plan, the library is in the centre. The botanical garden area is plotted directly to the right side of the library layout. Where is the botanical garden located?",
-img: "assets/q1.jpg",
-options: ["West of the Library", "East of the Library", "North of the Main Gate", "South of the Sports Ground"],
-ans: "East of the Library"
+    q: "On a flat-plane map layout, the library occupies the absolute central origin. A dedicated botanical garden zone is mapped outward along the horizontal axis directly to the right side of the library. Where is the garden situated?",
+    img: "assets/q1.jpg",
+    options: ["West of the Library", "East of the Library", "North of the Main Gate", "South of the Sports Ground"],
+    ans: "East of the Library"
 },
-
 {
-q: "The scale bar printed on a local municipal tourist map reads '1 cm on paper represents 10 metres of real ground distance'. If the measured distance between a ticket counter and a food stall is exactly 3 cm, what is the actual distance?",
-img: "assets/q1.jpg",
-options: ["13 metres", "30 metres", "300 metres", "3 metres"],
-ans: "30 metres"
+    q: "The standard scale ratio printed onto a tourist town plan states: '1 cm of grid line equals 10 metres of actual ground distance'. If a straight line segment between a ticket turnstile and a food booth spans exactly 3 cm, compute the real distance value.",
+    img: "assets/q1.jpg",
+    options: ["13 metres", "30 metres", "300 metres", "3 metres"],
+    ans: "30 metres"
 },
-
 {
-q: "While studying layouts, a group decides to construct a scale model. Why is the precise linear scale line considered an essential element when drawing or reading maps?",
-img: "assets/q1.jpg",
-options: [
-"It dictates the selection of bright artistic colours",
-"It converts measured map dimensions accurately into real-world distances",
-"It simply decorates the blank borders of the paper sheet",
-"It completely removes the requirement for direction arrows"
-],
-ans: "Converts measured map dimensions accurately into real-world distances"
+    q: "When converting grand geometric structural dimensions down into compact blueprints, why is incorporating an authentic scale system considered non-negotiable?",
+    img: "assets/q1.jpg",
+    options: [
+        "It determines the artistic colour configuration of the landscape elements",
+        "It converts raw paper layout measurements accurately into true real-world distances",
+        "It acts purely as a decorative framework decoration for the page edges",
+        "It cancels out the standard engineering requirement for directional orientation arrows"
+    ],
+    ans: "It converts raw paper layout measurements accurately into true real-world distances"
 },
-
 {
-q: "A survey map of an estate features various standard symbol keys. What natural geographical feature is traditionally represented by a blue wavy line?",
-img: "",
-options: ["A main tarred road", "A flowing river", "A dense forest zone", "A steep mountain ridge"],
-ans: "A flowing river"
+    q: "A geographical blueprint includes key structural symbols. Which real environmental feature does a blue wavy line coordinate path indicate?",
+    img: "",
+    options: ["A primary asphalt roadway link", "A natural flowing river channel", "A heavy forest canopy grid", "A steep topological mountain ridge"],
+    ans: "A natural flowing river channel"
 },
-
 {
-q: "An ambulance driver needs to locate the shortest route to a healthcare centre. Which feature of a map scheme must be analysed mathematically to calculate true track lengths?",
-img: "",
-options: ["The symbolic colour shades used", "The scale distance measurements", "The geometric boundary shapes", "The alphabetic names of locations"],
-ans: "The scale distance measurements"
+    q: "A navigation system calculates the shortest track between two vector points. Which primary factor of the map layout must be mathematically cross-referenced to discover correct journey lengths?",
+    img: "",
+    options: ["The specific visual colour spectrum used", "The exact scale distance values", "The spatial outline shapes of the boundaries", "The alphabetic title labels assigned"],
+    ans: "The exact scale distance values"
 },
-
 {
-q: "A traveller wakes up early and notices the sun rising directly ahead over the horizon. Which primary cardinal direction is the traveller facing at that moment?",
-img: "",
-options: ["North", "South", "East", "West"],
-ans: "East"
+    q: "An explorer checks their position at daybreak and establishes that the sun is rising in a straight line directly over the horizon ahead. Which key cardinal target orientation is the explorer looking toward?",
+    img: "",
+    options: ["North Anchor", "South Anchor", "East Anchor", "West Anchor"],
+    ans: "East Anchor"
 },
-
 {
-q: "A contractor charges ₹500 per centimetre to print high-resolution map graphics. Maps cannot be drawn to match the exact real size of cities because:",
-img: "",
-options: [
-"Real spaces are shrunk systematically using a scale proportion to fit on paper",
-"They are meant to be imaginary artistic drawings rather than real guides",
-"They dynamically change directions when printed onto flat sheets",
-"They are prohibited from displaying any real-world distance values"
-],
-ans: "Real spaces are shrunk systematically using a scale proportion to fit on paper"
+    q: "A print engineer budgets ₹500 per centimeter for drafting exact map segments. Maps are mathematically incapable of mimicking the identical, full physical size of regional zones because:",
+    img: "",
+    options: [
+        "Enormous operational spaces are systematically downscaled by clean proportions to fit layout surfaces",
+        "They are generated to serve as creative illustrations rather than realistic spatial parameters",
+        "They automatically warp spatial directions when mapped onto a flat canvas horizontal plane",
+        "They are legally restricted from displaying standard physical ground-distance dimensions"
+    ],
+    ans: "Enormous operational spaces are systematically downscaled by clean proportions to fit layout surfaces"
 },
-
 {
-q: "A city map guide states that the central municipal hospital is located directly west of the school campus and directly east of the public park. What does this indicate about its relative position?",
-img: "",
-options: [
-"It is situated directly between both locations",
-"It sits far north of the entire sector",
-"It sits far south of the entire sector",
-"It is built completely outside the district limits"
-],
-ans: "It is situated directly between both locations"
+    q: "A municipal planning coordinate guide states that a new public medical facility lies directly west of the school campus zone and directly east of the public park coordinates. Deduce its true placement relation.",
+    img: "",
+    options: [
+        "It is situated exactly intermediate between both reference landmarks",
+        "It shifts completely north of the overall development sectors",
+        "It positions entirely south of the local infrastructure grid",
+        "It sits fully outside the designated territorial boundaries"
+    ],
+    ans: "It is situated exactly intermediate between both reference landmarks"
 }
-
 ];
 
-/* ---------------- LOAD QUESTION ---------------- */
+/* ---------------- RENDERING INTERFACE LOGIC ---------------- */
 function loadQuestion(i){
+    attempts = 0;
+    let q = quiz[i];
 
-attempts = 0;
-let q = quiz[i];
+    document.getElementById("q-counter").innerText = i + 1;
+    document.getElementById("qtitle").innerText = q.q;
+    
+    let msgBox = document.getElementById("msg");
+    msgBox.innerText = "";
+    msgBox.className = "";
 
-document.getElementById("q-counter").innerText = i + 1;
-document.getElementById("qtitle").innerText = q.q;
-let msgBox = document.getElementById("msg");
-msgBox.innerText = "";
-msgBox.className = "";
+    let img = document.getElementById("qimg");
+    if(q.img){
+        img.src = q.img;
+        img.style.display = "block";
+    }else{
+        img.style.display = "none";
+    }
 
-let img = document.getElementById("qimg");
-if(q.img){
-    img.src = q.img;
-    img.style.display = "block";
-}else{
-    img.style.display = "none";
+    let box = document.getElementById("options");
+    box.innerHTML = "";
+
+    q.options.forEach(opt=>{
+        let btn = document.createElement("button");
+        btn.innerText = opt;
+        btn.onclick = () => checkAnswer(opt, btn);
+        box.appendChild(btn);
+    });
 }
 
-/* OPTIONS SHUFFLE & RENDER */
-let box = document.getElementById("options");
-box.innerHTML = "";
-
-q.options.forEach(opt=>{
-    let btn = document.createElement("button");
-    btn.innerText = opt;
-    btn.onclick = ()=>checkAnswer(opt, btn);
-    box.appendChild(btn);
-});
-
-}
-
-/* ---------------- CHECK ---------------- */
+/* ---------------- COMPUTATIONAL VERIFICATION ---------------- */
 function checkAnswer(opt, clickedBtn){
+    let q = quiz[index];
+    let msgBox = document.getElementById("msg");
 
-let q = quiz[index];
-let msgBox = document.getElementById("msg");
-
-if(opt === q.ans){
-    clickedBtn.style.background = "#d1fae5";
-    clickedBtn.style.borderColor = "#10b981";
-    document.getElementById("correctSound").play();
-    
-    // Lock all buttons on correct answer selection
-    let buttons = document.getElementById("options").getElementsByTagName("button");
-    for(let b of buttons) { b.disabled = true; }
-
-    index++;
-
-    setTimeout(()=>{
-        if(index < quiz.length){
-            loadQuestion(index);
-        }else{
-            document.getElementById("game").innerHTML =
-            "<h1 style='color:#10b981; margin-bottom:15px;'>🎉 Excellent Work!</h1><p style='font-size:18px; color:#4b5563; font-weight:bold;'>You have successfully completed all 10 map skill questions.</p>";
-        }
-    },1200);
-
-}else {
-    document.getElementById("wrongSound").play();
-    attempts++;
-    
-    clickedBtn.style.background = "#fee2e2";
-    clickedBtn.style.borderColor = "#ef4444";
-    clickedBtn.disabled = true;
-
-    if(attempts == 2){
-        msgBox.className = "correct-ans-msg";
-        msgBox.innerText = "Correct Answer: " + q.ans;
+    if(opt === q.ans){
+        // Success Highlight: Matrix Lime Green Neon Glow
+        clickedBtn.style.background = "rgba(34, 197, 94, 0.15)";
+        clickedBtn.style.color = "#4ade80";
+        clickedBtn.style.borderColor = "#22c55e";
+        clickedBtn.style.boxShadow = "0 0 15px rgba(34, 197, 94, 0.4)";
+        
+        document.getElementById("correctSound").play();
         
         let buttons = document.getElementById("options").getElementsByTagName("button");
         for(let b of buttons) { b.disabled = true; }
-        
+
         index++;
+
         setTimeout(()=>{
             if(index < quiz.length){
                 loadQuestion(index);
             }else{
                 document.getElementById("game").innerHTML =
-                "<h1 style='color:#10b981; margin-bottom:15px;'>🎉 Excellent Work!</h1><p style='font-size:18px; color:#4b5563; font-weight:bold;'>You have successfully completed all 10 map skill questions.</p>";
+                "<h1 style='color:#4ade80; margin-bottom:15px; font-size:28px; letter-spacing:1px;'>🎉 MATRIX CLEAR!</h1><p style='font-size:16px; color:#94a3b8; font-weight:bold;'>All 10 geometric map vectors successfully verified.</p>";
             }
-        },2500);
-    }else{
-        msgBox.className = "try-again-msg";
-        msgBox.innerText = "Try Again!";
+        }, 1200);
+
+    } else {
+        document.getElementById("wrongSound").play();
+        attempts++;
+        
+        // Error Highlight: Deflection Hot Pink / Red Alert
+        clickedBtn.style.background = "rgba(239, 68, 68, 0.15)";
+        clickedBtn.style.color = "#f87171";
+        clickedBtn.style.borderColor = "#ef4444";
+        clickedBtn.disabled = true;
+
+        if(attempts === 2){
+            msgBox.className = "correct-ans-msg";
+            msgBox.innerText = "OVERRIDE VALUE: " + q.ans;
+            
+            let buttons = document.getElementById("options").getElementsByTagName("button");
+            for(let b of buttons) { b.disabled = true; }
+            
+            index++;
+            setTimeout(()=>{
+                if(index < quiz.length){
+                    loadQuestion(index);
+                }else{
+                    document.getElementById("game").innerHTML =
+                    "<h1 style='color:#4ade80; margin-bottom:15px; font-size:28px; letter-spacing:1px;'>🎉 MATRIX CLEAR!</h1><p style='font-size:16px; color:#94a3b8; font-weight:bold;'>All 10 geometric map vectors successfully verified.</p>";
+                }
+            }, 2500);
+        } else {
+            msgBox.className = "try-again-msg";
+            msgBox.innerText = "VECTOR MISMATCH. RE-CALCULATING... (TRY AGAIN)";
+        }
     }
 }
-
-}
-
 </script>
 
 </body>
